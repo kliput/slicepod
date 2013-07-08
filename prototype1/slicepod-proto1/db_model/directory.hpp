@@ -5,17 +5,17 @@
 
 class Episode;
 
-class QX_PODSLICER_DLL_EXPORT Directory
+class QX_SLICEPOD_DLL_EXPORT Directory
 {
 public:
-// -- properties
+	// -- properties
 	long id;
 	
 	QString path;
 	QString metadata;
 	QList<QSharedPointer<Episode>> episodes_list;
 	
-// -- contructor, virtual destructor
+	// -- contructor, virtual destructor
 	Directory(): id(0) {}
 	Directory(long _id): id(_id) {}
 	Directory(const QString& _path):
@@ -24,9 +24,10 @@ public:
 		{}
 		
 	virtual ~Directory() {}
+
 };
 
-QX_REGISTER_HPP_QX_PODSLICER(Directory, qx::trait::no_base_class_defined, 0);
+QX_REGISTER_HPP_QX_SLICEPOD(Directory, qx::trait::no_base_class_defined, 0);
 
 typedef QSharedPointer<Directory> directory_ptr;
 typedef QList<Directory> directories_list;

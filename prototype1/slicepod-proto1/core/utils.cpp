@@ -5,9 +5,10 @@
 
 #include <cstdlib>
 #include <iostream>
-#include <boost/format.hpp>
 #include <taglib/tag.h>
 #include <taglib/fileref.h>
+
+#include <qxt/QxtCore/QxtLogger>
 
 void db_connect(const char* db_name)
 {
@@ -24,15 +25,16 @@ void db_connect(const char* db_name)
 	qx::QxSqlDatabase::getSingleton()->setVerifyOffsetRelation(true);
 }
 
-void check(const QSqlError& error)
+inline void check_error(const QSqlError& error)
 {
 	if (error.isValid()) {
-		qDebug() << QString("SQL error: %1").arg(error.text());
-		exit(1);
+		qxtLog->error("SQL error: ", error.text());
 	}
 }
 
-directory_ptr add_scan_dir(const char* dir_path)
+
+QSharedPointer<Directory> scan_dir(const char* dir_path,
+										 QSharedPointer<Podcast> podcast)
 {
 	/*
 	 * - check path and create directory entity
@@ -48,23 +50,15 @@ directory_ptr add_scan_dir(const char* dir_path)
 
 	QDir qdir(dir_path);
 
-	if (qdir.exists()) {
-		qDebug() << QString("Directory %1 exists, listing files:").arg(qdir.path());
-	} else {
-		qDebug() << QString("Directory %1 DOES NOT exists").arg(qdir.path());
-		return directory_ptr(0);
+	if (!qdir.exists()) {
+		qxtLog->error("Directory ", qdir.path(),"DOES NOT exists");
+		return directory_ptr(nullptr);
 	}
 
 	directory_ptr dir_model(new Directory(dir_path));
-	qx::dao::save(dir_model);
-
-	// -- dummy podcast TODO --
-
-	podcast_ptr podcast_model(new Podcast("Sample Podcast"));
-	qx::dao::save(podcast_model);
+	check_error(qx::dao::save(dir_model));
 
 	// -- scan files --
-
 	QStringList filters;
 	filters << "*.mp3";
 
@@ -73,45 +67,65 @@ directory_ptr add_scan_dir(const char* dir_path)
 	QFileInfoList files_list = qdir.entryInfoList();
 	for (QFileInfo fi: files_list) {
 		const char* file_name = QFile::encodeName(fi.absoluteFilePath());
-		LOG_DEBUG("reading file: " << file_name);
-		
-		
+		qxtLog->debug("reading file: ", file_name);
+
 		if (!fi.isFile()) {
-			LOG_DEBUG("not a file: " << file_name);
+			qxtLog->debug("not a file: ", file_name);
 			continue;
 		}
 
 		if (!fi.isReadable()) {
-			LOG_INFO("file not readable: " << file_name);
+			qxtLog->info("file not readable: ", file_name);
 			continue;
 		}
 
-		std::cout << "fn1: " << file_name << std::endl;
-		TagLib::FileRef f(file_name);
-		std::cout << "fn2: " << file_name << std::endl;
+		TagLib::FileRef f(file_name, false);
+
 		if (f.isNull()) {
-			LOG_INFO("file cannot be read by TagLib: " << file_name);
+			qxtLog->warning("file cannot be read by TagLib: ", file_name);
 			continue;
 		}
 
 		if (!f.tag()) {
-			LOG_INFO("file tag cannot be read: " << file_name);
+			qxtLog->info("file tag cannot be read: ", file_name);
 			continue;
 		}
 
-		std::string title = f.tag()->title().toCString();
-		if (title == "") title = fi.fileName().toStdString();
-		
-		// TODO add podcast name (album name) if not exists in database
-		
-		// -- adding episode do database --
-		LOG_INFO(boost::format(">> adding >> %1%") % title);
-		episode_ptr ep_model(new Episode(fi.fileName(), title.c_str(), dir_model, podcast_model));
-		dir_model->episodes_list.push_back(ep_model);
-//		qx::dao::save(ep_model);
+		QString title = f.tag()->title().toCString();
+		if (title == "") title = fi.fileName();
+
+		// -- adding episode to database --
+		qxtLog->trace("adding episode: ", title);
+		episode_ptr ep_model(new Episode(fi.fileName(), title,
+										 dir_model, podcast));
+		dir_model->episodes_list << ep_model;
 	}
 
-	qx::dao::save_with_all_relation(dir_model);
+	check_error(qx::dao::save_with_all_relation(dir_model));
 
-	return directory_ptr(new Directory(dir_path));
+	qxtLog->debug() << "saved episodes:";
+	for (const episode_ptr& e: dir_model->episodes_list) {
+		qxtLog->debug("id: ", (qlonglong) e->id, ", name: ", e->episode_name);
+		add_start_fragment(e);
+	}
+
+	return dir_model;
 }
+
+fragment_ptr add_start_fragment(const episode_ptr& episode)
+{
+	fragment_ptr fragment(new Fragment(episode, 0));
+	episode->start_fragment = fragment;
+	check_error(qx::dao::update_with_relation("full_fragment_id", episode));
+	return fragment;
+}
+
+//episode_ptr create_episode(const QString& _file_name, const QString& _episode_name,
+//						   const QSharedPointer<Directory>& _directory,
+//						   const QSharedPointer<Podcast>& _podcast)
+//{
+//	auto episode = new Episode(_file_name, _episode_name, _directory, _podcast);
+//	qx::dao::save(episode);
+//	qxtLog->debug() << "saved episode with id: " << episode->id;
+//	return episode_ptr(episode);
+//}

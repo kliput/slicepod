@@ -7,7 +7,7 @@ LibraryModel::LibraryModel(QObject* parent):
 	QAbstractItemModel(parent)
 {
 // 	QList<QVariant> root_data;
-// 	root_data << tr("Episode/slice title");
+// 	root_data << tr("Episode/fragment title");
 	root_item = new ExampleItem("Root");
 	
 	auto child1 = new ExampleItem("child1", root_item);

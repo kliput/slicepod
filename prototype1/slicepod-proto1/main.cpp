@@ -1,3 +1,16 @@
+/* Copyright (C) 2013 Jakub Liput
+ *
+ * This program is free software: you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free
+ * Software Foundation, either version 3 of the License, or (at your option) any
+ * later version.
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
+ * details.
+ */
+
 #include "mainwindow.h"
 #include <QApplication>
 
@@ -6,12 +19,13 @@
 #include <QtCore>
 #include <QtGui>
 
+#include <QxtLogger>
+
 #include "db_model.hpp"
 
 #include <iostream>
 #include <boost/format.hpp>
 
-#define LOG_LEVEL 2
 #include "core/utils.hpp"
 
 const char* DB_NAME = "db.sqlite";
@@ -30,6 +44,8 @@ int main(int argc, char *argv[])
 	QApplication app(argc, argv);
 	QTextCodec::setCodecForTr(QTextCodec::codecForName("UTF-8"));
 
+	qxtLog->enableAllLogLevels();
+
 	// -- database connection --
 	QFile::remove(DB_NAME);
 	db_connect(DB_NAME);
@@ -38,20 +54,21 @@ int main(int argc, char *argv[])
 	err = qx::dao::create_table<Episode>();
 	err = qx::dao::create_table<Directory>();
 	err = qx::dao::create_table<Podcast>();
-	err = qx::dao::create_table<Slice>();
+	err = qx::dao::create_table<Fragment>();
 	err = qx::dao::create_table<Tag>();
 	err = qx::dao::create_table<Playlist>();
 
+	podcast_ptr icmp_podcast(new Podcast("Irish and Celtic Music Podcast"));
+	qx::dao::save(icmp_podcast);
 
-	add_scan_dir("/media/Dane 1/muzyka/podcasty/Irish and Celtic Music Podcast");
-//	add_scan_dir("/home/kliput/podcast");
+	directory_ptr icmp_dir = scan_dir("/media/Dane 1/muzyka/podcasty/"
+						   "Irish and Celtic Music Podcast", icmp_podcast);
 
 	episode_ptr e1(new Episode(1));
-	slice_ptr s1(new Slice(e1, 240, 250));
-	qx::dao::save(s1);
+	fragment_ptr f1(new Fragment(e1, 240, 250));
+	qx::dao::save(f1);
 
-	s1->play();
-	e1->play();
+	f1->play();
 
 	return app.exec();
 }

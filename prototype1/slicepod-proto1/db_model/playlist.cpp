@@ -2,17 +2,20 @@
 
 #include "db_model.hpp"
 
-QX_REGISTER_CPP_QX_PODSLICER(Playlist)
+QX_REGISTER_CPP_QX_SLICEPOD(Playlist)
+using namespace db_fields::playlist;
 
 namespace qx {
 template <> void register_class(QxClass<Playlist>& t)
 {
-   t.id(&Playlist::id, "id");
+	t.id(&Playlist::id, db_fields::ID);
 
-   t.data(&Playlist::name, "name");
-   t.data(&Playlist::metadata, "metadata");
-   
-//    t.relationOneToMany(&Playlist::playables_list, "playables_list", "playable_id");
-   
+	t.data(&Playlist::name, NAME);
+	t.data(&Playlist::metadata, METADATA);
+
+	t.relationManyToMany(&Playlist::fragments_list, FRAGMENTS_LIST,
+						db_fields::playlist_fragment_map::TABLE_NAME,
+						db_fields::playlist_fragment_map::PLAYLIST,
+						db_fields::playlist_fragment_map::FRAGMENT);
 }
 }

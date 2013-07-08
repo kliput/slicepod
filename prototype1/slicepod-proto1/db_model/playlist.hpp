@@ -2,9 +2,9 @@
 #define _PLAYLIST_H_
 #include "eclipse_ignore.hpp"
 
-class Playable;
+class Fragment;
 
-class QX_PODSLICER_DLL_EXPORT Playlist
+class QX_SLICEPOD_DLL_EXPORT Playlist
 {
 public:
 // -- properties
@@ -12,7 +12,8 @@ public:
 	
 	QString name;
 	QString metadata;
-// 	QList<QSharedPointer<Playable>> playables_list;
+
+	QList<QSharedPointer<Fragment>> fragments_list;
 	
 // -- contructor, virtual destructor
 	Playlist(): id(0) {}
@@ -23,9 +24,10 @@ public:
 		{}
 		
 	virtual ~Playlist() {}
+
 };
 
-QX_REGISTER_HPP_QX_PODSLICER(Playlist, qx::trait::no_base_class_defined, 0);
+QX_REGISTER_HPP_QX_SLICEPOD(Playlist, qx::trait::no_base_class_defined, 0);
 
 typedef QSharedPointer<Playlist> playlist_ptr;
 typedef QList<Playlist> playlist_list;

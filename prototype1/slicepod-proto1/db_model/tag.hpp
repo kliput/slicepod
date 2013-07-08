@@ -2,9 +2,9 @@
 #define _TAG_H_
 #include "eclipse_ignore.hpp"
 
-class Slice;
+class Fragment;
 
-class QX_PODSLICER_DLL_EXPORT Tag
+class QX_SLICEPOD_DLL_EXPORT Tag
 {
 public:
 // -- properties
@@ -12,7 +12,7 @@ public:
 	
 	QString name;
 	QString metadata;
-	QList<QSharedPointer<Slice>> slices_list;
+	QList<QSharedPointer<Fragment>> fragments_list;
 	
 // -- contructor, virtual destructor
 	Tag(): id(0) {}
@@ -25,7 +25,7 @@ public:
 	virtual ~Tag() {}
 };
 
-QX_REGISTER_HPP_QX_PODSLICER(Tag, qx::trait::no_base_class_defined, 0);
+QX_REGISTER_HPP_QX_SLICEPOD(Tag, qx::trait::no_base_class_defined, 0);
 
 typedef QSharedPointer<Tag> tag_ptr;
 typedef QList<Tag> tags_list;

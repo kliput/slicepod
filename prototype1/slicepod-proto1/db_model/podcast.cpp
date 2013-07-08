@@ -2,17 +2,19 @@
 
 #include "db_model.hpp"
 
-QX_REGISTER_CPP_QX_PODSLICER(Podcast)
+QX_REGISTER_CPP_QX_SLICEPOD(Podcast)
+using namespace db_fields::podcast;
 
 namespace qx {
 template <> void register_class(QxClass<Podcast>& t)
 {
-   t.id(&Podcast::id, "id");
+   t.id(&Podcast::id, db_fields::ID);
 
-   t.data(&Podcast::name, "name");
-   t.data(&Podcast::metadata, "metadata");
+   t.data(&Podcast::name, NAME);
+   t.data(&Podcast::metadata, METADATA);
    
-   t.relationOneToMany(&Podcast::episodes_list, "episodes_list", "podcast_id");
+   t.relationOneToMany(&Podcast::episodes_list, EPISODES_LIST,
+					   db_fields::episode::PODCAST);
    
 }
 }
@@ -23,3 +25,4 @@ QString Podcast::info() const
 {
 	return name;
 }
+

@@ -1,5 +1,5 @@
-#ifndef _PODSLICER_PRECOMPILED_HEADER_H_
-#define _PODSLICER_PRECOMPILED_HEADER_H_
+#ifndef _SLICEPOD_PRECOMPILED_HEADER_H_
+#define _SLICEPOD_PRECOMPILED_HEADER_H_
 
 #include <string>
 #include <vector>
@@ -10,4 +10,4 @@
 
 #include "export.hpp"
 
-#endif // _PODSLICER_PRECOMPILED_HEADER_H_
+#endif // _SLICEPOD_PRECOMPILED_HEADER_H_
