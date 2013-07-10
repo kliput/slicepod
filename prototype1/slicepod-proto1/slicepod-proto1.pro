@@ -32,6 +32,7 @@ SOURCES += main.cpp\
     core/library_model.cpp \
     core/library_item.cpp \
 	core/vlcmanager.cpp \
+    core/sqlexception.cpp
 
 HEADERS  += mainwindow.h\
 	db_model/directory.hpp\
@@ -49,7 +50,8 @@ HEADERS  += mainwindow.h\
     export.hpp \
     db_model.hpp \
     core/vlcmanager.hpp \
-    db_model/db_constants.hpp
+    db_model/db_constants.hpp \
+    core/sqlexception.hpp
 
 FORMS    += mainwindow.ui
 

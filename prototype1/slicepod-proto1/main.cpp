@@ -13,18 +13,15 @@
 
 #include "mainwindow.h"
 #include <QApplication>
-
-#include "precompiled.hpp"
-
 #include <QtCore>
 #include <QtGui>
 
 #include <QxtLogger>
 
+#include "precompiled.hpp"
 #include "db_model.hpp"
 
 #include <iostream>
-#include <boost/format.hpp>
 
 #include "core/utils.hpp"
 
@@ -41,7 +38,7 @@ int main(int argc, char *argv[])
 //	return a.exec();
 
 	// -- qt application --
-	QApplication app(argc, argv);
+	QCoreApplication app(argc, argv);
 	QTextCodec::setCodecForTr(QTextCodec::codecForName("UTF-8"));
 
 	qxtLog->enableAllLogLevels();
