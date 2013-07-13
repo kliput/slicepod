@@ -80,25 +80,20 @@ void SlicepodTest::testCreateEpisode()
 					  << fragment::EPISODE
 					  ).join("->");
 
-		QList<Podcast> result_podcasts_list;
-		Podcast pod;
-		result_podcasts_list << pod;
+		QList<QSharedPointer<Podcast>> result_podcasts_list;
 		qx::QxSqlQuery podcast_query;
 		podcast_query.where(podcast::NAME).isEqualTo(QString(PODCAST1_NAME));
-		qDebug() << "XXXX: " << podcast_query.query();
-		qDebug() << "AAAAAAAA------------------------";
 		error = qx::dao::fetch_by_query_with_relation(relation, podcast_query,
 													  result_podcasts_list);
-		qDebug() << "BBBBBBBB------------------------";
 		QVERIFY2(!error.isValid(),
 			QString("Fetch podcast failed: %1").arg(error.text()).toAscii());
 		QCOMPARE(result_podcasts_list.size(), 1);
-		const Podcast& p = result_podcasts_list[0];
-		QCOMPARE(p.name, QString(PODCAST1_NAME));
-		QCOMPARE(p.episodes_list.size(), 4);
+		const QSharedPointer<Podcast>& p = result_podcasts_list[0];
+		QCOMPARE(p->name, QString(PODCAST1_NAME));
+		QCOMPARE(p->episodes_list.size(), 4);
 
 
-		for (auto ep: p.episodes_list) {
+		for (auto ep: p->episodes_list) {
 			QCOMPARE(ep->fragments_list.size(), 1);
 			auto fp = ep->fragments_list[0];
 			QCOMPARE(fp->start, 0);

@@ -7,7 +7,7 @@
 APPDIR = ../
 
 QMAKE_CXX = g++-4.8
-QMAKE_CXXFLAGS += -Wall -Wno-unused-local-typedefs -std=c++11
+QMAKE_CXXFLAGS += -Wall -Wno-unused-local-typedefs -std=c++11 -gdwarf-3
 
 QT       += core testlib
 

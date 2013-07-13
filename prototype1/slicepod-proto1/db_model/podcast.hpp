@@ -4,6 +4,7 @@
 
 #include "core/library_item.hpp"
 
+
 class Episode;
 class Directory;
 
@@ -11,17 +12,16 @@ class QX_SLICEPOD_DLL_EXPORT Podcast : public LibraryItem
 {
 public:
 	// -- properties
-	long id;
+	long id = 0;
 	
 	QString name;
 	QString metadata;
 	QList<QSharedPointer<Episode>> episodes_list;
 
 	// -- contructor, virtual destructor
-	Podcast(): id(0) {}
+	Podcast() {}
 	Podcast(long _id): id(_id) {}
 	Podcast(const QString& _name):
-		id(0),
 		name(_name)
 		{}
 		
