@@ -4,6 +4,8 @@
 
 #include <core/playable.hpp>
 
+#include "db_constants.hpp"
+
 class Episode;
 class Tag;
 class Playlist;
@@ -14,24 +16,20 @@ public:
 // -- properties
 	long id = 0;
 	
-	QSharedPointer<Episode> episode;
+	db::type::ptr<Episode> episode;
 	int start;
 	int end;
-	QString title;
-	QString artist;
-	QString metadata;
+	db::type::str title;
+	db::type::str artist;
+	db::type::str metadata;
 	
-	QList<QSharedPointer<Tag>> tags_list;
-	QList<QSharedPointer<Playlist>> playlists_list;
+	db::type::ptr_list<Tag> tags_list;
+	db::type::ptr_list<Playlist> playlists_list;
 	
 // -- contructor, virtual destructor
 	Fragment() {}
 	Fragment(const long& _id): id(_id) {}
-	Fragment(const QSharedPointer<Episode>& _episode, int _start, int _end = -1):
-		episode(_episode),
-		start(_start),
-		end(_end<0 ? _start : _end)
-		{}
+	Fragment(const db::type::ptr<Episode>& _episode, int _start, int _end=-1);
 
 	virtual ~Fragment() {}
 	
@@ -43,17 +41,14 @@ public:
 
 // -- playable --
 	virtual void play() override;
-//	virtual QString name() const override;
+//	virtual str name() const override;
 
 private:
 
-	Fragment create_full_fragment(const QSharedPointer<Episode>& _episode);
+//	Fragment create_full_fragment(const ptr<Episode>& _episode);
 	
 };
 
 QX_REGISTER_HPP_QX_SLICEPOD(Fragment, qx::trait::no_base_class_defined, 0);
-
-typedef QSharedPointer<Fragment> fragment_ptr;
-typedef QList<Fragment> fragments_list;
 
 #endif // _FRAGMENT_H_

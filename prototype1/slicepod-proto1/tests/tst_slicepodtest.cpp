@@ -54,23 +54,25 @@ void SlicepodTest::cleanupTestCase()
 
 void SlicepodTest::testCreateEpisode()
 {
+	using namespace db::type;
+
 	const char* POD1_DIR = "../podcast1";
 	const char* PODCAST1_NAME = "Some podcast 1";
 
 	// -- save to database
 	{
-		podcast_ptr podcast(new Podcast(PODCAST1_NAME));
+		ptr<Podcast> podcast(new Podcast(PODCAST1_NAME));
 		QVERIFY2(!qx::dao::save_with_all_relation(podcast).isValid(),
 				 "Error saving podcast");
 
-		directory_ptr directory = scan_dir(POD1_DIR, podcast);
+		ptr<Directory> directory = scan_dir(POD1_DIR, podcast);
 		QVERIFY2(directory, "Null directory pointer");
 	}
 
 
 	// -- verify from database
 	{
-		using namespace db_fields;
+		using namespace db::field;
 
 		QSqlError error;
 

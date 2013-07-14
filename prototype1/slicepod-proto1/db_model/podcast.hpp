@@ -4,6 +4,7 @@
 
 #include "core/library_item.hpp"
 
+#include "db_constants.hpp"
 
 class Episode;
 class Directory;
@@ -14,14 +15,14 @@ public:
 	// -- properties
 	long id = 0;
 	
-	QString name;
-	QString metadata;
-	QList<QSharedPointer<Episode>> episodes_list;
+	db::type::str name;
+	db::type::str metadata;
+	db::type::ptr_list<Episode> episodes_list;
 
 	// -- contructor, virtual destructor
 	Podcast() {}
 	Podcast(long _id): id(_id) {}
-	Podcast(const QString& _name):
+	Podcast(const db::type::str& _name):
 		name(_name)
 		{}
 		
@@ -29,13 +30,10 @@ public:
 	
 // -- LibraryItem
 	
-	virtual QString info() const override;
+	virtual db::type::str info() const override;
 
 };
 
 QX_REGISTER_HPP_QX_SLICEPOD(Podcast, qx::trait::no_base_class_defined, 0);
-
-typedef QSharedPointer<Podcast> podcast_ptr;
-typedef QList<Podcast> podcasts_list;
 
 #endif // _PODCAST_H_

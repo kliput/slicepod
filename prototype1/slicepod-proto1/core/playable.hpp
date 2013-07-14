@@ -14,7 +14,4 @@ public:
 //	virtual QString name() const = 0;
 };
 
-typedef QSharedPointer<Playable> playable_ptr;
-typedef QList<Playable> playables_list;
-
 #endif // _PLAYABLE_H_

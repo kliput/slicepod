@@ -1,7 +1,13 @@
 #ifndef DB_CONSTANTS_HPP
 #define DB_CONSTANTS_HPP
 
-namespace db_fields {
+#include <QString>
+#include <QList>
+#include <QSharedPointer>
+
+namespace db {
+
+namespace field {
 
 // TODO: maybe change all constexpr const char* to const QString?
 
@@ -63,6 +69,18 @@ namespace playlist_fragment_map {
 constexpr const char* TABLE_NAME = "PlaylistFragmentMap";
 constexpr const char* PLAYLIST = "playlist_id";
 constexpr const char* FRAGMENT = "fragment_id";
+}
+
+}
+
+// TODO: namespace doesn't work! - change to struct or something...
+namespace type {
+
+using str = QString;
+template <class T> using lst = QList<T>;
+template <class T> using ptr = QSharedPointer<T>;
+template <class T> using ptr_list = lst<ptr<T>>;
+
 }
 
 }

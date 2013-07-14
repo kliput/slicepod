@@ -1,8 +1,9 @@
 #include "precompiled.hpp"
 
 #include "core/utils.hpp"
-#include "db_model.hpp"
 #include "core/sqlexception.hpp"
+#include "db_model.hpp"
+using namespace db::type;
 
 #include <cstdlib>
 #include <iostream>
@@ -17,14 +18,14 @@
  */
 void db_connect(const char* db_name)
 {
-	qx::QxSqlDatabase* db = qx::QxSqlDatabase::getSingleton();
+	qx::QxSqlDatabase* dbs = qx::QxSqlDatabase::getSingleton();
 
 	// Parameters to connect to database
-	db->setDriverName("QSQLITE");
-	db->setDatabaseName(db_name);
-	db->setHostName("localhost");
-	db->setUserName("root");
-	db->setPassword("");
+	dbs->setDriverName("QSQLITE");
+	dbs->setDatabaseName(db_name);
+	dbs->setHostName("localhost");
+	dbs->setUserName("root");
+	dbs->setPassword("");
 
 	// Only for debug purpose: assert if invalid offset detected fetching a relation
 	qx::QxSqlDatabase::getSingleton()->setVerifyOffsetRelation(true);
@@ -54,7 +55,7 @@ inline void check_error(const QSqlError& error, const char* info = "")
  *	pointer on failure.
  * @throw SQLException on persistence failure
  */
-QSharedPointer<Directory> scan_dir(const char* dir_path,
+db::type::ptr<Directory> scan_dir(const char* dir_path,
 										 QSharedPointer<Podcast> podcast)
 {
 	/* Procedure:
@@ -73,10 +74,10 @@ QSharedPointer<Directory> scan_dir(const char* dir_path,
 
 	if (!qdir.exists()) {
 		qxtLog->error("Directory ", qdir.path(),"DOES NOT exists");
-		return directory_ptr(nullptr);
+		return ptr<Directory>(nullptr);
 	}
 
-	directory_ptr dir_model(new Directory(dir_path));
+	ptr<Directory> dir_model(new Directory(dir_path));
 	check_error(qx::dao::save(dir_model), "saving first directory model");
 
 	// -- scan files --
@@ -117,7 +118,7 @@ QSharedPointer<Directory> scan_dir(const char* dir_path,
 
 		// -- adding episode to database --
 		qxtLog->trace("adding episode: ", title);
-		episode_ptr ep_model(new Episode(fi.fileName(), title,
+		ptr<Episode> ep_model(new Episode(fi.fileName(), title,
 										 dir_model, podcast));
 		dir_model->episodes_list << ep_model;
 	}
@@ -126,7 +127,7 @@ QSharedPointer<Directory> scan_dir(const char* dir_path,
 				"directory model with episodes");
 
 	qxtLog->debug() << "adding start fragments to saved episodes:";
-	for (const episode_ptr& e: dir_model->episodes_list) {
+	for (const ptr<Episode>& e: dir_model->episodes_list) {
 		qxtLog->debug("id: ", (qlonglong) e->id, ", name: ", e->episode_name);
 		add_start_fragment(e);
 	}
@@ -135,12 +136,12 @@ QSharedPointer<Directory> scan_dir(const char* dir_path,
 }
 
 // TODO: check if already exists
-fragment_ptr add_start_fragment(const episode_ptr& episode)
+ptr<Fragment> add_start_fragment(const ptr<Episode> &episode)
 {
-	fragment_ptr fragment(new Fragment(episode, 0));
+	ptr<Fragment> fragment(new Fragment(episode, 0));
 	episode->start_fragment = fragment;
 	check_error(qx::dao::update_with_relation(
-					db_fields::episode::START_FRAGMENT, episode));
+					db::field::episode::START_FRAGMENT, episode));
 	return fragment;
 }
 

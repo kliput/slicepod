@@ -1,15 +1,15 @@
 #include "precompiled.hpp"
-
-#include "db_model.hpp"
 #include <vlc/vlc.h>
 
+#include "db_model.hpp"
+using namespace db::field::fragment;
+
 QX_REGISTER_CPP_QX_SLICEPOD(Fragment)
-using namespace db_fields::fragment;
 
 namespace qx {
 template <> void register_class(QxClass<Fragment>& t)
 {
-	t.id(&Fragment::id, db_fields::ID);
+	t.id(&Fragment::id, db::field::ID);
 	
 	t.relationManyToOne(&Fragment::episode, EPISODE);
 	t.data(&Fragment::start, START);
@@ -19,15 +19,24 @@ template <> void register_class(QxClass<Fragment>& t)
 	t.data(&Fragment::metadata, METADATA);
 	
 	t.relationManyToMany(&Fragment::tags_list, TAGS_LIST,
-						 db_fields::fragment_tag_map::TABLE_NAME,
-						 db_fields::fragment_tag_map::FRAGMENT,
-						 db_fields::fragment_tag_map::TAG);
+						 db::field::fragment_tag_map::TABLE_NAME,
+						 db::field::fragment_tag_map::FRAGMENT,
+						 db::field::fragment_tag_map::TAG);
 
 	t.relationManyToMany(&Fragment::playlists_list, PLAYLISTS_LIST,
-						 db_fields::playlist_fragment_map::TABLE_NAME,
-						 db_fields::playlist_fragment_map::FRAGMENT,
-						 db_fields::playlist_fragment_map::PLAYLIST);
+						 db::field::playlist_fragment_map::TABLE_NAME,
+						 db::field::playlist_fragment_map::FRAGMENT,
+						 db::field::playlist_fragment_map::PLAYLIST);
 }
+}
+
+Fragment::Fragment(const QSharedPointer<Episode> &_episode, int _start,
+				   int _end)
+	:
+			  episode(_episode),
+			  start(_start),
+			  end(_end<0 ? _start : _end)
+{
 }
 
 bool Fragment::is_start_fragment()
@@ -35,13 +44,13 @@ bool Fragment::is_start_fragment()
 	// TODO: optimalize with one fetch
 	if (!this->episode) {
 		Fragment tmp_fragment(this->id);
-		qx::dao::fetch_by_id_with_relation(db_fields::fragment::EPISODE,
+		qx::dao::fetch_by_id_with_relation(db::field::fragment::EPISODE,
 										   tmp_fragment);
 		// complete this' episode field
 		this->episode = tmp_fragment.episode;
 	}
 	if (!this->episode->start_fragment) {
-		qx::dao::fetch_by_id_with_relation(db_fields::episode::START_FRAGMENT,
+		qx::dao::fetch_by_id_with_relation(db::field::episode::START_FRAGMENT,
 										   *this->episode);
 	}
 	// return whether start_fragment in db contains something or null

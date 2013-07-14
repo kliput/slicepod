@@ -20,8 +20,7 @@
 
 #include "precompiled.hpp"
 #include "db_model.hpp"
-
-#include <iostream>
+using namespace db::type;
 
 #include "core/utils.hpp"
 
@@ -55,14 +54,14 @@ int main(int argc, char *argv[])
 	err = qx::dao::create_table<Tag>();
 	err = qx::dao::create_table<Playlist>();
 
-	podcast_ptr icmp_podcast(new Podcast("Irish and Celtic Music Podcast"));
+	ptr<Podcast> icmp_podcast(new Podcast("Irish and Celtic Music Podcast"));
 	qx::dao::save(icmp_podcast);
 
-	directory_ptr icmp_dir = scan_dir("/media/Dane 1/muzyka/podcasty/"
+	ptr<Directory> icmp_dir = scan_dir("/media/Dane 1/muzyka/podcasty/"
 						   "Irish and Celtic Music Podcast", icmp_podcast);
 
-	episode_ptr e1(new Episode(1));
-	fragment_ptr f1(new Fragment(e1, 240, 250));
+	ptr<Episode> e1(new Episode(1));
+	ptr<Fragment> f1(new Fragment(e1, 240, 250));
 	qx::dao::save(f1);
 
 	f1->play();

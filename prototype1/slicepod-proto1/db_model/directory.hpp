@@ -3,6 +3,8 @@
 
 #include "eclipse_ignore.hpp"
 
+#include "db_constants.hpp"
+
 class Episode;
 
 class QX_SLICEPOD_DLL_EXPORT Directory
@@ -11,14 +13,14 @@ public:
 	// -- properties
 	long id;
 	
-	QString path;
-	QString metadata;
-	QList<QSharedPointer<Episode>> episodes_list;
+	db::type::str path;
+	db::type::str metadata;
+	db::type::ptr_list<Episode> episodes_list;
 	
 	// -- contructor, virtual destructor
 	Directory(): id(0) {}
 	Directory(long _id): id(_id) {}
-	Directory(const QString& _path):
+	Directory(const db::type::str& _path):
 		id(0),
 		path(_path)
 		{}
@@ -28,8 +30,5 @@ public:
 };
 
 QX_REGISTER_HPP_QX_SLICEPOD(Directory, qx::trait::no_base_class_defined, 0);
-
-typedef QSharedPointer<Directory> directory_ptr;
-typedef QList<Directory> directories_list;
 
 #endif // _DIRECTORY_H_
