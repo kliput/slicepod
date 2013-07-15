@@ -76,17 +76,28 @@ void SlicepodTest::testCreateEpisode()
 
 		QSqlError error;
 
-		QString relation = (QStringList()
-					  << podcast::EPISODES_LIST
-					  << episode::FRAGMENTS_LIST
-					  << fragment::EPISODE
-					  ).join("->");
+		// TODO: wait for bugfix in QxOrm 1.2.6 beta 3
+//		QStringList relations;
+//		relations << (QStringList()
+//					  << podcast::EPISODES_LIST
+//					  << episode::FRAGMENTS_LIST
+//					  << fragment::EPISODE
+//					  ).join("->");
+
+//		relations << (QStringList()
+//					  << podcast::EPISODES_LIST
+//					  << episode::START_FRAGMENT
+//					  << fragment::EPISODE
+//					  ).join("->");
 
 		QList<QSharedPointer<Podcast>> result_podcasts_list;
 		qx::QxSqlQuery podcast_query;
 		podcast_query.where(podcast::NAME).isEqualTo(QString(PODCAST1_NAME));
-		error = qx::dao::fetch_by_query_with_relation(relation, podcast_query,
-													  result_podcasts_list);
+		// TODO: check and report bug to QxOrm website
+//		error = qx::dao::fetch_by_query_with_relation("*", podcast_query,
+//													  result_podcasts_list);
+		// TODO: "relation" argument should be "relations" variable
+		error = qx::dao::fetch_all_with_relation("*->*->*", result_podcasts_list);
 		QVERIFY2(!error.isValid(),
 			QString("Fetch podcast failed: %1").arg(error.text()).toAscii());
 		QCOMPARE(result_podcasts_list.size(), 1);
@@ -100,6 +111,9 @@ void SlicepodTest::testCreateEpisode()
 			auto fp = ep->fragments_list[0];
 			QCOMPARE(fp->start, 0);
 			QCOMPARE(fp->episode->id, ep->id);
+			QCOMPARE(ep->start_fragment->id, fp->id);
+			QVERIFY2(fp->is_start_fragment(), "this fragment should be "
+					 "start fragment");
 		}
 	}
 }

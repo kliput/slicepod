@@ -23,14 +23,20 @@ CONFIG   -= app_bundle
 
 TEMPLATE = app
 
-unix:!macx: LIBS += -L$$PWD/../../../../../lib/QxOrm-gcc4.8/lib/ -lQxOrm\
+QXORM_PATH = /home/kliput/Programowanie/lib/QxOrm-1.2.4-gcc4.8/
+BOOST_PATH = /usr/
+
+unix:!macx: LIBS += -L$$QXORM_PATH/lib/ -lQxOrm\
 					-lvlc\
 					-ltag\
-					-lboost_serialization
+					-L$$BOOST_PATH/lib/ -lboost_serialization
 
-INCLUDEPATH += $$PWD/../../../../../lib/QxOrm-gcc4.8/include\
+INCLUDEPATH += $$QXORM_PATH/include\
+				$$BOOST_PATH/include\
 				/usr/include
-DEPENDPATH += $$PWD/../../../../../lib/QxOrm-gcc4.8/include
+
+DEPENDPATH += $$QXORM_PATH/include\
+				$$BOOST_PATH/include
 
 SOURCES += tst_slicepodtest.cpp
 DEFINES += SRCDIR=\\\"$$PWD/\\\"

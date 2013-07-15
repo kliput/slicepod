@@ -87,8 +87,8 @@ db::type::ptr<Directory> scan_dir(const char* dir_path,
 	qdir.setNameFilters(filters);
 
 	QFileInfoList files_list = qdir.entryInfoList();
-	for (QFileInfo fi: files_list) {
-		const char* file_name = QFile::encodeName(fi.absoluteFilePath());
+	for (const QFileInfo& fi: files_list) {
+		QString file_name = fi.absoluteFilePath();
 		qxtLog->debug("reading file: ", file_name);
 
 		if (!fi.isFile()) {
@@ -101,7 +101,8 @@ db::type::ptr<Directory> scan_dir(const char* dir_path,
 			continue;
 		}
 
-		TagLib::FileRef f(file_name, false);
+		// TODO: check UTF-8
+		TagLib::FileRef f(file_name.toUtf8(), false);
 
 		if (f.isNull()) {
 			qxtLog->warning("file cannot be read by TagLib: ", file_name);

@@ -18,6 +18,7 @@ greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 TARGET = podslicer
 TEMPLATE = app
 
+QXORM_PATH = /home/kliput/Programowanie/slicepod/lib/QxOrm-1.2.5-gcc4.6/
 
 SOURCES += main.cpp\
 	mainwindow.cpp\
@@ -55,11 +56,11 @@ HEADERS  += mainwindow.h\
 
 FORMS    += mainwindow.ui
 
-unix:!macx: LIBS += -L$$PWD/../../../../lib/QxOrm-gcc4.8/lib/ -lQxOrm\
+unix:!macx: LIBS += -L$$QXORM_PATH/lib/ -lQxOrm\
 					-lvlc\
 					-ltag\
 					-lboost_serialization
 
-INCLUDEPATH += $$PWD/../../../../lib/QxOrm-gcc4.8/include\
+INCLUDEPATH += $$QXORM_PATH/include\
 				/usr/include
-DEPENDPATH += $$PWD/../../../../lib/QxOrm-gcc4.8/include
+DEPENDPATH += $$QXORM_PATH/include
