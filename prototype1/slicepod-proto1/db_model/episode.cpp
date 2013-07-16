@@ -23,7 +23,6 @@ template <> void register_class(QxClass<Episode>& t)
 }
 }
 
-
 Episode::Episode(const QString &_file_name, const QString &_episode_name,
 				 const QSharedPointer<Directory> &_directory,
 				 const QSharedPointer<Podcast> &_podcast)
@@ -33,4 +32,13 @@ Episode::Episode(const QString &_file_name, const QString &_episode_name,
 			  directory(_directory),
 			  podcast(_podcast)
 {
+}
+
+db::type::str Episode::full_path()
+{
+	if (this->directory->path.isNull()) {
+		qx::dao::fetch_by_id_with_relation(DIRECTORY, *this);
+	}
+
+	return QString("%1/%2").arg(this->directory->path).arg(this->file_name);
 }

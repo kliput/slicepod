@@ -34,8 +34,8 @@ public:
 		
 	virtual ~Episode() {}
 
-private:
-//	QSharedPointer<Fragment> create_full_fragment();
+// -- utils
+	db::type::str full_path();
 };
 
 QX_REGISTER_HPP_QX_SLICEPOD(Episode, qx::trait::no_base_class_defined, 0);

@@ -101,7 +101,7 @@ db::type::ptr<Directory> scan_dir(const char* dir_path,
 			continue;
 		}
 
-		// TODO: check UTF-8
+		// TODO: add true support for UTF-8
 		TagLib::FileRef f(file_name.toUtf8(), false);
 
 		if (f.isNull()) {
