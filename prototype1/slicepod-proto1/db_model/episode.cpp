@@ -41,7 +41,8 @@ db::type::str Episode::full_path()
 {
 	// TODO path string buffered in instance
 
-	if (this->directory->path.isNull()) {
+	if (!this->directory ||
+			this->directory->path.isNull()) {
 		qx::dao::fetch_by_id_with_relation(DIRECTORY, *this);
 	}
 

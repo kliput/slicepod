@@ -26,7 +26,7 @@ private Q_SLOTS:
 	void testSavePodcastWithDir();
 	void testReadEpisodes();
 	void testGetEpisodeFullPath();
-//	void testCreateFragments();
+	void testCreateFragments();
 };
 
 const char* SlicepodTest::DB_NAME = "db.sqlite";
@@ -137,45 +137,45 @@ void SlicepodTest::testGetEpisodeFullPath()
 
 
 //// TODO
-//void SlicepodTest::testCreateFragments()
-//{
-//	// get first episode of first podcast
-//	db::type::ptr_list<Podcast> pod_list;
-//	QVERIFY2(!qx::dao::fetch_all_with_relation(db::field::podcast::EPISODES_LIST,
-//								  pod_list).isValid(), "fetch podcasts failed");
-//	auto& episode_p = pod_list[0]->episodes_list[0];
+void SlicepodTest::testCreateFragments()
+{
+	// get first episode of first podcast
+	db::type::ptr_list<Podcast> pod_list;
+	QVERIFY2(!qx::dao::fetch_all_with_relation(db::field::podcast::EPISODES_LIST,
+								  pod_list).isValid(), "fetch podcasts failed");
+	db::type::ptr<Episode> episode_p = pod_list[0]->episodes_list[0];
 
-//	int length = episode_p->audio_length();
+	int length = episode_p->audio_length();
 
-//	{
-//		ptr<Fragment> frag_p(new Fragment);
-//		frag_p->episode = episode_p;
-//		frag_p->start = length/3;
-//		frag_p->end = 2*frag_p->start;
-//		frag_p->artist = str(FRAG1_ARTIST);
+	{
+		ptr<Fragment> frag_p(new Fragment);
+		frag_p->episode = episode_p;
+		frag_p->start = length/3;
+		frag_p->end = 2*frag_p->start;
+		frag_p->artist = str(FRAG1_ARTIST);
 
-//		QVERIFY2(!qx::dao::save_with_all_relation(frag_p).isValid(), "save fragment"
-//				 " failed");
-//	}
+		QVERIFY2(!qx::dao::save_with_all_relation(frag_p).isValid(), "save fragment"
+				 " failed");
+	}
 
-//	{
-//		// fetch new fragments from database
-//		QVERIFY2(!qx::dao::fetch_by_id_with_relation(
-//					 db::field::episode::FRAGMENTS_LIST,
-//					 episode_p
-//					 ).isValid(), "fetch episode with fragments failed");
+	{
+		// fetch new fragments from database
+		QVERIFY2(!qx::dao::fetch_by_id_with_relation(
+					 db::field::episode::FRAGMENTS_LIST,
+					 episode_p
+					 ).isValid(), "fetch episode with fragments failed");
 
-//		const auto& flist = episode_p->fragments_list;
+		const auto& flist = episode_p->fragments_list;
 
-//		QCOMPARE(flist.size(), 2);
+		QCOMPARE(flist.size(), 2);
 
-//		// TODO: fragment filters/general entities filters?
-//		for (const auto& frag: flist) {
+		// TODO: fragment filters/general entities filters?
+		for (const auto& frag: flist) {
 
-//		}
+		}
 
-//	}
-//}
+	}
+}
 
 
 QTEST_APPLESS_MAIN(SlicepodTest)
