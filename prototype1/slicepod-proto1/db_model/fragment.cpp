@@ -54,7 +54,7 @@ bool Fragment::is_start_fragment()
 										   *this->episode);
 	}
 	// return whether start_fragment in db contains something or null
-	return this->episode->start_fragment;
+	return this->episode->start_fragment->id == this->id;
 }
 
 void Fragment::play()

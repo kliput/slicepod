@@ -169,10 +169,16 @@ void SlicepodTest::testCreateFragments()
 
 		QCOMPARE(flist.size(), 2);
 
-		// TODO: fragment filters/general entities filters?
-		for (const auto& frag: flist) {
+		db::type::ptr_list<Fragment> non_start_fragments;
 
+		// TODO: fragment filters/general entities filters?
+		for (const auto& frag_p: flist) {
+			if (!frag_p->is_start_fragment()) {
+				non_start_fragments << frag_p;
+			}
 		}
+
+		QCOMPARE(non_start_fragments.size(), 1);
 
 	}
 }
