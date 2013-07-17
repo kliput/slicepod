@@ -3,6 +3,8 @@
 
 #include "eclipse_ignore.hpp"
 
+#include <taglib/fileref.h>
+
 #include "db_constants.hpp"
 
 class Directory;
@@ -36,6 +38,8 @@ public:
 
 // -- utils
 	db::type::str full_path();
+	TagLib::FileRef file_info();
+	int audio_length();
 };
 
 QX_REGISTER_HPP_QX_SLICEPOD(Episode, qx::trait::no_base_class_defined, 0);

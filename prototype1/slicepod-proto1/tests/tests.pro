@@ -23,7 +23,11 @@ CONFIG   -= app_bundle
 
 TEMPLATE = app
 
-QXORM_PATH = /home/kliput/Programowanie/lib/QxOrm-1.2.4-gcc4.8/
+DEFINES += _QX_SERIALIZE_BINARY_ENABLED
+DEFINES += _QX_SERIALIZE_XML_ENABLED
+DEFINES += _BUILDING_QX_SLICEPOD
+
+QXORM_PATH = /home/kliput/Programowanie/lib/QxOrm-1.2.6.beta3-gcc4.8/
 BOOST_PATH = /usr/
 
 unix:!macx: LIBS += -L$$QXORM_PATH/lib/ -lQxOrm\

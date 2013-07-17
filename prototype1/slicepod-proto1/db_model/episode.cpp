@@ -1,5 +1,8 @@
 #include "precompiled.hpp"
 
+#include <stdexcept>
+#include <taglib/fileref.h>
+
 #include "db_model.hpp"
 using namespace db::field::episode;
 
@@ -36,9 +39,50 @@ Episode::Episode(const QString &_file_name, const QString &_episode_name,
 
 db::type::str Episode::full_path()
 {
+	// TODO path string buffered in instance
+
 	if (this->directory->path.isNull()) {
 		qx::dao::fetch_by_id_with_relation(DIRECTORY, *this);
 	}
 
 	return QString("%1/%2").arg(this->directory->path).arg(this->file_name);
 }
+
+/**
+ * @brief Gets TagLib file informations from episode's file with "average" audio
+ *  properties.
+ * @return TagLib::FileRef object. See brief explaination.
+ */
+TagLib::FileRef Episode::file_info()
+{
+	// TODO store file_info in instance
+
+	QString fpath = this->full_path();
+	// read audio info
+	TagLib::FileRef file_ref(fpath.toUtf8());
+	if (!file_ref.isNull())
+	{
+		return file_ref;
+	} else {
+		// TODO: cannot read file error
+		throw std::runtime_error("TODO cannot read file error");
+		// return ?;
+	}
+}
+
+/**
+ * @brief Episode::audio_length
+ * @return Episode's file audio length in seconds.
+ */
+int Episode::audio_length()
+{
+	auto file_ref = this->file_info();
+	auto audio_p = file_ref.audioProperties();
+	if (audio_p) {
+		return audio_p->length();
+	} else {
+		throw std::runtime_error("TODO cannot read file audio properties");
+		// return -1;
+	}
+}
+

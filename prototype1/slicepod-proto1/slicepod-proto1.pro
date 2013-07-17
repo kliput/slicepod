@@ -18,6 +18,10 @@ greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 TARGET = podslicer
 TEMPLATE = app
 
+DEFINES += _QX_SERIALIZE_BINARY_ENABLED
+DEFINES += _QX_SERIALIZE_XML_ENABLED
+DEFINES += _BUILDING_QX_SLICEPOD
+
 QXORM_PATH = /home/kliput/Programowanie/slicepod/lib/QxOrm-1.2.5-gcc4.6/
 
 SOURCES += main.cpp\
@@ -56,7 +60,7 @@ HEADERS  += mainwindow.h\
 
 FORMS    += mainwindow.ui
 
-unix:!macx: LIBS += -L$$QXORM_PATH/lib/ -lQxOrm\
+LIBS += -L$$QXORM_PATH/lib/ -lQxOrm\
 					-lvlc\
 					-ltag\
 					-lboost_serialization

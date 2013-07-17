@@ -35,7 +35,6 @@ public:
 	
 	/**
 	 * Returns true if it is start fragment of its episode.
-	 * TODO: test!
 	 */
 	bool is_start_fragment();
 

@@ -34,6 +34,9 @@ const char* SlicepodTest::DB_NAME = "db.sqlite";
 const char* POD1_DIR = "../podcast1";
 const char* PODCAST1_NAME = "Some podcast 1";
 
+const char* FRAG1_ARTIST = "Unknown genius";
+
+
 SlicepodTest::SlicepodTest()
 {
 }
@@ -83,28 +86,24 @@ void SlicepodTest::testReadEpisodes()
 
 		QSqlError error;
 
-		// TODO: wait for bugfix in QxOrm 1.2.6 beta 3
-//		QStringList relations;
-//		relations << (QStringList()
-//					  << podcast::EPISODES_LIST
-//					  << episode::FRAGMENTS_LIST
-//					  << fragment::EPISODE
-//					  ).join("->");
+		QStringList relations;
+		relations << (QStringList()
+					  << podcast::EPISODES_LIST
+					  << episode::FRAGMENTS_LIST
+					  << fragment::EPISODE
+					  ).join("->");
 
-//		relations << (QStringList()
-//					  << podcast::EPISODES_LIST
-//					  << episode::START_FRAGMENT
-//					  << fragment::EPISODE
-//					  ).join("->");
+		relations << (QStringList()
+					  << podcast::EPISODES_LIST
+					  << episode::START_FRAGMENT
+					  << fragment::EPISODE
+					  ).join("->");
 
 		QList<QSharedPointer<Podcast>> result_podcasts_list;
 		qx::QxSqlQuery podcast_query;
 		podcast_query.where(podcast::NAME).isEqualTo(QString(PODCAST1_NAME));
-		// TODO: check and report bug to QxOrm website
-//		error = qx::dao::fetch_by_query_with_relation("*", podcast_query,
-//													  result_podcasts_list);
-		// TODO: "relation" argument should be "relations" variable
-		error = qx::dao::fetch_all_with_relation("*->*->*", result_podcasts_list);
+		error = qx::dao::fetch_by_query_with_relation(relations, podcast_query,
+													  result_podcasts_list);
 		QVERIFY2(!error.isValid(),
 			QString("Fetch podcast failed: %1").arg(error.text()).toAscii());
 		QCOMPARE(result_podcasts_list.size(), 1);
@@ -142,14 +141,40 @@ void SlicepodTest::testGetEpisodeFullPath()
 //{
 //	// get first episode of first podcast
 //	db::type::ptr_list<Podcast> pod_list;
-//	qx::dao::fetch_all_with_relation(db::field::podcast::EPISODES_LIST,
-//									 pod_list);
-//	const db::type::ptr<Episode>& episode = pod_list[0]->episodes_list;
+//	QVERIFY2(!qx::dao::fetch_all_with_relation(db::field::podcast::EPISODES_LIST,
+//								  pod_list).isValid(), "fetch podcasts failed");
+//	auto& episode_p = pod_list[0]->episodes_list[0];
 
-//	// get directory information
-//	qx::dao::fetch_by_id_with_relation(db::field::directory, episode);
+//	int length = episode_p->audio_length();
 
+//	{
+//		ptr<Fragment> frag_p(new Fragment);
+//		frag_p->episode = episode_p;
+//		frag_p->start = length/3;
+//		frag_p->end = 2*frag_p->start;
+//		frag_p->artist = str(FRAG1_ARTIST);
 
+//		QVERIFY2(!qx::dao::save_with_all_relation(frag_p).isValid(), "save fragment"
+//				 " failed");
+//	}
+
+//	{
+//		// fetch new fragments from database
+//		QVERIFY2(!qx::dao::fetch_by_id_with_relation(
+//					 db::field::episode::FRAGMENTS_LIST,
+//					 episode_p
+//					 ).isValid(), "fetch episode with fragments failed");
+
+//		const auto& flist = episode_p->fragments_list;
+
+//		QCOMPARE(flist.size(), 2);
+
+//		// TODO: fragment filters/general entities filters?
+//		for (const auto& frag: flist) {
+
+//		}
+
+//	}
 //}
 
 
