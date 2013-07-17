@@ -27,6 +27,7 @@ private Q_SLOTS:
 	void testReadEpisodes();
 	void testGetEpisodeFullPath();
 	void testCreateFragments();
+	void testTagsCreateAttach();
 };
 
 const char* SlicepodTest::DB_NAME = "db.sqlite";
@@ -34,8 +35,12 @@ const char* SlicepodTest::DB_NAME = "db.sqlite";
 const char* POD1_DIR = "../podcast1";
 const char* PODCAST1_NAME = "Some podcast 1";
 
+const char* FRAG1_TITLE = "Chorus";
 const char* FRAG1_ARTIST = "Unknown genius";
 
+const char* TAG_GUITARS = "guitars";
+const char* TAG_FAST = "fast";
+const char* TAG_VOCALS = "vocals";
 
 SlicepodTest::SlicepodTest()
 {
@@ -136,7 +141,6 @@ void SlicepodTest::testGetEpisodeFullPath()
 }
 
 
-//// TODO
 void SlicepodTest::testCreateFragments()
 {
 	// get first episode of first podcast
@@ -152,6 +156,7 @@ void SlicepodTest::testCreateFragments()
 		frag_p->episode = episode_p;
 		frag_p->start = length/3;
 		frag_p->end = 2*frag_p->start;
+		frag_p->title = str(FRAG1_TITLE);
 		frag_p->artist = str(FRAG1_ARTIST);
 
 		QVERIFY2(!qx::dao::save_with_all_relation(frag_p).isValid(), "save fragment"
@@ -181,6 +186,67 @@ void SlicepodTest::testCreateFragments()
 		QCOMPARE(non_start_fragments.size(), 1);
 
 	}
+}
+
+void SlicepodTest::testTagsCreateAttach()
+{
+	{
+		ptr<Tag> tag_g(new Tag(TAG_GUITARS));
+		ptr<Tag> tag_f(new Tag(TAG_FAST));
+		ptr<Tag> tag_v(new Tag(TAG_VOCALS));
+
+		QVERIFY(!qx::dao::save(ptr_list<Tag>() << tag_g << tag_f << tag_v)
+				.isValid());
+	}
+
+	long FRAG_ID;
+
+	{
+		ptr_list<Tag> tags;
+
+		QVERIFY(!qx::dao::fetch_all(tags).isValid());
+
+		QCOMPARE(tags.size(), 3);
+
+		ptr_list<Fragment> fragments;
+		qx::QxSqlQuery fragment_query;
+		fragment_query.where(db::field::fragment::TITLE).isEqualTo(FRAG1_TITLE)
+				.and_(db::field::fragment::ARTIST).isEqualTo(FRAG1_ARTIST);
+
+		QVERIFY(!qx::dao::fetch_by_query_with_relation(
+					db::field::fragment::TAGS_LIST,	fragment_query, fragments
+					).isValid());
+
+		QCOMPARE(fragments.size(), 1);
+		ptr<Fragment> frag_p = fragments[0];
+
+		FRAG_ID = frag_p->id;
+
+		QCOMPARE(frag_p->tags_list.size(), 0);
+		frag_p->tags_list << tags;
+		QCOMPARE(frag_p->tags_list.size(), 3);
+
+		QVERIFY(!
+			qx::dao::save_with_relation(db::field::fragment::TAGS_LIST, frag_p)
+				.isValid());
+	}
+
+	{
+		ptr_list<Tag> tags;
+
+		QVERIFY(!
+		  qx::dao::fetch_all_with_relation(db::field::tag::FRAGMENTS_LIST, tags)
+				.isValid());
+
+		QCOMPARE(tags.size(), 3);
+
+		for (auto& tag: tags) {
+			QCOMPARE(tag->fragments_list.size(), 1);
+			const auto& tag_frag = tag->fragments_list[0];
+			QCOMPARE(tag_frag->id, FRAG_ID);
+		}
+	}
+
 }
 
 
