@@ -1,11 +1,12 @@
-#include <QApplication>
+#include "precompiled.hpp"
+
 #include <QtCore>
-#include <QtGui>
 #include <QtTest>
 
 #include <QxtLogger>
+#include <taglib/taglib.h>
+#include <taglib/fileref.h>
 
-#include "precompiled.hpp"
 #include "db_model.hpp"
 using namespace db::type;
 
@@ -22,12 +23,14 @@ public:
 	
 private Q_SLOTS:
 	void initTestCase();
-	void cleanupTestCase();
+
 	void testSavePodcastWithDir();
 	void testReadEpisodes();
 	void testGetEpisodeFullPath();
 	void testCreateFragments();
 	void testTagsCreateAttach();
+
+	void cleanupTestCase();
 };
 
 const char* SlicepodTest::DB_NAME = "db.sqlite";
@@ -48,7 +51,6 @@ SlicepodTest::SlicepodTest()
 
 void SlicepodTest::initTestCase()
 {
-	QSqlError err;
 	qxtLog->enableAllLogLevels();
 
 	qxtLog->info("INIT ----------------------");
@@ -57,12 +59,7 @@ void SlicepodTest::initTestCase()
 	QFile::remove(SlicepodTest::DB_NAME);
 	db_connect(SlicepodTest::DB_NAME);
 	// -- create all tables in database --
-	err = qx::dao::create_table<Episode>();
-	err = qx::dao::create_table<Directory>();
-	err = qx::dao::create_table<Podcast>();
-	err = qx::dao::create_table<Fragment>();
-	err = qx::dao::create_table<Tag>();
-	err = qx::dao::create_table<Playlist>();
+	db_create_tables();
 }
 
 void SlicepodTest::cleanupTestCase()

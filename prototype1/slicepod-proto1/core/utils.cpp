@@ -12,11 +12,13 @@ using namespace db::type;
 
 #include <qxt/QxtCore/QxtLogger>
 
+// -- DATABASE CORE SECTION --
+
 /**
  * @brief Creates global connection to SQLite database with given path.
  * @param db_name SQLite3 database file path
  */
-void db_connect(const char* db_name)
+void db_connect(const QString& db_name)
 {
 	qx::QxSqlDatabase* dbs = qx::QxSqlDatabase::getSingleton();
 
@@ -32,38 +34,61 @@ void db_connect(const char* db_name)
 }
 
 /**
+ * @brief db_check_schema - checks if schema of connected database is valid.
+ * @return true if schema is valid, false otherwise
+ */
+bool db_check_schema()
+{
+	// TODO: implement
+	return false;
+}
+
+void db_create_tables()
+{
+	// -- create all tables in database --
+	// if there are any SQL errors - continue
+	qx::dao::create_table<Episode>();
+	qx::dao::create_table<Directory>();
+	qx::dao::create_table<Podcast>();
+	qx::dao::create_table<Fragment>();
+	qx::dao::create_table<Tag>();
+	qx::dao::create_table<Playlist>();
+}
+
+/**
  * @brief Checks if SQL error is present. If it is - throws SQLException
  *	with QSqlError object. Otherwise does nothing.
  * @param error QSqlError object to check if it contains error.
  * @param info QString with information about circumstances in which error
  *	occurs
  */
-inline void check_error(const QSqlError& error, const char* info = "")
+inline void check_error(const QSqlError& error, const char* info)
 {
 	if (error.isValid()) {
 		throw SQLException(error, info);
 	}
 }
 
+// -- MODEL FUNCTIONS SECTION --
+
 /**
- * @brief Scans directory with given path for music files to create episode
- *  objects. Creates and automatically persists one Directory object and
- *	Episodes and associated start Fragments for each valid music file.
- * @param dir_path
- * @param podcast
- * @return Smart pointer to persisted Directory for given path or null smart
- *	pointer on failure.
- * @throw SQLException on persistence failure
+ * @brief scan_dir Creates Directory entity in database and scans directory
+ *  for supported audio files. Creates Episode for every readable audio file
+ *  and start Fragment for it.
+ * @param dir_path Path to directory on disk for scanning.
+ * @param podcast If it's null smart pointer - associates (or creates if needed)
+ *  Podcast entity with album name of file. If it's good smart pointer -
+ *  assosciates every Episode with this Podcast.
+ * @return Smart pointer for Directory entity associated with directory path.
  */
-db::type::ptr<Directory> scan_dir(const char* dir_path,
-										 QSharedPointer<Podcast> podcast)
+Directory::ptr scan_dir(const char* dir_path, Podcast::ptr podcast)
 {
 	/* Procedure:
 	 * - check path and create directory entity
 	 * - scan directory and create episodes entities:
-	 *  - filename <- file name
+	 *  - filename <- file name (without directory path)
 	 *  - episode_name <- mp3 tag title
-	 *  - podcast_ptr <- try to compare with album name (TODO - other fun.)
+	 *  - podcast_ptr <- try to create for album name or associate
 	 *  - compare_data <- TODO
 	 *  - metadata <- TODO
 	 */
@@ -74,10 +99,10 @@ db::type::ptr<Directory> scan_dir(const char* dir_path,
 
 	if (!qdir.exists()) {
 		qxtLog->error("Directory ", qdir.path(),"DOES NOT exists");
-		return ptr<Directory>(nullptr);
+		return Directory::ptr(nullptr);
 	}
 
-	ptr<Directory> dir_model(new Directory(dir_path));
+	Directory::ptr dir_model(new Directory(dir_path));
 	check_error(qx::dao::save(dir_model), "saving first directory model");
 
 	// -- scan files --
@@ -88,38 +113,58 @@ db::type::ptr<Directory> scan_dir(const char* dir_path,
 
 	QFileInfoList files_list = qdir.entryInfoList();
 	for (const QFileInfo& fi: files_list) {
-		QString file_name = fi.absoluteFilePath();
-		qxtLog->debug("reading file: ", file_name);
+		const auto file_path = fi.absoluteFilePath().toUtf8();
+		qxtLog->debug() << "reading file: " << file_path;
 
 		if (!fi.isFile()) {
-			qxtLog->debug("not a file: ", file_name);
+			qxtLog->debug() << "not a file: " << file_path;
 			continue;
 		}
 
 		if (!fi.isReadable()) {
-			qxtLog->info("file not readable: ", file_name);
+			qxtLog->warning() << "file not readable: " << file_path;
 			continue;
 		}
 
-		// TODO: add true support for UTF-8
-		TagLib::FileRef f(file_name.toUtf8(), false);
+		// TODO: test UTF-8
+		TagLib::FileRef f(file_path, false);
 
 		if (f.isNull()) {
-			qxtLog->warning("file cannot be read by TagLib: ", file_name);
-			continue;
+			qxtLog->warning() << "file cannot be read by TagLib: " << file_path;
+			continue; // skip file
 		}
 
 		if (!f.tag()) {
-			qxtLog->info("file tag cannot be read: ", file_name);
-			continue;
+			qxtLog->info() << "file tag cannot be read: " << file_path;
+			continue; // skip file
 		}
 
-		QString title = f.tag()->title().toCString();
+		QString title = QString::fromUtf8(f.tag()->title().toCString(true));
 		if (title == "") title = fi.fileName();
+
+		// -- if user not specified Podcast, try to get it from tags --
+		if (podcast.isNull()) {
+
+			QString album = QString::fromUtf8(f.tag()->album().toCString(true));
+
+			qx::QxSqlQuery pod_query;
+			// TODO: ignore case, etc.
+			pod_query.where(db::field::podcast::NAME).isEqualTo(album);
+			Podcast::ptr_list podcasts_list;
+			check_error(qx::dao::fetch_by_query(pod_query, podcasts_list));
+
+			if (podcasts_list.size() > 0) {
+				// TODO behaviour on size > 1
+				podcast = podcasts_list[0];
+			} else {
+				podcast = Podcast::ptr(new Podcast(album));
+				check_error(qx::dao::save(podcast));
+			}
+		}
 
 		// -- adding episode to database --
 		qxtLog->trace("adding episode: ", title);
-		ptr<Episode> ep_model(new Episode(fi.fileName(), title,
+		Episode::ptr ep_model(new Episode(fi.fileName(), title,
 										 dir_model, podcast));
 		dir_model->episodes_list << ep_model;
 	}
@@ -128,7 +173,7 @@ db::type::ptr<Directory> scan_dir(const char* dir_path,
 				"directory model with episodes");
 
 	qxtLog->debug() << "adding start fragments to saved episodes:";
-	for (const ptr<Episode>& e: dir_model->episodes_list) {
+	for (const Episode::ptr& e: dir_model->episodes_list) {
 		qxtLog->debug("id: ", (qlonglong) e->id, ", name: ", e->episode_name);
 		add_start_fragment(e);
 	}
@@ -136,10 +181,11 @@ db::type::ptr<Directory> scan_dir(const char* dir_path,
 	return dir_model;
 }
 
+
 // TODO: check if already exists
-ptr<Fragment> add_start_fragment(const ptr<Episode> &episode)
+Fragment::ptr add_start_fragment(const Episode::ptr &episode)
 {
-	ptr<Fragment> fragment(new Fragment(episode, 0));
+	Fragment::ptr fragment(new Fragment(episode, 0));
 	episode->start_fragment = fragment;
 	check_error(qx::dao::update_with_relation(
 					db::field::episode::START_FRAGMENT, episode));

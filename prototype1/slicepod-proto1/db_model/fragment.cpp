@@ -30,7 +30,7 @@ template <> void register_class(QxClass<Fragment>& t)
 }
 }
 
-Fragment::Fragment(const QSharedPointer<Episode> &_episode, int _start,
+Fragment::Fragment(const Episode::ptr &_episode, int _start,
 				   int _end)
 	:
 			  episode(_episode),
@@ -110,6 +110,3 @@ void Fragment::play()
 	libvlc_release(instance);
 }
 
-//Fragment Fragment::create_full_fragment(const QSharedPointer<Episode> &_episode)
-//{
-//}

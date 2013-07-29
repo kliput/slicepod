@@ -1,11 +1,12 @@
 #ifndef DB_CONSTANTS_HPP
 #define DB_CONSTANTS_HPP
+#include "../precompiled.hpp"
 
-#include <QString>
-#include <QList>
-#include <QSharedPointer>
+#include "entitytype.hpp"
 
 namespace db {
+
+constexpr const char* DB_PATH = "db.sqlite";
 
 namespace field {
 
@@ -73,13 +74,13 @@ constexpr const char* FRAGMENT = "fragment_id";
 
 }
 
-// TODO: namespace doesn't work! - change to struct or something...
+// functionality moved to EntityType<T>
 namespace type {
 
-using str = QString;
-template <class T> using lst = QList<T>;
-template <class T> using ptr = QSharedPointer<T>;
-template <class T> using ptr_list = lst<ptr<T>>;
+typedef EntityType<void>::str str;
+//template <class T> using lst = QList<T>;
+//template <class T> using ptr = QSharedPointer<T>; //qx::dao::T::ptr;
+//template <class T> using ptr_list = lst<T::ptr>;
 
 }
 

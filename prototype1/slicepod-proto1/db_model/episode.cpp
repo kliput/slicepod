@@ -27,8 +27,8 @@ template <> void register_class(QxClass<Episode>& t)
 }
 
 Episode::Episode(const QString &_file_name, const QString &_episode_name,
-				 const QSharedPointer<Directory> &_directory,
-				 const QSharedPointer<Podcast> &_podcast)
+				 const Directory::ptr &_directory,
+				 const Podcast::ptr &_podcast)
 	:
 			  file_name(_file_name),
 			  episode_name(_episode_name),

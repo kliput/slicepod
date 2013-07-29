@@ -3,24 +3,25 @@
 
 #include "eclipse_ignore.hpp"
 
+#include "entitytype.hpp"
 #include "db_constants.hpp"
 
 class Episode;
 
-class QX_SLICEPOD_DLL_EXPORT Directory
+class QX_SLICEPOD_DLL_EXPORT Directory : public EntityType<Directory>
 {
 public:
 	// -- properties
 	long id;
 	
-	db::type::str path;
-	db::type::str metadata;
-	db::type::ptr_list<Episode> episodes_list;
+	str path;
+	str metadata;
+	EntityType<Episode>::ptr_list episodes_list;
 	
 	// -- contructor, virtual destructor
 	Directory(): id(0) {}
 	Directory(long _id): id(_id) {}
-	Directory(const db::type::str& _path):
+	Directory(const str& _path):
 		id(0),
 		path(_path)
 		{}
@@ -29,6 +30,6 @@ public:
 
 };
 
-QX_REGISTER_HPP_QX_SLICEPOD(Directory, qx::trait::no_base_class_defined, 0);
+QX_REGISTER_HPP_QX_SLICEPOD(Directory, qx::trait::no_base_class_defined, 0)
 
 #endif // _DIRECTORY_H_

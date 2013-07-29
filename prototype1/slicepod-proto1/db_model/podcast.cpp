@@ -18,11 +18,3 @@ template <> void register_class(QxClass<Podcast>& t)
    
 }
 }
-
-// -- LibraryItem
-
-db::type::str Podcast::info() const
-{
-	return name;
-}
-
