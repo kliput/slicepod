@@ -18,12 +18,12 @@ template <> void register_class(QxClass<Fragment>& t)
 	t.data(&Fragment::artist, ARTIST);
 	t.data(&Fragment::metadata, METADATA);
 	
-	t.relationManyToMany(&Fragment::tags_list, TAGS_LIST,
+	t.relationManyToMany(&Fragment::tagsList, TAGS_LIST,
 						 db::field::fragment_tag_map::TABLE_NAME,
 						 db::field::fragment_tag_map::FRAGMENT,
 						 db::field::fragment_tag_map::TAG);
 
-	t.relationManyToMany(&Fragment::playlists_list, PLAYLISTS_LIST,
+	t.relationManyToMany(&Fragment::playlistsList, PLAYLISTS_LIST,
 						 db::field::playlist_fragment_map::TABLE_NAME,
 						 db::field::playlist_fragment_map::FRAGMENT,
 						 db::field::playlist_fragment_map::PLAYLIST);
@@ -39,7 +39,7 @@ Fragment::Fragment(const Episode::ptr &_episode, int _start,
 {
 }
 
-bool Fragment::is_start_fragment()
+bool Fragment::isStartFragment()
 {
 	// TODO: optimalize with one fetch
 	if (!this->episode) {
@@ -49,12 +49,12 @@ bool Fragment::is_start_fragment()
 		// complete this' episode field
 		this->episode = tmp_fragment.episode;
 	}
-	if (!this->episode->start_fragment) {
+	if (!this->episode->startFragment) {
 		qx::dao::fetch_by_id_with_relation(db::field::episode::START_FRAGMENT,
 										   *this->episode);
 	}
 	// return whether start_fragment in db contains something or null
-	return this->episode->start_fragment->id == this->id;
+	return this->episode->startFragment->id == this->id;
 }
 
 void Fragment::play()
@@ -65,12 +65,12 @@ void Fragment::play()
 
 	// -- load fragment data --
 	qx::dao::fetch_by_id_with_relation("episode_id->directory_id", *this);
-	qDebug() << "=== fname " << this->episode->file_name;
+	qDebug() << "=== fname " << this->episode->fileName;
 	qDebug() << "=== dir_path " << this->episode->directory->path;
 	
 	QString q_path = QString("%1/%2")
 		.arg(this->episode->directory->path)
-		.arg(this->episode->file_name);
+		.arg(this->episode->fileName);
 		
 	qDebug() << "=== full " << q_path;
 	

@@ -14,14 +14,14 @@ template <> void register_class(QxClass<Episode>& t)
 	t.id(&Episode::id, db::field::ID);
 	
 	t.relationManyToOne(&Episode::directory, DIRECTORY);
-	t.data(&Episode::file_name, FILE_NAME);
-	t.data(&Episode::episode_name, EPISODE_NAME);
+	t.data(&Episode::fileName, FILE_NAME);
+	t.data(&Episode::episodeName, EPISODE_NAME);
 	t.relationManyToOne(&Episode::podcast, PODCAST);
-	t.relationOneToOne(&Episode::start_fragment, START_FRAGMENT);
+	t.relationOneToOne(&Episode::startFragment, START_FRAGMENT);
 	t.data(&Episode::compare_data, COMPARE_DATA);
 	t.data(&Episode::metadata, METADATA);
 	
-	t.relationOneToMany(&Episode::fragments_list, FRAGMENTS_LIST,
+	t.relationOneToMany(&Episode::fragmentsList, FRAGMENTS_LIST,
 						db::field::fragment::EPISODE);
 }
 }
@@ -30,14 +30,14 @@ Episode::Episode(const QString &_file_name, const QString &_episode_name,
 				 const Directory::ptr &_directory,
 				 const Podcast::ptr &_podcast)
 	:
-			  file_name(_file_name),
-			  episode_name(_episode_name),
+			  fileName(_file_name),
+			  episodeName(_episode_name),
 			  directory(_directory),
 			  podcast(_podcast)
 {
 }
 
-db::type::str Episode::full_path()
+db::type::str Episode::fullPath()
 {
 	// TODO path string buffered in instance
 
@@ -46,7 +46,7 @@ db::type::str Episode::full_path()
 		qx::dao::fetch_by_id_with_relation(DIRECTORY, *this);
 	}
 
-	return QString("%1/%2").arg(this->directory->path).arg(this->file_name);
+	return QString("%1/%2").arg(this->directory->path).arg(this->fileName);
 }
 
 /**
@@ -54,11 +54,11 @@ db::type::str Episode::full_path()
  *  properties.
  * @return TagLib::FileRef object. See brief explaination.
  */
-TagLib::FileRef Episode::file_info()
+TagLib::FileRef Episode::fileInfo()
 {
 	// TODO store file_info in instance
 
-	QString fpath = this->full_path();
+	QString fpath = this->fullPath();
 	// read audio info
 	TagLib::FileRef file_ref(fpath.toUtf8());
 	if (!file_ref.isNull())
@@ -75,9 +75,9 @@ TagLib::FileRef Episode::file_info()
  * @brief Episode::audio_length
  * @return Episode's file audio length in seconds.
  */
-int Episode::audio_length()
+int Episode::audioLength()
 {
-	auto file_ref = this->file_info();
+	auto file_ref = this->fileInfo();
 	auto audio_p = file_ref.audioProperties();
 	if (audio_p) {
 		return audio_p->length();

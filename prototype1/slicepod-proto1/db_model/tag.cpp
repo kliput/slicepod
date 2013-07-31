@@ -13,7 +13,7 @@ template <> void register_class(QxClass<Tag>& t)
 	t.data(&Tag::name, NAME);
 	t.data(&Tag::metadata, METADATA);
 
-	t.relationManyToMany(&Tag::fragments_list, FRAGMENTS_LIST,
+	t.relationManyToMany(&Tag::fragmentsList, FRAGMENTS_LIST,
 						 db::field::fragment_tag_map::TABLE_NAME,
 						 db::field::fragment_tag_map::TAG,
 						 db::field::fragment_tag_map::FRAGMENT);

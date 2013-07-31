@@ -29,7 +29,7 @@ LibraryItem::LibraryItem(const Fragment::ptr &fragment)
 										   db::field::episode::PODCAST);
 	}
 
-	if (fragment->tags_list.isEmpty()) {
+	if (fragment->tagsList.isEmpty()) {
 		relations << db::field::fragment::TAGS_LIST;
 	}
 
@@ -46,7 +46,7 @@ QString LibraryItem::podcastName() const
 
 QString LibraryItem::episodeName() const
 {
-	return fragmentPtr_->episode->episode_name;
+	return fragmentPtr_->episode->episodeName;
 }
 
 QString LibraryItem::fragmentTitle() const
@@ -67,7 +67,7 @@ int LibraryItem::fragmentStart() const
 QStringList LibraryItem::fragmentTagsList() const
 {
 	QStringList slist;
-	for (Tag::ptr t: fragmentPtr_->tags_list) {
+	for (Tag::ptr t: fragmentPtr_->tagsList) {
 		slist << t->name;
 	}
 	return slist;

@@ -22,8 +22,8 @@ public:
 	str artist;
 	str metadata;
 	
-	EntityType<Tag>::ptr_list tags_list;
-	EntityType<Playlist>::ptr_list playlists_list;
+	EntityType<Tag>::ptr_list tagsList;
+	EntityType<Playlist>::ptr_list playlistsList;
 	
 // -- contructor, virtual destructor
 	Fragment() {}
@@ -35,7 +35,7 @@ public:
 	/**
 	 * Returns true if it is start fragment of its episode.
 	 */
-	bool is_start_fragment();
+	bool isStartFragment();
 
 // -- play --
 	void play();

@@ -166,15 +166,15 @@ Directory::ptr scan_dir(const char* dir_path, Podcast::ptr podcast)
 		qxtLog->trace("adding episode: ", title);
 		Episode::ptr ep_model(new Episode(fi.fileName(), title,
 										 dir_model, podcast));
-		dir_model->episodes_list << ep_model;
+		dir_model->episodesList << ep_model;
 	}
 
 	check_error(qx::dao::update_with_all_relation(dir_model), "updating "
 				"directory model with episodes");
 
 	qxtLog->debug() << "adding start fragments to saved episodes:";
-	for (const Episode::ptr& e: dir_model->episodes_list) {
-		qxtLog->debug("id: ", (qlonglong) e->id, ", name: ", e->episode_name);
+	for (const Episode::ptr& e: dir_model->episodesList) {
+		qxtLog->debug("id: ", (qlonglong) e->id, ", name: ", e->episodeName);
 		add_start_fragment(e);
 	}
 
@@ -186,10 +186,10 @@ Directory::ptr scan_dir(const char* dir_path, Podcast::ptr podcast)
 Fragment::ptr add_start_fragment(const Episode::ptr &episode)
 {
 	// WARNING: it's only check for fetched start fragment
-	if (episode->start_fragment.isNull()) {
+	if (episode->startFragment.isNull()) {
 		Fragment::ptr fragment(new Fragment(episode, 0));
-		episode->start_fragment = fragment;
-		episode->fragments_list << fragment;
+		episode->startFragment = fragment;
+		episode->fragmentsList << fragment;
 		// TODO: relations should be static
 		check_error(qx::dao::update_with_relation(
 						QStringList()
@@ -198,7 +198,7 @@ Fragment::ptr add_start_fragment(const Episode::ptr &episode)
 						, episode));
 		return fragment;
 	} else {
-		return episode->start_fragment;
+		return episode->startFragment;
 	}
 }
 

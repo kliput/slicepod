@@ -13,7 +13,7 @@ template <> void register_class(QxClass<Playlist>& t)
 	t.data(&Playlist::name, NAME);
 	t.data(&Playlist::metadata, METADATA);
 
-	t.relationManyToMany(&Playlist::fragments_list, FRAGMENTS_LIST,
+	t.relationManyToMany(&Playlist::fragmentsList, FRAGMENTS_LIST,
 						db::field::playlist_fragment_map::TABLE_NAME,
 						db::field::playlist_fragment_map::PLAYLIST,
 						db::field::playlist_fragment_map::FRAGMENT);

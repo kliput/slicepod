@@ -13,7 +13,7 @@ template <> void register_class(QxClass<Directory>& t)
 	t.data(&Directory::path, PATH);
 	t.data(&Directory::metadata, METADATA);
 
-	t.relationOneToMany(&Directory::episodes_list, EPISODES_LIST,
+	t.relationOneToMany(&Directory::episodesList, EPISODES_LIST,
 						db::field::episode::DIRECTORY);
 
 }

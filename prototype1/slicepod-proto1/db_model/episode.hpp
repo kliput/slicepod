@@ -18,15 +18,15 @@ public:
 // -- properties
 	long id = 0;
 	
-	str file_name;
-	str episode_name;
+	str fileName;
+	str episodeName;
 	EntityType<Directory>::ptr directory;
 	EntityType<Podcast>::ptr podcast;
-	EntityType<Fragment>::ptr start_fragment;
+	EntityType<Fragment>::ptr startFragment;
 	str compare_data;
 	str metadata;
 	
-	EntityType<Fragment>::ptr_list fragments_list;
+	EntityType<Fragment>::ptr_list fragmentsList;
 	
 // -- contructor, virtual destructor
 	Episode() {}
@@ -38,9 +38,9 @@ public:
 	virtual ~Episode() {}
 
 // -- utils
-	str full_path();
-	TagLib::FileRef file_info();
-	int audio_length();
+	str fullPath();
+	TagLib::FileRef fileInfo();
+	int audioLength();
 };
 
 QX_REGISTER_HPP_QX_SLICEPOD(Episode, qx::trait::no_base_class_defined, 0)

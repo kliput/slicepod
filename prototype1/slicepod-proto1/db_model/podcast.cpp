@@ -13,7 +13,7 @@ template <> void register_class(QxClass<Podcast>& t)
    t.data(&Podcast::name, NAME);
    t.data(&Podcast::metadata, METADATA);
    
-   t.relationOneToMany(&Podcast::episodes_list, EPISODES_LIST,
+   t.relationOneToMany(&Podcast::episodesList, EPISODES_LIST,
 					   db::field::episode::PODCAST);
    
 }

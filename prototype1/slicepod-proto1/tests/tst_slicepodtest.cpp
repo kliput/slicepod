@@ -70,11 +70,11 @@ void SlicepodTest::testSavePodcastWithDir()
 {
 	// -- save to database
 
-	ptr<Podcast> podcast(new Podcast(PODCAST1_NAME));
+	Podcast::ptr podcast(new Podcast(PODCAST1_NAME));
 	QVERIFY2(!qx::dao::save_with_all_relation(podcast).isValid(),
 			 "Error saving podcast");
 
-	ptr<Directory> directory = scan_dir(POD1_DIR, podcast);
+	Directory::ptr directory = scan_dir(POD1_DIR, podcast);
 	QVERIFY2(directory, "Null directory pointer");
 }
 
@@ -111,15 +111,15 @@ void SlicepodTest::testReadEpisodes()
 		QCOMPARE(result_podcasts_list.size(), 1);
 		const QSharedPointer<Podcast>& p = result_podcasts_list[0];
 		QCOMPARE(p->name, QString(PODCAST1_NAME));
-		QCOMPARE(p->episodes_list.size(), 4);
+		QCOMPARE(p->episodesList.size(), 4);
 
-		for (auto ep: p->episodes_list) {
-			QCOMPARE(ep->fragments_list.size(), 1);
-			auto fp = ep->fragments_list[0];
+		for (auto ep: p->episodesList) {
+			QCOMPARE(ep->fragmentsList.size(), 1);
+			auto fp = ep->fragmentsList[0];
 			QCOMPARE(fp->start, 0);
 			QCOMPARE(fp->episode->id, ep->id);
-			QCOMPARE(ep->start_fragment->id, fp->id);
-			QVERIFY2(fp->is_start_fragment(), "this fragment should be "
+			QCOMPARE(ep->startFragment->id, fp->id);
+			QVERIFY2(fp->isStartFragment(), "this fragment should be "
 					 "start fragment");
 		}
 	}
@@ -127,11 +127,11 @@ void SlicepodTest::testReadEpisodes()
 
 void SlicepodTest::testGetEpisodeFullPath()
 {
-	db::type::ptr_list<Episode> ep_list;
+	Episode::ptr_list ep_list;
 	qx::dao::fetch_all(ep_list);
 
 	for (auto ep: ep_list) {
-		QString fpath = ep->full_path();
+		QString fpath = ep->fullPath();
 		QVERIFY2(QFile(fpath).exists(), QString("file doesn't exists: %1")
 				 .arg(fpath).toAscii());
 	}
@@ -141,15 +141,15 @@ void SlicepodTest::testGetEpisodeFullPath()
 void SlicepodTest::testCreateFragments()
 {
 	// get first episode of first podcast
-	db::type::ptr_list<Podcast> pod_list;
+	Podcast::ptr_list pod_list;
 	QVERIFY2(!qx::dao::fetch_all_with_relation(db::field::podcast::EPISODES_LIST,
 								  pod_list).isValid(), "fetch podcasts failed");
-	db::type::ptr<Episode> episode_p = pod_list[0]->episodes_list[0];
+	Episode::ptr episode_p = pod_list[0]->episodesList[0];
 
-	int length = episode_p->audio_length();
+	int length = episode_p->audioLength();
 
 	{
-		ptr<Fragment> frag_p(new Fragment);
+		Fragment::ptr frag_p(new Fragment);
 		frag_p->episode = episode_p;
 		frag_p->start = length/3;
 		frag_p->end = 2*frag_p->start;
@@ -167,15 +167,15 @@ void SlicepodTest::testCreateFragments()
 					 episode_p
 					 ).isValid(), "fetch episode with fragments failed");
 
-		const auto& flist = episode_p->fragments_list;
+		const auto& flist = episode_p->fragmentsList;
 
 		QCOMPARE(flist.size(), 2);
 
-		db::type::ptr_list<Fragment> non_start_fragments;
+		Fragment::ptr_list non_start_fragments;
 
 		// TODO: fragment filters/general entities filters?
 		for (const auto& frag_p: flist) {
-			if (!frag_p->is_start_fragment()) {
+			if (!frag_p->isStartFragment()) {
 				non_start_fragments << frag_p;
 			}
 		}
@@ -188,24 +188,24 @@ void SlicepodTest::testCreateFragments()
 void SlicepodTest::testTagsCreateAttach()
 {
 	{
-		ptr<Tag> tag_g(new Tag(TAG_GUITARS));
-		ptr<Tag> tag_f(new Tag(TAG_FAST));
-		ptr<Tag> tag_v(new Tag(TAG_VOCALS));
+		Tag::ptr tag_g(new Tag(TAG_GUITARS));
+		Tag::ptr tag_f(new Tag(TAG_FAST));
+		Tag::ptr tag_v(new Tag(TAG_VOCALS));
 
-		QVERIFY(!qx::dao::save(ptr_list<Tag>() << tag_g << tag_f << tag_v)
+		QVERIFY(!qx::dao::save(Tag::ptr_list() << tag_g << tag_f << tag_v)
 				.isValid());
 	}
 
 	long FRAG_ID;
 
 	{
-		ptr_list<Tag> tags;
+		Tag::ptr_list tags;
 
 		QVERIFY(!qx::dao::fetch_all(tags).isValid());
 
 		QCOMPARE(tags.size(), 3);
 
-		ptr_list<Fragment> fragments;
+		Fragment::ptr_list fragments;
 		qx::QxSqlQuery fragment_query;
 		fragment_query.where(db::field::fragment::TITLE).isEqualTo(FRAG1_TITLE)
 				.and_(db::field::fragment::ARTIST).isEqualTo(FRAG1_ARTIST);
@@ -215,13 +215,13 @@ void SlicepodTest::testTagsCreateAttach()
 					).isValid());
 
 		QCOMPARE(fragments.size(), 1);
-		ptr<Fragment> frag_p = fragments[0];
+		Fragment::ptr frag_p = fragments[0];
 
 		FRAG_ID = frag_p->id;
 
-		QCOMPARE(frag_p->tags_list.size(), 0);
-		frag_p->tags_list << tags;
-		QCOMPARE(frag_p->tags_list.size(), 3);
+		QCOMPARE(frag_p->tagsList.size(), 0);
+		frag_p->tagsList << tags;
+		QCOMPARE(frag_p->tagsList.size(), 3);
 
 		QVERIFY(!
 			qx::dao::save_with_relation(db::field::fragment::TAGS_LIST, frag_p)
@@ -229,7 +229,7 @@ void SlicepodTest::testTagsCreateAttach()
 	}
 
 	{
-		ptr_list<Tag> tags;
+		Tag::ptr_list tags;
 
 		QVERIFY(!
 		  qx::dao::fetch_all_with_relation(db::field::tag::FRAGMENTS_LIST, tags)
@@ -238,8 +238,8 @@ void SlicepodTest::testTagsCreateAttach()
 		QCOMPARE(tags.size(), 3);
 
 		for (auto& tag: tags) {
-			QCOMPARE(tag->fragments_list.size(), 1);
-			const auto& tag_frag = tag->fragments_list[0];
+			QCOMPARE(tag->fragmentsList.size(), 1);
+			const auto& tag_frag = tag->fragmentsList[0];
 			QCOMPARE(tag_frag->id, FRAG_ID);
 		}
 	}

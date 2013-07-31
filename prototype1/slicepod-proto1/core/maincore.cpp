@@ -56,8 +56,8 @@ void MainCore::addPodcastDirectory(const QString &path,
 
 	QList<LibraryItem*> newItems;
 
-	for (auto ep: dir->episodes_list) {
-		for (auto fr: ep->fragments_list) {
+	for (auto ep: dir->episodesList) {
+		for (auto fr: ep->fragmentsList) {
 			newItems << new LibraryItem(fr);
 		}
 	}

@@ -16,7 +16,7 @@ public:
 	
 	str path;
 	str metadata;
-	EntityType<Episode>::ptr_list episodes_list;
+	EntityType<Episode>::ptr_list episodesList;
 	
 	// -- contructor, virtual destructor
 	Directory(): id(0) {}

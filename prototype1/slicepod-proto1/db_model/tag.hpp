@@ -15,7 +15,7 @@ public:
 	
 	str name;
 	str metadata;
-	EntityType<Fragment>::ptr_list fragments_list;
+	EntityType<Fragment>::ptr_list fragmentsList;
 	
 // -- contructor, virtual destructor
 	Tag(): id(0) {}
