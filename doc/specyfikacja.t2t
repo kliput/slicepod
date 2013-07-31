@@ -20,7 +20,7 @@ Możliwość zaznaczania fragmentów w podcastach z dysku.
 === Funkcjonalne ===
 
 - Tworzenie odcinków na podstawie plików i katalogów na dysku
-- Tworzenie fragmentu dla danego odcinka
+- Tworzenie fragmentów dla danego odcinka
 - Fragment posiada właściwości:
   - początek -- sekunda rozpoczęcia fragmentu muzycznego w odcinku
   - koniec (opcjonalne) -- jw. tylko zakończenie

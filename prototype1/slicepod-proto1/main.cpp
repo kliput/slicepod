@@ -11,60 +11,41 @@
  * details.
  */
 
-#include "mainwindow.h"
+#include "precompiled.hpp"
+
 #include <QApplication>
 #include <QtCore>
 #include <QtGui>
 
 #include <QxtLogger>
 
-#include "precompiled.hpp"
+#include "gui/mainwindow.hpp"
+#include "core/utils.hpp"
 #include "db_model.hpp"
 using namespace db::type;
 
-#include "core/utils.hpp"
+#include "core/maincore.hpp"
 
-const char* DB_NAME = "db.sqlite";
+const char* APP_NAME = "Slicepod";
+const char* APP_VERSION = "0.0.1";
+const char* ORG_NAME = "Jakub Liput";
 
 QSqlError err;
 
 int main(int argc, char *argv[])
 {
-//	QApplication a(argc, argv);
-//	MainWindow w;
-//	w.show();
-	
-//	return a.exec();
-
-	// -- qt application --
-	QCoreApplication app(argc, argv);
+	QApplication a(argc, argv);
+	qxtLog->enableAllLogLevels();
 	QTextCodec::setCodecForTr(QTextCodec::codecForName("UTF-8"));
 
-	qxtLog->enableAllLogLevels();
+	QApplication::setApplicationName(APP_NAME);
+	QApplication::setApplicationVersion(APP_VERSION);
+	QApplication::setOrganizationName(ORG_NAME);
 
-	// -- database connection --
-	QFile::remove(DB_NAME);
-	db_connect(DB_NAME);
+	MainCore c;
+	MainWindow w(&c);
 
-	// -- create all tables in database --
-	err = qx::dao::create_table<Episode>();
-	err = qx::dao::create_table<Directory>();
-	err = qx::dao::create_table<Podcast>();
-	err = qx::dao::create_table<Fragment>();
-	err = qx::dao::create_table<Tag>();
-	err = qx::dao::create_table<Playlist>();
+	w.show();
 
-	ptr<Podcast> icmp_podcast(new Podcast("Irish and Celtic Music Podcast"));
-	qx::dao::save(icmp_podcast);
-
-	ptr<Directory> icmp_dir = scan_dir("/media/Dane 1/muzyka/podcasty/"
-						   "Irish and Celtic Music Podcast", icmp_podcast);
-
-	ptr<Episode> e1(new Episode(1));
-	ptr<Fragment> f1(new Fragment(e1, 240, 250));
-	qx::dao::save(f1);
-
-	f1->play();
-
-	return app.exec();
+	return a.exec();
 }

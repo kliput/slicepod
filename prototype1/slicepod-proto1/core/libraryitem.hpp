@@ -23,7 +23,7 @@ public:
 	EntityType<Fragment>::ptr fragmentPtr() const;
 
 protected:
-	EntityType<Fragment>::ptr fragment_ptr_;
+	EntityType<Fragment>::ptr fragmentPtr_;
 };
 
 #endif // LIBRARYITEM_HPP

@@ -6,49 +6,68 @@
 #include "../db_model/db_constants.hpp"
 #include "../db_model/entitytype.hpp"
 #include "../db_model/tag.hpp"
+#include "../db_model/fragment.hpp"
 #include "../core/sqlexception.hpp"
 #include "utils.hpp"
 
-class Tag;
-
-LibraryItem::LibraryItem(const EntityType<Fragment>::ptr &fragment)
+/**
+ * @brief LibraryItem::LibraryItem
+ * @param fragment
+ * @throw SQLException on database access error
+ */
+LibraryItem::LibraryItem(const Fragment::ptr &fragment)
 	:
-	  fragment_ptr_(fragment)
+	  fragmentPtr_(fragment)
 {
-	// TODO: complete _necessary_ fragment data from database
-	check_error(qx::dao::fetch_by_id_with_relation("*->*->*", fragment_ptr_),
-				"fetching *->*->* data for fragment");
+
+
+	QStringList relations;
+
+	if (fragment->episode.isNull() || fragment->episode->podcast.isNull()) {
+		relations << db::field::fragment::EPISODE;
+		relations << QString("%1->%2").arg(db::field::fragment::EPISODE,
+										   db::field::episode::PODCAST);
+	}
+
+	if (fragment->tags_list.isEmpty()) {
+		relations << db::field::fragment::TAGS_LIST;
+	}
+
+	if (!relations.isEmpty()) {
+		check_error(qx::dao::fetch_by_id_with_relation(relations, fragmentPtr_));
+	}
+
 }
 
 QString LibraryItem::podcastName() const
 {
-	return fragment_ptr_->episode->podcast->name;
+	return fragmentPtr_->episode->podcast->name;
 }
 
 QString LibraryItem::episodeName() const
 {
-	return fragment_ptr_->episode->episode_name;
+	return fragmentPtr_->episode->episode_name;
 }
 
 QString LibraryItem::fragmentTitle() const
 {
-	return fragment_ptr_->title;
+	return fragmentPtr_->title;
 }
 
 QString LibraryItem::fragmentArtist() const
 {
-	return fragment_ptr_->artist;
+	return fragmentPtr_->artist;
 }
 
 int LibraryItem::fragmentStart() const
 {
-	return fragment_ptr_->start;
+	return fragmentPtr_->start;
 }
 
 QStringList LibraryItem::fragmentTagsList() const
 {
 	QStringList slist;
-	for (Tag::ptr t: fragment_ptr_->tags_list) {
+	for (Tag::ptr t: fragmentPtr_->tags_list) {
 		slist << t->name;
 	}
 	return slist;
@@ -56,6 +75,6 @@ QStringList LibraryItem::fragmentTagsList() const
 
 EntityType<Fragment>::ptr LibraryItem::fragmentPtr() const
 {
-	return fragment_ptr_;
+	return fragmentPtr_;
 }
 

@@ -4,42 +4,35 @@
 #
 #-------------------------------------------------
 
-QMAKE_CXX = g++-4.8
-QMAKE_CXXFLAGS += -Wall -Wno-unused-local-typedefs -std=c++11 -gdwarf-2
+include(slicepod-common.pri)
 
-QT       += core gui
-
-CONFIG += console precompile_header qxt
-PRECOMPILED_HEADER = ./precompiled.hpp
-QXT		 += core
+QT       += gui
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
 TARGET = podslicer
-TEMPLATE = app
 
-DEFINES += _QX_SERIALIZE_BINARY_ENABLED
-DEFINES += _QX_SERIALIZE_XML_ENABLED
-DEFINES += _BUILDING_QX_SLICEPOD
-
-QXORM_PATH = /home/kliput/Programowanie/slicepod/lib/QxOrm-1.2.5-gcc4.6/
+PRECOMPILED_HEADER = precompiled.hpp
 
 SOURCES += main.cpp\
-	mainwindow.cpp\
 	db_model/directory.cpp\
 	db_model/episode.cpp\
 	db_model/playlist.cpp\
 	db_model/podcast.cpp\
 	db_model/fragment.cpp\
 	db_model/tag.cpp \
-    core/example_item.cpp \
     core/utils.cpp \
-    core/library_model.cpp \
-    core/library_item.cpp \
 	core/vlcmanager.cpp \
-    core/sqlexception.cpp
+    core/sqlexception.cpp \
+	gui/mainwindow.cpp \
+	core/librarymodel.cpp \
+	core/libraryitem.cpp \
+    core/settingsmanager.cpp \
+    core/testing.cpp \
+    core/maincore.cpp \
+    gui/adddirectorydialog.cpp
 
-HEADERS  += mainwindow.h\
+HEADERS  +=\
 	db_model/directory.hpp\
 	db_model/episode.hpp\
 	db_model/playlist.hpp\
@@ -47,24 +40,20 @@ HEADERS  += mainwindow.h\
 	db_model/fragment.hpp\
 	db_model/tag.hpp \
     core/utils.hpp \
-    core/playable.hpp \
-    core/library_model.hpp \
-    core/library_item.hpp \
-    core/example_item.hpp \
     precompiled.hpp \
     export.hpp \
     db_model.hpp \
     core/vlcmanager.hpp \
     db_model/db_constants.hpp \
-    core/sqlexception.hpp
+    core/sqlexception.hpp \
+	gui/mainwindow.hpp \
+	core/librarymodel.hpp \
+	core/libraryitem.hpp \
+    core/settingsmanager.hpp \
+    core/testing.hpp \
+    core/maincore.hpp \
+    db_model/entitytype.hpp \
+    gui/adddirectorydialog.hpp
 
-FORMS    += mainwindow.ui
-
-LIBS += -L$$QXORM_PATH/lib/ -lQxOrm\
-					-lvlc\
-					-ltag\
-					-lboost_serialization
-
-INCLUDEPATH += $$QXORM_PATH/include\
-				/usr/include
-DEPENDPATH += $$QXORM_PATH/include
+FORMS    += gui/mainwindow.ui \
+    gui/adddirectorydialog.ui

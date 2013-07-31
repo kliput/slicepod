@@ -185,10 +185,20 @@ Directory::ptr scan_dir(const char* dir_path, Podcast::ptr podcast)
 // TODO: check if already exists
 Fragment::ptr add_start_fragment(const Episode::ptr &episode)
 {
-	Fragment::ptr fragment(new Fragment(episode, 0));
-	episode->start_fragment = fragment;
-	check_error(qx::dao::update_with_relation(
-					db::field::episode::START_FRAGMENT, episode));
-	return fragment;
+	// WARNING: it's only check for fetched start fragment
+	if (episode->start_fragment.isNull()) {
+		Fragment::ptr fragment(new Fragment(episode, 0));
+		episode->start_fragment = fragment;
+		episode->fragments_list << fragment;
+		// TODO: relations should be static
+		check_error(qx::dao::update_with_relation(
+						QStringList()
+						<< db::field::episode::START_FRAGMENT
+						<< db::field::episode::FRAGMENTS_LIST
+						, episode));
+		return fragment;
+	} else {
+		return episode->start_fragment;
+	}
 }
 

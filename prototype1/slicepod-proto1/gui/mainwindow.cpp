@@ -61,28 +61,6 @@ void MainWindow::addDirectoryDialog()
 {
 	auto dialog = new AddDirectoryDialog(core_, this);
 	dialog->show();
-
-//	const QString path = QFileDialog::getExistingDirectory(this, tr("Open directory"),
-//												"/home",
-//												QFileDialog::ShowDirsOnly
-//												| QFileDialog::DontResolveSymlinks);
-
-////	// TODO: podcast!
-////	db::type::Podcast::ptr dummy_podcast(new Podcast("Dummy podcast"));
-////	qx::dao::save(dummy_podcast);
-
-//	Directory::ptr dir = scan_dir(path.toUtf8()/*, dummy_podcast*/);
-
-//	QList<LibraryItem*> newItems;
-
-//	for (const auto& ep: dir->episodes_list) {
-//		for (const auto& fr: ep->fragments_list) {
-////			libraryModel_->addItem(new LibraryItem(fr));
-//			newItems << new LibraryItem(fr);
-//		}
-//	}
-
-//	core_->libraryModel()->addItems(newItems);
 }
 
 void MainWindow::showMessage(QMessageBox::Icon icon, const QString& title,
