@@ -61,6 +61,7 @@ void MainWindow::addDirectoryDialog()
 {
 	auto dialog = new AddDirectoryDialog(core_, this);
 	dialog->show();
+	dialog->setAttribute(Qt::WA_DeleteOnClose);
 }
 
 void MainWindow::showMessage(QMessageBox::Icon icon, const QString& title,

@@ -32,7 +32,8 @@ SOURCES += main.cpp\
     core/settingsmanager.cpp \
     core/testing.cpp \
     core/maincore.cpp \
-    gui/adddirectorydialog.cpp
+    gui/adddirectorydialog.cpp \
+    gui/addingfilesdialog.cpp
 
 HEADERS  +=\
 	db_model/directory.hpp\
@@ -55,10 +56,12 @@ HEADERS  +=\
     core/testing.hpp \
     core/maincore.hpp \
     db_model/entitytype.hpp \
-    gui/adddirectorydialog.hpp
+    gui/adddirectorydialog.hpp \
+    gui/addingfilesdialog.hpp
 
 FORMS    += gui/mainwindow.ui \
-    gui/adddirectorydialog.ui
+    gui/adddirectorydialog.ui \
+    gui/addingfilesdialog.ui
 
 RESOURCES += \
     slicepod.qrc

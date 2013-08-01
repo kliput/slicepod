@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Dialog</string>
+   <string>Add directory to library</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout_2">
    <item>
@@ -55,7 +55,9 @@
            <string>Add...</string>
           </property>
           <property name="icon">
-           <iconset theme="list-add"/>
+           <iconset theme="list-add">
+            <normaloff/>
+           </iconset>
           </property>
          </widget>
         </item>
@@ -79,7 +81,9 @@
         <string>Select directory...</string>
        </property>
        <property name="icon">
-        <iconset theme="archive-insert-directory"/>
+        <iconset theme="archive-insert-directory">
+         <normaloff/>
+        </iconset>
        </property>
       </widget>
      </item>
@@ -119,8 +123,8 @@
    <slot>accept()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>248</x>
-     <y>254</y>
+     <x>257</x>
+     <y>230</y>
     </hint>
     <hint type="destinationlabel">
      <x>157</x>
@@ -135,8 +139,8 @@
    <slot>reject()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>316</x>
-     <y>260</y>
+     <x>325</x>
+     <y>230</y>
     </hint>
     <hint type="destinationlabel">
      <x>286</x>

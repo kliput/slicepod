@@ -24,6 +24,7 @@ private:
 public slots:
 	void selectDirectory();
 	void okButton();
+	void updateRadios();
 };
 
 #endif // ADDDIRECTORYDIALOG_HPP

@@ -19,6 +19,8 @@ public:
 	void loadDatabase();
 	void addPodcastDirectory(const QString& path,
 							 const EntityType<Podcast>::ptr &podcast);
+	Directory::ptr scanDir(const char* dir_path, Podcast::ptr podcast
+						   = Podcast::ptr());
 	
 // -- getters --
 	LibraryModel *libraryModel() { return libraryModel_; }
@@ -28,8 +30,8 @@ signals:
 	void showMessage(QMessageBox::Icon icon, const QString& title,
 				   const QString& text);
 	void loadDatabaseSuccess();
-
-
+	void loadingProgress(const QString& message, const int percent);
+	void loadingFinished();
 
 private:
 	LibraryModel *libraryModel_;
