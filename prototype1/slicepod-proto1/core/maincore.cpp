@@ -8,6 +8,7 @@
 #include "utils.hpp"
 #include "libraryitem.hpp"
 #include "../db_model.hpp"
+#include "sqlexception.hpp"
 
 MainCore::MainCore(QObject *parent) :
 	QObject(parent)
@@ -52,15 +53,23 @@ void MainCore::loadDatabase()
 void MainCore::addPodcastDirectory(const QString &path,
 								   const EntityType<Podcast>::ptr& podcast)
 {
-	auto dir = scan_dir(path.toUtf8(), podcast);
+	try {
+		auto dir = scan_dir(path.toUtf8(), podcast);
 
-	QList<LibraryItem*> newItems;
+		QList<LibraryItem*> newItems;
 
-	for (auto ep: dir->episodesList) {
-		for (auto fr: ep->fragmentsList) {
-			newItems << new LibraryItem(fr);
+		for (auto ep: dir->episodesList) {
+			for (auto fr: ep->fragmentsList) {
+				newItems << new LibraryItem(fr);
+			}
 		}
-	}
 
-	libraryModel_->addItems(newItems);
+		libraryModel_->addItems(newItems);
+		// TODO some throbber or status info...
+
+	} catch (const SQLException& e) {
+		emit showMessage(QMessageBox::Critical, tr("Database error"),
+						 QString(tr("Adding items failed.\n"
+									"SQL error: %2")).arg(e.text()));
+	}
 }

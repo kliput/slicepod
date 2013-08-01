@@ -58,17 +58,17 @@ QVariant LibraryModel::headerData(int section, Qt::Orientation orientation, int 
 	if (role == Qt::DisplayRole && orientation == Qt::Horizontal) {
 		switch (section) {
 		case 0:
-			return "Podcast";
+			return tr("Podcast");
 		case 1:
-			return "Episode";
+			return tr("Episode");
 		case 2:
-			return "Title";
+			return tr("Title");
 		case 3:
-			return "Artist";
+			return tr("Artist");
 		case 4:
-			return "Start";
+			return tr("Start");
 		case 5:
-			return "Tags";
+			return tr("Tags");
 		default:
 			return QVariant();
 		}

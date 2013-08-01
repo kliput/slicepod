@@ -38,6 +38,15 @@ int main(int argc, char *argv[])
 	qxtLog->enableAllLogLevels();
 	QTextCodec::setCodecForTr(QTextCodec::codecForName("UTF-8"));
 
+	QTranslator qtTranslator;
+	qtTranslator.load("qt_" + QLocale::system().name(),
+			QLibraryInfo::location(QLibraryInfo::TranslationsPath));
+	a.installTranslator(&qtTranslator);
+
+	QTranslator slicepodTranslator;
+	slicepodTranslator.load(":/translations/slicepod_" + QLocale::system().name());
+	a.installTranslator(&slicepodTranslator);
+
 	QApplication::setApplicationName(APP_NAME);
 	QApplication::setApplicationVersion(APP_VERSION);
 	QApplication::setOrganizationName(ORG_NAME);

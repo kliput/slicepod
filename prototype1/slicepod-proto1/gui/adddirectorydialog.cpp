@@ -42,8 +42,9 @@ void AddDirectoryDialog::okButton()
 		// TODO: choose podcast from db
 		podcast = EntityType<Podcast>::ptr(nullptr);
 	} else if (ui->assignAutomaticRadio->isChecked()) {
-		// TODO: other thread
-		core_->addPodcastDirectory(ui->directoryEdit->text(), podcast);
+		QtConcurrent::run(core_, &MainCore::addPodcastDirectory,
+						  ui->directoryEdit->text(), podcast);
+//		core_->addPodcastDirectory(ui->directoryEdit->text(), podcast);
 	}
 
 	this->close();

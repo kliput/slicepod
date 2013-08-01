@@ -14,6 +14,8 @@ TARGET = podslicer
 
 PRECOMPILED_HEADER = precompiled.hpp
 
+TRANSLATIONS = translations/slicepod_pl.ts
+
 SOURCES += main.cpp\
 	db_model/directory.cpp\
 	db_model/episode.cpp\
@@ -57,3 +59,9 @@ HEADERS  +=\
 
 FORMS    += gui/mainwindow.ui \
     gui/adddirectorydialog.ui
+
+RESOURCES += \
+    slicepod.qrc
+
+OTHER_FILES += \
+	translations/slicepod_pl.qm
