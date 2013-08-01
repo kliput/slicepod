@@ -11,7 +11,6 @@
 
 Q_DECLARE_METATYPE(QMessageBox::Icon)
 
-#include <QxtLogger>
 #include <QxOrm.h>
 
 // TODO: create LibraryManager class to manage library (move methods from here)
@@ -73,5 +72,5 @@ void MainWindow::showMessage(QMessageBox::Icon icon, const QString& title,
 void MainWindow::loadDatabaseSuccess()
 {
 	ui->libraryView->setDisabled(false);
-	qxtLog->trace("Load database success");
+	qDebug("Load database success");
 }

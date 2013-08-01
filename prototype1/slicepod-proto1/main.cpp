@@ -17,8 +17,6 @@
 #include <QtCore>
 #include <QtGui>
 
-#include <QxtLogger>
-
 #include "gui/mainwindow.hpp"
 #include "core/utils.hpp"
 #include "db_model.hpp"
@@ -35,7 +33,6 @@ QSqlError err;
 int main(int argc, char *argv[])
 {
 	QApplication a(argc, argv);
-	qxtLog->enableAllLogLevels();
 	QTextCodec::setCodecForTr(QTextCodec::codecForName("UTF-8"));
 
 	QTranslator qtTranslator;

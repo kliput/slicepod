@@ -10,8 +10,6 @@ using namespace db::type;
 #include <taglib/tag.h>
 #include <taglib/fileref.h>
 
-#include <qxt/QxtCore/QxtLogger>
-
 // -- DATABASE CORE SECTION --
 
 /**

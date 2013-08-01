@@ -6,10 +6,8 @@ TEMPLATE = app
 
 QT += core
 
-CONFIG += precompile_header qxt
+CONFIG += precompile_header
 CONFIG -= app_bundle
-
-QXT		 += core
 
 DEFINES += _QX_SERIALIZE_BINARY_ENABLED
 DEFINES += _QX_SERIALIZE_XML_ENABLED
