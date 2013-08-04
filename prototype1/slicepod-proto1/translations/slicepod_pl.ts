@@ -5,7 +5,7 @@
     <name>AddDirectoryDialog</name>
     <message>
         <source>Dialog</source>
-        <translation>Komunikat</translation>
+        <translation type="obsolete">Komunikat</translation>
     </message>
     <message>
         <source>Podcast to music file assignment mode</source>
@@ -30,6 +30,21 @@
     <message>
         <source>Open podcast&apos;s directory</source>
         <translation>Otwórz katalog podcastów</translation>
+    </message>
+    <message>
+        <source>Add directory to library</source>
+        <translation>Dodaj katalog do biblioteki</translation>
+    </message>
+</context>
+<context>
+    <name>AddingFilesDialog</name>
+    <message>
+        <source>Adding files to library...</source>
+        <translation>Dodawania plików do biblioteki...</translation>
+    </message>
+    <message>
+        <source>Working...</source>
+        <translation>Pracuję...</translation>
     </message>
 </context>
 <context>
@@ -85,6 +100,26 @@ SQL error: %2</source>
         <translation>Dodawanie elementów biblioteki nie powiodło się.
 Błąd SQL: %2</translation>
     </message>
+    <message>
+        <source>Updating media library...</source>
+        <translation>Uaktualnianie biblioteki mediów...</translation>
+    </message>
+    <message>
+        <source>Scanning files...</source>
+        <translation>Przeszukiwanie plików...</translation>
+    </message>
+    <message>
+        <source>Saving episodes information to database...</source>
+        <translation>Zapisywanie informacji o odcinkach do bazy danych...</translation>
+    </message>
+    <message>
+        <source>Creating and saving start fragments...</source>
+        <translation>Tworzenie i zapisywanie fragmentów rozpoczynających...</translation>
+    </message>
+    <message>
+        <source>Podcast directory loading done!</source>
+        <translation>Katalog podcastu pomyślnie załadowany!</translation>
+    </message>
 </context>
 <context>
     <name>MainWindow</name>
@@ -99,6 +134,34 @@ Błąd SQL: %2</translation>
     <message>
         <source>Slicepod</source>
         <translation>Slicepod</translation>
+    </message>
+    <message>
+        <source>Selected fragment</source>
+        <translation>Wybrany fragment</translation>
+    </message>
+    <message>
+        <source>Start time:</source>
+        <translation>Czas rozpoczęcia:</translation>
+    </message>
+    <message>
+        <source>End time:</source>
+        <translation>Czas zakończenia:</translation>
+    </message>
+    <message>
+        <source>Podcast:</source>
+        <translation>Podcast:</translation>
+    </message>
+    <message>
+        <source>&lt;not selected&gt;</source>
+        <translation>&lt;nie wybrano&gt;</translation>
+    </message>
+    <message>
+        <source>Episode:</source>
+        <translation>Odcinek:</translation>
+    </message>
+    <message>
+        <source>Tags:</source>
+        <translation>Etykiety:</translation>
     </message>
 </context>
 <context>

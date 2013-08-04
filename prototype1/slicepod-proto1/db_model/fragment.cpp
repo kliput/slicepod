@@ -35,7 +35,7 @@ Fragment::Fragment(const Episode::ptr &_episode, int _start,
 	:
 			  episode(_episode),
 			  start(_start),
-			  end(_end<0 ? _start : _end)
+			  end(_end)
 {
 }
 

@@ -25,6 +25,8 @@ public:
 
 	void loadFromDatabase();
 
+	LibraryItem *libraryItemData(const QModelIndex &index);
+
 signals:
 
 public slots:

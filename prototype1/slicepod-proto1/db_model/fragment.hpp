@@ -39,7 +39,6 @@ public:
 
 // -- play --
 	void play();
-
 };
 
 QX_REGISTER_HPP_QX_SLICEPOD(Fragment, qx::trait::no_base_class_defined, 0)

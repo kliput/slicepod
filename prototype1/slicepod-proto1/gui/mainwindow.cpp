@@ -3,6 +3,7 @@
 
 #include <QtCore>
 #include <QtGui>
+#include <QWidget>
 #include <QtConcurrentRun>
 #include <QFutureWatcher>
 #include <QMetaType>
@@ -28,6 +29,9 @@ MainWindow::MainWindow(MainCore *core, QWidget *parent) :
 	core_(core)
 {
 	ui->setupUi(this);
+	positionWidget_ = new PositionWidget(ui->centralWidget);
+	positionWidget_->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
+	ui->playerLayout->addWidget(positionWidget_);
 
 	ui->libraryView->setModel(core_->proxyModel());
 	ui->libraryView->setVisible(true);
@@ -38,11 +42,22 @@ MainWindow::MainWindow(MainCore *core, QWidget *parent) :
 	connect(ui->actionAdd_directory, SIGNAL(triggered()),
 			this, SLOT(addDirectoryDialog()));
 
-	QObject::connect(core_, SIGNAL(loadDatabaseSuccess()),
+	connect(core_, SIGNAL(loadDatabaseSuccess()),
 					 this, SLOT(loadDatabaseSuccess()));
 
-	QObject::connect(core_, SIGNAL(showMessage(QMessageBox::Icon,QString,QString)),
+	connect(core_, SIGNAL(showMessage(QMessageBox::Icon,QString,QString)),
 					 this, SLOT(showMessage(QMessageBox::Icon,QString,QString)));
+
+	// -- library item info panel --
+	connect(ui->libraryView->selectionModel(),
+			SIGNAL(currentRowChanged(QModelIndex,QModelIndex)),
+			this, SLOT(updateItemInfoView(QModelIndex,QModelIndex)));
+
+	connect(ui->endTimeCheckBox, SIGNAL(toggled(bool)),
+			ui->endTimeEdit, SLOT(setEnabled(bool)));
+
+	// set disabled
+	fillItemInfoView(nullptr);
 
 
 	// START ACTIONS
@@ -63,6 +78,40 @@ void MainWindow::addDirectoryDialog()
 	dialog->setAttribute(Qt::WA_DeleteOnClose);
 }
 
+void MainWindow::fillItemInfoView(const LibraryItem* item)
+{
+	if (!item) {
+		setSelectedFragmentPanelEnabled(false);
+	} else {
+		setSelectedFragmentPanelEnabled(true);
+
+		ui->selectedPodcastLabel->setText(item->podcastName());
+		ui->selectedEpisodeLabel->setText(item->episodeName());
+
+		ui->startTimeEdit->setTimeRange(QTime(), item->episodeLengthTime());
+		ui->startTimeEdit->setTime(item->fragmentStartTime());
+
+		if (item->hasEnd()) {
+			ui->endTimeEdit->setTimeRange(QTime(), item->episodeLengthTime());
+			ui->endTimeEdit->setTime(item->fragmentEndTime());
+			ui->endTimeCheckBox->setChecked(true);
+			ui->endTimeEdit->setEnabled(true);
+		} else {
+			ui->endTimeCheckBox->setChecked(false);
+			ui->endTimeEdit->setEnabled(false);
+		}
+	}
+}
+
+void MainWindow::updateItemInfoView(const QModelIndex& current,
+									const QModelIndex& /*prev*/)
+{
+	auto item = core_->libraryModel()->libraryItemData(current);
+
+	fillItemInfoView(item);
+
+}
+
 void MainWindow::showMessage(QMessageBox::Icon icon, const QString& title,
 						   const QString& text)
 {
@@ -73,4 +122,24 @@ void MainWindow::loadDatabaseSuccess()
 {
 	ui->libraryView->setDisabled(false);
 	qDebug("Load database success");
+}
+
+void MainWindow::setSelectedFragmentPanelEnabled(bool state)
+{
+	static QWidget* fragmentPanelElements[] = {
+		ui->endTimeCheckBox,
+		ui->endTimeEdit,
+		ui->startTimeEdit,
+		ui->startTimeLabel,
+		ui->selectedEpisodeLabel,
+		ui->selectedEpisodeStaticLabel,
+		ui->selectedFragmentBox,
+		ui->selectedPodcastLabel,
+		ui->selectedPodcastStaticLabel,
+		ui->selectedTagsStaticLabel
+	};
+
+	for (auto w: fragmentPanelElements) {
+		w->setEnabled(state);
+	}
 }

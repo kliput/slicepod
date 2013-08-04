@@ -1,5 +1,8 @@
 #include "precompiled.hpp"
 
+#include <QtCore>
+#include <QtGui>
+
 #include "core/utils.hpp"
 #include "core/sqlexception.hpp"
 #include "db_model.hpp"
@@ -73,7 +76,7 @@ Fragment::ptr create_start_fragment(const Episode::ptr &episode)
 {
 	// WARNING: it's only check for fetched start fragment
 	if (episode->startFragment.isNull()) {
-		Fragment::ptr fragment(new Fragment(episode, 0));
+		Fragment::ptr fragment(new Fragment(episode, 15));
 		episode->startFragment = fragment;
 		episode->fragmentsList << fragment;
 		return fragment;
@@ -82,3 +85,12 @@ Fragment::ptr create_start_fragment(const Episode::ptr &episode)
 	}
 }
 
+
+void set_enabled_for_each(QLayout *layout, bool state)
+{
+	for (int i=0; i < layout->count(); ++i) {
+		if (QWidgetItem *item = dynamic_cast <QWidgetItem*>(layout->itemAt(i))) {
+			item->widget()->setEnabled(state);
+		}
+	}
+}

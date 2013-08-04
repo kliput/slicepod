@@ -42,7 +42,7 @@ QVariant LibraryModel::data(const QModelIndex &index, int role) const
 		case 3:
 			return item->fragmentArtist();
 		case 4:
-			return QTime().addSecs(item->fragmentStart()).toString("HH:mm:ss");
+			return QTime().addSecs(item->fragmentStartSec()).toString("HH:mm:ss");
 		case 5:
 			return item->fragmentTagsList().join(", ");
 		default:
@@ -51,6 +51,20 @@ QVariant LibraryModel::data(const QModelIndex &index, int role) const
 	} else {
 		return QVariant();
 	}
+}
+
+//! Gets LibraryItem* associated with given QModelIndex. Does range checking.
+LibraryItem* LibraryModel::libraryItemData(const QModelIndex& index)
+{
+	if (!index.isValid() || index.row() > this->rowCount()
+			|| index.column() >= this->columnCount()
+			|| index.row() >= libraryItems_.size() || index.row() < 0) {
+		qFatal("Tried to access invalid index from LibraryModel: %d, %d",
+			   index.row(), index.column());
+		return nullptr;
+	}
+
+	return libraryItems_[index.row()];
 }
 
 QVariant LibraryModel::headerData(int section, Qt::Orientation orientation, int role) const

@@ -19,7 +19,7 @@ LibraryItem::LibraryItem(const Fragment::ptr &fragment)
 	:
 	  fragmentPtr_(fragment)
 {
-
+	// -- complete data from database if needed
 
 	QStringList relations;
 
@@ -37,31 +37,68 @@ LibraryItem::LibraryItem(const Fragment::ptr &fragment)
 		check_error(qx::dao::fetch_by_id_with_relation(relations, fragmentPtr_));
 	}
 
+	// ---
+
+	startTime_ = QTime().addSecs(fragmentStartSec());
+	endTime_ = QTime().addSecs(fragmentStartSec());
+	episodeLengthTime_ = QTime().addSecs(episodeLengthSec());
+
+	qDebug("init episode lenght time: %s", qPrintable(episodeLengthTime_.toString("HH:mm:ss")));
 }
 
-QString LibraryItem::podcastName() const
+const QString &LibraryItem::podcastName() const
 {
 	return fragmentPtr_->episode->podcast->name;
 }
 
-QString LibraryItem::episodeName() const
+const QString &LibraryItem::episodeName() const
 {
 	return fragmentPtr_->episode->episodeName;
 }
 
-QString LibraryItem::fragmentTitle() const
+const QString &LibraryItem::fragmentTitle() const
 {
 	return fragmentPtr_->title;
 }
 
-QString LibraryItem::fragmentArtist() const
+const QString &LibraryItem::fragmentArtist() const
 {
 	return fragmentPtr_->artist;
 }
 
-int LibraryItem::fragmentStart() const
+int LibraryItem::fragmentStartSec() const
 {
 	return fragmentPtr_->start;
+}
+
+int LibraryItem::fragmentEndSec() const
+{
+	return fragmentPtr_->end;
+}
+
+int LibraryItem::episodeLengthSec() const
+{
+	return fragmentPtr_->episode->audioLength(); // TODO check if it's fetched?
+}
+
+const QTime& LibraryItem::fragmentStartTime() const
+{
+	return startTime_;
+}
+
+const QTime& LibraryItem::fragmentEndTime() const
+{
+	return endTime_;
+}
+
+const QTime& LibraryItem::episodeLengthTime() const
+{
+	return episodeLengthTime_;
+}
+
+bool LibraryItem::hasEnd() const
+{
+	return fragmentPtr_->end >= 0;
 }
 
 QStringList LibraryItem::fragmentTagsList() const

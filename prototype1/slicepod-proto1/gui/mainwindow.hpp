@@ -7,6 +7,7 @@
 
 #include <QtGui>
 
+#include "positionwidget.hpp"
 #include "../core/maincore.hpp"
 #include "../core/librarymodel.hpp"
 
@@ -21,18 +22,24 @@ class MainWindow : public QMainWindow
 public:
 	explicit MainWindow(MainCore *core, QWidget *parent = 0);
 	~MainWindow();
-	
+
+	void fillItemInfoView(const LibraryItem *item);
+	void setSelectedFragmentPanelEnabled(bool state);
+
 private:
 	Ui::MainWindow *ui;
 	MainCore *core_;
+	PositionWidget *positionWidget_;
 
 public slots:
 	void showMessage(QMessageBox::Icon icon, const QString& title,
 				   const QString& text);
 	void loadDatabaseSuccess();
-
 	void addDirectoryDialog();
-//	void setStatus(const QString &text);
+	void updateItemInfoView(const QModelIndex& current,
+										const QModelIndex& /*prev*/);
+
+
 };
 
 #endif // MAINWINDOW_H

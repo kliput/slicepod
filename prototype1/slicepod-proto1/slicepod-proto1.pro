@@ -33,7 +33,8 @@ SOURCES += main.cpp\
     core/testing.cpp \
     core/maincore.cpp \
     gui/adddirectorydialog.cpp \
-    gui/addingfilesdialog.cpp
+    gui/addingfilesdialog.cpp \
+    gui/positionwidget.cpp
 
 HEADERS  +=\
 	db_model/directory.hpp\
@@ -57,7 +58,8 @@ HEADERS  +=\
     core/maincore.hpp \
     db_model/entitytype.hpp \
     gui/adddirectorydialog.hpp \
-    gui/addingfilesdialog.hpp
+    gui/addingfilesdialog.hpp \
+    gui/positionwidget.hpp
 
 FORMS    += gui/mainwindow.ui \
     gui/adddirectorydialog.ui \
