@@ -15,4 +15,3 @@ void check_error(const QSqlError& error, const char* info = "");
 Fragment::ptr create_start_fragment(const Episode::ptr& episode);
 void db_create_tables();
 
-void set_enabled_for_each(QLayout *layout, bool state);

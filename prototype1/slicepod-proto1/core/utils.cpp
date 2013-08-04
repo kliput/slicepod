@@ -76,21 +76,11 @@ Fragment::ptr create_start_fragment(const Episode::ptr &episode)
 {
 	// WARNING: it's only check for fetched start fragment
 	if (episode->startFragment.isNull()) {
-		Fragment::ptr fragment(new Fragment(episode, 15));
+		Fragment::ptr fragment(new Fragment(episode, 0));
 		episode->startFragment = fragment;
 		episode->fragmentsList << fragment;
 		return fragment;
 	} else {
 		return episode->startFragment;
-	}
-}
-
-
-void set_enabled_for_each(QLayout *layout, bool state)
-{
-	for (int i=0; i < layout->count(); ++i) {
-		if (QWidgetItem *item = dynamic_cast <QWidgetItem*>(layout->itemAt(i))) {
-			item->widget()->setEnabled(state);
-		}
 	}
 }
