@@ -34,7 +34,7 @@ SOURCES += main.cpp\
     gui/adddirectorydialog.cpp \
     gui/addingfilesdialog.cpp \
     gui/positionwidget.cpp \
-    core/vlcplayer.cpp
+    core/musicplayer.cpp
 
 HEADERS  +=\
 	db_model/directory.hpp\
@@ -59,7 +59,7 @@ HEADERS  +=\
     gui/adddirectorydialog.hpp \
     gui/addingfilesdialog.hpp \
     gui/positionwidget.hpp \
-    core/vlcplayer.hpp
+    core/musicplayer.hpp
 
 FORMS    += gui/mainwindow.ui \
     gui/adddirectorydialog.ui \

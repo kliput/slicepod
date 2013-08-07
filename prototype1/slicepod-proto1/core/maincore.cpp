@@ -11,7 +11,7 @@
 #include "libraryitem.hpp"
 #include "../db_model.hpp"
 #include "sqlexception.hpp"
-#include "vlcplayer.hpp"
+#include "musicplayer.hpp"
 
 MainCore::MainCore(QObject *parent) :
 	QObject(parent)
@@ -20,7 +20,7 @@ MainCore::MainCore(QObject *parent) :
 	proxyModel_ = new QSortFilterProxyModel(this);
 	proxyModel_->setSourceModel(libraryModel_);
 
-	player_ = new VLCPlayer(this);
+	player_ = new MusicPlayer(this);
 }
 
 void MainCore::loadDatabase()

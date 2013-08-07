@@ -127,6 +127,7 @@ void MainWindow::activateLibraryItem(const QModelIndex &index)
 
 	if (core_->player()->loadMedia(item)) {
 		positionWidget_->setMediaLength(item->episodeLengthSec());
+		core_->player()->seek(item->fragmentStartSec());
 		core_->player()->play();
 	} else {
 		qFatal("Cannot load media into player!");
