@@ -29,9 +29,6 @@ MainWindow::MainWindow(MainCore *core, QWidget *parent) :
 	core_(core)
 {
 	ui->setupUi(this);
-	positionWidget_ = new PositionWidget(ui->centralWidget);
-	positionWidget_->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
-	ui->playerLayout->addWidget(positionWidget_);
 
 	ui->libraryView->setModel(core_->proxyModel());
 	ui->libraryView->setVisible(true);
@@ -67,7 +64,7 @@ MainWindow::MainWindow(MainCore *core, QWidget *parent) :
 			this, SLOT(handlePlayButton()));
 
 	connect(core_->player(), SIGNAL(positionChanged(int)),
-			positionWidget_, SLOT(setPlayerPosition(int)));
+			ui->positionWidget, SLOT(setPlayerPosition(int)));
 
 	// START ACTIONS
 	ui->libraryView->setDisabled(true); // before loading from database
@@ -126,9 +123,10 @@ void MainWindow::activateLibraryItem(const QModelIndex &index)
 	auto item = core_->libraryModel()->libraryItemData(index);
 
 	if (core_->player()->loadMedia(item)) {
-		positionWidget_->setMediaLength(item->episodeLengthSec());
+		ui->positionWidget->setMediaLength(item->episodeLengthSec());
 		core_->player()->seek(item->fragmentStartSec());
 		core_->player()->play();
+		// TODO: emit data changed on played item to show play icon
 	} else {
 		qFatal("Cannot load media into player!");
 		// TODO: handle

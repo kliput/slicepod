@@ -29,7 +29,6 @@ public:
 private:
 	Ui::MainWindow *ui;
 	MainCore *core_;
-	PositionWidget *positionWidget_;
 
 public slots:
 	void showMessage(QMessageBox::Icon icon, const QString& title,

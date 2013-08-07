@@ -84,3 +84,44 @@ Fragment::ptr create_start_fragment(const Episode::ptr &episode)
 		return episode->startFragment;
 	}
 }
+
+inline QString taglib_qstring(const TagLib::String& s)
+{
+	return QString::fromUtf8(s.toCString(true));
+}
+
+QString generate_episode_name(TagLib::Tag *tag)
+{
+	// TODO: "structurize" specific podcast handlers
+
+	QString title;
+
+	static QRegExp icmpAlbumRegExp("Irish.*Celtic.*Music.*Podcast",
+								   Qt::CaseInsensitive);
+
+	QString album = taglib_qstring(tag->album());
+
+	if (icmpAlbumRegExp.exactMatch(album)) {
+		// hooray! it's Marc's Gunn Irish And Celtic Music Podcast!
+		// try to simplify title (for 133 or older episodes)
+		static QRegExp icmpTitleRegExp(".*(#\\d.*)");
+
+		QString tmpTitle = taglib_qstring(tag->title());
+
+		if (icmpTitleRegExp.exactMatch(tmpTitle)) {
+			title = icmpTitleRegExp.cap(1);
+		} else {
+
+		}
+	} else {
+		// try to get track number
+		uint track = tag->track();
+		if (track > 0) {
+			title = QString("%1").arg(track);
+		} else {
+			title = taglib_qstring(tag->title());
+		}
+	}
+
+	return title;
+}

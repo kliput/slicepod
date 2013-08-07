@@ -71,9 +71,6 @@
             <normaloff/>
            </iconset>
           </property>
-          <property name="autoRaise">
-           <bool>false</bool>
-          </property>
          </widget>
         </item>
         <item>
@@ -82,9 +79,14 @@
            <string/>
           </property>
           <property name="icon">
-           <iconset theme="media-playback-stop"/>
+           <iconset theme="media-playback-stop">
+            <normaloff/>
+           </iconset>
           </property>
          </widget>
+        </item>
+        <item>
+         <widget class="PositionWidget" name="positionWidget" native="true"/>
         </item>
        </layout>
       </item>
@@ -93,49 +95,10 @@
     <item>
      <widget class="QGroupBox" name="selectedFragmentBox">
       <property name="title">
-       <string>Selected fragment</string>
+       <string>Fragment properties</string>
       </property>
       <layout class="QGridLayout" name="gridLayout">
-       <item row="1" column="0">
-        <layout class="QFormLayout" name="formLayout">
-         <item row="0" column="0">
-          <widget class="QLabel" name="selectedPodcastStaticLabel">
-           <property name="text">
-            <string>Podcast:</string>
-           </property>
-          </widget>
-         </item>
-         <item row="0" column="1">
-          <widget class="QLabel" name="selectedPodcastLabel">
-           <property name="text">
-            <string>&lt;not selected&gt;</string>
-           </property>
-          </widget>
-         </item>
-         <item row="1" column="0">
-          <widget class="QLabel" name="selectedEpisodeStaticLabel">
-           <property name="text">
-            <string>Episode:</string>
-           </property>
-          </widget>
-         </item>
-         <item row="1" column="1">
-          <widget class="QLabel" name="selectedEpisodeLabel">
-           <property name="text">
-            <string>&lt;not selected&gt;</string>
-           </property>
-          </widget>
-         </item>
-        </layout>
-       </item>
-       <item row="2" column="0">
-        <widget class="QLabel" name="selectedTagsStaticLabel">
-         <property name="text">
-          <string>Tags:</string>
-         </property>
-        </widget>
-       </item>
-       <item row="1" column="1">
+       <item row="2" column="1">
         <layout class="QFormLayout" name="timesLayout">
          <item row="0" column="0">
           <widget class="QLabel" name="startTimeLabel">
@@ -177,6 +140,128 @@
           </layout>
          </item>
         </layout>
+       </item>
+       <item row="2" column="0">
+        <layout class="QFormLayout" name="selectedLeftformLayout">
+         <property name="fieldGrowthPolicy">
+          <enum>QFormLayout::AllNonFixedFieldsGrow</enum>
+         </property>
+         <item row="0" column="0">
+          <widget class="QLabel" name="selectedPodcastStaticLabel">
+           <property name="text">
+            <string>Podcast:</string>
+           </property>
+          </widget>
+         </item>
+         <item row="0" column="1">
+          <widget class="QLabel" name="selectedPodcastLabel">
+           <property name="text">
+            <string>&lt;not selected&gt;</string>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="0">
+          <widget class="QLabel" name="selectedEpisodeStaticLabel">
+           <property name="text">
+            <string>Episode:</string>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="1">
+          <widget class="QLabel" name="selectedEpisodeLabel">
+           <property name="text">
+            <string>&lt;not selected&gt;</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+       <item row="0" column="0" colspan="2">
+        <layout class="QHBoxLayout" name="horizontalLayout_3">
+         <item>
+          <widget class="QPushButton" name="createFragmentButton">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="toolTip">
+            <string>Create new fragment in </string>
+           </property>
+           <property name="text">
+            <string>Create new fragment</string>
+           </property>
+           <property name="icon">
+            <iconset theme="list-add">
+             <normaloff/>
+            </iconset>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QPushButton" name="editCurrentlyPlayingButton">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="text">
+            <string>Edit currently playing</string>
+           </property>
+           <property name="icon">
+            <iconset theme="document-edit">
+             <normaloff/>
+            </iconset>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <spacer name="horizontalSpacer">
+           <property name="orientation">
+            <enum>Qt::Horizontal</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>40</width>
+             <height>20</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+         <item>
+          <widget class="QPushButton" name="pushButton_3">
+           <property name="text">
+            <string>Save changes</string>
+           </property>
+           <property name="icon">
+            <iconset theme="document-save">
+             <normaloff/>
+            </iconset>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QPushButton" name="pushButton_4">
+           <property name="text">
+            <string>Remove</string>
+           </property>
+           <property name="icon">
+            <iconset theme="edit-delete">
+             <normaloff/>
+            </iconset>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+       <item row="3" column="0">
+        <widget class="QLabel" name="selectedTagsStaticLabel">
+         <property name="text">
+          <string>Tags:</string>
+         </property>
+        </widget>
        </item>
       </layout>
      </widget>
@@ -255,6 +340,14 @@
   </action>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
+ <customwidgets>
+  <customwidget>
+   <class>PositionWidget</class>
+   <extends>QWidget</extends>
+   <header>gui/positionwidget.hpp</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
  <resources/>
  <connections/>
 </ui>

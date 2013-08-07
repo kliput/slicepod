@@ -18,6 +18,7 @@ public:
 
 	bool loadMedia(LibraryItem *item);
 
+	LibraryItem *currentItem() const { return currentItem_; }
 
 private:
 	QMediaPlayer *mediaPlayer_;

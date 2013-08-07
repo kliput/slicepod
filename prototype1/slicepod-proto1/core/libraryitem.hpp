@@ -26,6 +26,7 @@ public:
 	int fragmentEndSec() const;
 	int episodeLengthSec() const;
 	QStringList fragmentTagsList() const;
+	bool isStartFragment();
 
 	EntityType<Fragment>::ptr fragmentPtr() const;
 
@@ -34,7 +35,6 @@ public:
 	const QTime &episodeLengthTime() const;
 
 	bool hasEnd() const;
-	bool isPlaying() const;
 
 	TagLib::Tag *fileTags() const;
 	QString fileFullPath() const;

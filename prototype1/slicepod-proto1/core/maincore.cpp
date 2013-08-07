@@ -16,11 +16,10 @@
 MainCore::MainCore(QObject *parent) :
 	QObject(parent)
 {
-	libraryModel_ = new LibraryModel(this);
+	player_ = new MusicPlayer(this);
+	libraryModel_ = new LibraryModel(player_, this);
 	proxyModel_ = new QSortFilterProxyModel(this);
 	proxyModel_->setSourceModel(libraryModel_);
-
-	player_ = new MusicPlayer(this);
 }
 
 void MainCore::loadDatabase()
@@ -155,8 +154,8 @@ Directory::ptr MainCore::scanDir(const char* dir_path, Podcast::ptr podcast)
 			continue; // skip file
 		}
 
-		QString title = QString::fromUtf8(f.tag()->title().toCString(true));
-		if (title == "") title = fi.fileName();
+		QString title = generate_episode_name(f.tag());
+		if (title.isEmpty()) title = fi.fileName();
 
 		// -- if user not specified Podcast, try to get it from tags --
 		if (podcast.isNull()) {
