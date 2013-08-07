@@ -24,7 +24,6 @@ SOURCES += main.cpp\
 	db_model/fragment.cpp\
 	db_model/tag.cpp \
     core/utils.cpp \
-	core/vlcmanager.cpp \
     core/sqlexception.cpp \
 	gui/mainwindow.cpp \
 	core/librarymodel.cpp \
@@ -34,7 +33,8 @@ SOURCES += main.cpp\
     core/maincore.cpp \
     gui/adddirectorydialog.cpp \
     gui/addingfilesdialog.cpp \
-    gui/positionwidget.cpp
+    gui/positionwidget.cpp \
+    core/vlcplayer.cpp
 
 HEADERS  +=\
 	db_model/directory.hpp\
@@ -47,7 +47,6 @@ HEADERS  +=\
     precompiled.hpp \
     export.hpp \
     db_model.hpp \
-    core/vlcmanager.hpp \
     db_model/db_constants.hpp \
     core/sqlexception.hpp \
 	gui/mainwindow.hpp \
@@ -59,7 +58,8 @@ HEADERS  +=\
     db_model/entitytype.hpp \
     gui/adddirectorydialog.hpp \
     gui/addingfilesdialog.hpp \
-    gui/positionwidget.hpp
+    gui/positionwidget.hpp \
+    core/vlcplayer.hpp
 
 FORMS    += gui/mainwindow.ui \
     gui/adddirectorydialog.ui \

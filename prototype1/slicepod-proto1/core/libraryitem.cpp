@@ -10,6 +10,10 @@
 #include "../core/sqlexception.hpp"
 #include "utils.hpp"
 
+#include <taglib/taglib.h>
+#include <taglib/fileref.h>
+#include <taglib/tag.h>
+
 /**
  * @brief LibraryItem::LibraryItem
  * @param fragment
@@ -100,6 +104,75 @@ bool LibraryItem::hasEnd() const
 {
 	return fragmentPtr_->end >= 0;
 }
+
+bool LibraryItem::isPlaying() const
+{
+	return false;
+}
+
+TagLib::Tag *LibraryItem::fileTags() const
+{
+	return fragmentPtr_->episode->fileInfo().tag();
+}
+
+QString LibraryItem::fileFullPath() const
+{
+	return fragmentPtr_->episode->fullPath();
+}
+
+//void LibraryItem::play() const
+//{
+//	libvlc_instance_t *instance;
+//	libvlc_media_player_t *media_player;
+//	libvlc_media_t *media;
+
+//	// -- load fragment data --
+//	qx::dao::fetch_by_id_with_relation("episode_id->directory_id", *this);
+//	qDebug() << "=== fname " << this->episode->fileName;
+//	qDebug() << "=== dir_path " << this->episode->directory->path;
+
+//	QString q_path = QString("%1/%2")
+//			.arg(this->episode->directory->path)
+//			.arg(this->episode->fileName);
+
+//	qDebug() << "=== full " << q_path;
+
+//	// 	const char* file_path = q_path.toStdString().c_str();
+
+//	std::cout << "=== char* " << q_path.toStdString().c_str() << std::endl;
+
+//	// load the vlc engine
+//	instance = libvlc_new(0, NULL);
+
+//	// create a new item
+//	media = libvlc_media_new_path(instance, q_path.toStdString().c_str());
+
+//	if (media == NULL) {
+//		qDebug() << "VLC error!";
+//	}
+
+//	// create a media play playing environment
+//	media_player = libvlc_media_player_new_from_media(media);
+
+//	// no need to keep the media now
+//	libvlc_media_release(media);
+
+//	// play the media_player
+//	libvlc_media_player_play(media_player);
+//	libvlc_media_player_set_time(media_player, libvlc_time_t(this->start)*1000);
+
+//	// sleep for length of the this (seconds)
+//	sleep(this->end - this->start);
+
+//	// stop playing
+//	libvlc_media_player_stop(media_player);
+
+//	// free the media_player
+//	libvlc_media_player_release(media_player);
+
+//	libvlc_release(instance);
+
+//}
 
 QStringList LibraryItem::fragmentTagsList() const
 {

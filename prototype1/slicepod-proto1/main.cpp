@@ -20,7 +20,6 @@
 #include "gui/mainwindow.hpp"
 #include "core/utils.hpp"
 #include "db_model.hpp"
-using namespace db::type;
 
 #include "core/maincore.hpp"
 

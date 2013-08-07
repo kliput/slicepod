@@ -59,6 +59,15 @@ MainWindow::MainWindow(MainCore *core, QWidget *parent) :
 	// set disabled
 	fillItemInfoView(nullptr);
 
+	connect(ui->libraryView, SIGNAL(activated(QModelIndex)),
+			this, SLOT(activateLibraryItem(QModelIndex)));
+
+	// -- player controls --
+	connect(ui->playButton, SIGNAL(clicked()),
+			this, SLOT(handlePlayButton()));
+
+	connect(core_->player(), SIGNAL(positionChanged(int)),
+			positionWidget_, SLOT(setPlayerPosition(int)));
 
 	// START ACTIONS
 	ui->libraryView->setDisabled(true); // before loading from database
@@ -112,6 +121,19 @@ void MainWindow::updateItemInfoView(const QModelIndex& current,
 
 }
 
+void MainWindow::activateLibraryItem(const QModelIndex &index)
+{
+	auto item = core_->libraryModel()->libraryItemData(index);
+
+	if (core_->player()->loadMedia(item)) {
+		positionWidget_->setMediaLength(item->episodeLengthSec());
+		core_->player()->play();
+	} else {
+		qFatal("Cannot load media into player!");
+		// TODO: handle
+	}
+}
+
 void MainWindow::showMessage(QMessageBox::Icon icon, const QString& title,
 						   const QString& text)
 {
@@ -142,4 +164,11 @@ void MainWindow::setSelectedFragmentPanelEnabled(bool state)
 	for (auto w: fragmentPanelElements) {
 		w->setEnabled(state);
 	}
+}
+
+
+
+void MainWindow::handlePlayButton()
+{
+
 }

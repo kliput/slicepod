@@ -5,6 +5,10 @@
 #include <QStringList>
 #include <QTime>
 
+#include <taglib/taglib.h>
+#include <taglib/fileref.h>
+#include <taglib/tag.h>
+
 #include "../db_model/db_constants.hpp"
 
 class Fragment;
@@ -14,7 +18,6 @@ class LibraryItem
 public:
 	LibraryItem(const EntityType<Fragment>::ptr &fragment);
 
-// -- getters --
 	const QString &podcastName() const;
 	const QString &episodeName() const;
 	const QString &fragmentTitle() const;
@@ -31,6 +34,10 @@ public:
 	const QTime &episodeLengthTime() const;
 
 	bool hasEnd() const;
+	bool isPlaying() const;
+
+	TagLib::Tag *fileTags() const;
+	QString fileFullPath() const;
 
 protected:
 	EntityType<Fragment>::ptr fragmentPtr_;

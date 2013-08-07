@@ -11,15 +11,16 @@
 #include "libraryitem.hpp"
 #include "../db_model.hpp"
 #include "sqlexception.hpp"
+#include "vlcplayer.hpp"
 
 MainCore::MainCore(QObject *parent) :
 	QObject(parent)
 {
 	libraryModel_ = new LibraryModel(this);
 	proxyModel_ = new QSortFilterProxyModel(this);
-
 	proxyModel_->setSourceModel(libraryModel_);
-//	proxyModel_->setFilterKeyColumn(5);
+
+	player_ = new VLCPlayer(this);
 }
 
 void MainCore::loadDatabase()

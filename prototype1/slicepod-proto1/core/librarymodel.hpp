@@ -3,6 +3,7 @@
 
 #include <QAbstractTableModel>
 #include <QList>
+#include <QImage>
 
 class LibraryItem;
 
@@ -33,6 +34,7 @@ public slots:
 
 private:
 	QList<LibraryItem*> libraryItems_;
+	QImage playImage_;
 };
 
 #endif // LIBRARYMODEL_HPP

@@ -9,6 +9,7 @@
 LibraryModel::LibraryModel(QObject *parent) :
 	QAbstractTableModel(parent)
 {
+	playImage_ = QImage(":/images/arrow-right-black.png");
 }
 
 int LibraryModel::rowCount(const QModelIndex& /*parent*/) const
@@ -29,9 +30,9 @@ QVariant LibraryModel::data(const QModelIndex &index, int role) const
 	}
 
 
-	if (role == Qt::DisplayRole) {
-		const LibraryItem* item = libraryItems_[index.row()];
+	const LibraryItem* item = libraryItems_[index.row()];
 
+	if (role == Qt::DisplayRole) {
 		switch (index.column()) {
 		case 0:
 			return item->podcastName();
@@ -48,6 +49,10 @@ QVariant LibraryModel::data(const QModelIndex &index, int role) const
 		default:
 			return QVariant();
 		}
+	} else if (role == Qt::DecorationRole && index.column() == 0
+			   && item->isPlaying()) {
+		// TODO: react on column order changes
+		return playImage_;
 	} else {
 		return QVariant();
 	}

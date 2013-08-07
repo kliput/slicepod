@@ -38,6 +38,8 @@ public slots:
 	void addDirectoryDialog();
 	void updateItemInfoView(const QModelIndex& current,
 										const QModelIndex& /*prev*/);
+	void activateLibraryItem(const QModelIndex& index);
+	void handlePlayButton();
 
 
 };

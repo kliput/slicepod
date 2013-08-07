@@ -9,6 +9,7 @@
 #include "librarymodel.hpp"
 #include "settingsmanager.hpp"
 #include "../db_model.hpp"
+#include "vlcplayer.hpp"
 
 class MainCore : public QObject
 {
@@ -25,6 +26,7 @@ public:
 // -- getters --
 	LibraryModel *libraryModel() { return libraryModel_; }
 	QSortFilterProxyModel *proxyModel() { return proxyModel_; }
+	VLCPlayer *player() { return player_; }
 
 signals:
 	void showMessage(QMessageBox::Icon icon, const QString& title,
@@ -37,6 +39,7 @@ private:
 	LibraryModel *libraryModel_;
 	QSortFilterProxyModel *proxyModel_;
 	SettingsManager settings_;
+	VLCPlayer *player_;
 };
 
 #endif // MAINCORE_HPP
