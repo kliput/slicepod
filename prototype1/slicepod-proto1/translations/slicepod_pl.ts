@@ -73,6 +73,10 @@
         <source>Tags</source>
         <translation>Etykiety</translation>
     </message>
+    <message>
+        <source>Beginning</source>
+        <translation>Rozpoczęcie</translation>
+    </message>
 </context>
 <context>
     <name>MainCore</name>
@@ -137,7 +141,7 @@ Błąd SQL: %2</translation>
     </message>
     <message>
         <source>Selected fragment</source>
-        <translation>Wybrany fragment</translation>
+        <translation type="obsolete">Wybrany fragment</translation>
     </message>
     <message>
         <source>Start time:</source>
@@ -162,6 +166,42 @@ Błąd SQL: %2</translation>
     <message>
         <source>Tags:</source>
         <translation>Etykiety:</translation>
+    </message>
+    <message>
+        <source>Now playing:</source>
+        <translation>Teraz odtwarzane:</translation>
+    </message>
+    <message>
+        <source>...</source>
+        <translation>...</translation>
+    </message>
+    <message>
+        <source>Fragment properties</source>
+        <translation>Właściwości fragmentu</translation>
+    </message>
+    <message>
+        <source>HH:mm:ss</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Create new fragment in </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Create new fragment</source>
+        <translation>Utwórz nowy fragment</translation>
+    </message>
+    <message>
+        <source>Edit currently playing</source>
+        <translation>Edytuj aktualnie odtwarzany</translation>
+    </message>
+    <message>
+        <source>Save changes</source>
+        <translation>Zapisz zmiany</translation>
+    </message>
+    <message>
+        <source>Remove</source>
+        <translation>Usuń</translation>
     </message>
 </context>
 <context>

@@ -34,7 +34,8 @@ SOURCES += main.cpp\
     gui/adddirectorydialog.cpp \
     gui/addingfilesdialog.cpp \
     gui/positionwidget.cpp \
-    core/musicplayer.cpp
+    core/musicplayer.cpp \
+    core/fragmentmarker.cpp
 
 HEADERS  +=\
 	db_model/directory.hpp\
@@ -59,7 +60,8 @@ HEADERS  +=\
     gui/adddirectorydialog.hpp \
     gui/addingfilesdialog.hpp \
     gui/positionwidget.hpp \
-    core/musicplayer.hpp
+    core/musicplayer.hpp \
+    core/fragmentmarker.hpp
 
 FORMS    += gui/mainwindow.ui \
     gui/adddirectorydialog.ui \

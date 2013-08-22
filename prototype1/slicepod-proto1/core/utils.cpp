@@ -96,7 +96,7 @@ QString generate_episode_name(TagLib::Tag *tag)
 
 	QString title;
 
-	static QRegExp icmpAlbumRegExp("Irish.*Celtic.*Music.*Podcast",
+	QRegExp icmpAlbumRegExp("Irish.*Celtic.*Music.*Podcast",
 								   Qt::CaseInsensitive);
 
 	QString album = taglib_qstring(tag->album());
@@ -104,7 +104,7 @@ QString generate_episode_name(TagLib::Tag *tag)
 	if (icmpAlbumRegExp.exactMatch(album)) {
 		// hooray! it's Marc's Gunn Irish And Celtic Music Podcast!
 		// try to simplify title (for 133 or older episodes)
-		static QRegExp icmpTitleRegExp(".*(#\\d.*)");
+		QRegExp icmpTitleRegExp(".*(#\\d.*)");
 
 		QString tmpTitle = taglib_qstring(tag->title());
 

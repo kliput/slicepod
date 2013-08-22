@@ -43,8 +43,10 @@ LibraryItem::LibraryItem(const Fragment::ptr &fragment)
 
 	// ---
 
+//	marker_ = FragmentMarker(this);
+
 	startTime_ = QTime().addSecs(fragmentStartSec());
-	endTime_ = QTime().addSecs(fragmentStartSec());
+	endTime_ = QTime().addSecs(fragmentEndSec());
 	episodeLengthTime_ = QTime().addSecs(episodeLengthSec());
 
 	qDebug("init episode lenght time: %s", qPrintable(episodeLengthTime_.toString("HH:mm:ss")));
@@ -126,8 +128,7 @@ QStringList LibraryItem::fragmentTagsList() const
 
 bool LibraryItem::isStartFragment()
 {
-	static bool is = fragmentPtr_->isStartFragment();
-	return is;
+	return fragmentPtr_->isStartFragment();
 }
 
 EntityType<Fragment>::ptr LibraryItem::fragmentPtr() const

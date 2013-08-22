@@ -4,26 +4,40 @@
 #include <QtGui>
 #include <QDebug>
 
-const int PositionWidget::arrowWidth = 16;
-const int PositionWidget::arrowHeight = 16;
-const int PositionWidget::barHeight = 8;
-
 PositionWidget::PositionWidget(QWidget *parent) :
 	QWidget(parent)
 {
 	setPlayerPosition(0);
-	setMinimumHeight(2*arrowHeight + barHeight);
+	setMinimumHeight(totalHeight());
 }
 
-inline int PositionWidget::bottomArrowY()
+constexpr int PositionWidget::bottomArrowY()
 {
-	static const int pos = arrowHeight+barHeight;
-	return pos;
+	return arrowHeight+barHeight;
 }
 
-inline int PositionWidget::translateArrowX(const int& positionSec)
+constexpr int PositionWidget::bottomArrowYOff()
+{
+	return bottomArrowY()+spaceOff;
+}
+
+constexpr int PositionWidget::totalHeight()
+{
+	return bottomArrowYOff()+arrowHeight;
+}
+
+int PositionWidget::translateArrowX(const int& positionSec)
 {
 	return (float(positionSec)/mediaLength)*(width()-arrowWidth);
+}
+
+
+inline void PositionWidget::putBottomArrow(const QImage& image,
+										   const int positionX, QPainter& painter,
+										   bool on)
+{
+	painter.drawImage(translateArrowX(positionX), on?
+						  bottomArrowY() : bottomArrowYOff(), image);
 }
 
 void PositionWidget::paintEvent(QPaintEvent *)
@@ -43,9 +57,9 @@ void PositionWidget::paintEvent(QPaintEvent *)
 					 width()-arrowWidth, barHeight);
 
 	painter.drawImage(translateArrowX(playerPosition), 0, playArrowImage);
-	painter.drawImage(translateArrowX(0), bottomArrowY(), startArrowImage);
-	painter.drawImage(translateArrowX(playerPosition), bottomArrowY(), endArrowImage);
 
+	putBottomArrow(startArrowImage, 0, painter, true);
+	putBottomArrow(endArrowImage, playerPosition+100, painter, false);
 }
 
 void PositionWidget::setPlayerPosition(int position)

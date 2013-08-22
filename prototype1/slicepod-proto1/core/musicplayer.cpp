@@ -51,8 +51,6 @@ void MusicPlayer::emitPositionUpdate(qint64 positionMs)
 		n_pos += 1;
 	}
 
-	qDebug() << "new position:" << positionMs << "->" << n_pos;
-
 	emit positionChanged(n_pos);
 }
 

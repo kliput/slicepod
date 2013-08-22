@@ -14,16 +14,23 @@ public:
 protected:
 	void paintEvent(QPaintEvent *) override;
 
+	inline void putBottomArrow(const QImage& image, const int positionX,
+							   QPainter& painter, bool on = false);
+
 	inline int translateArrowX(const int& positionSec);
-	static inline int bottomArrowY();
+
+	static constexpr int arrowWidth = 16;
+	static constexpr int arrowHeight = 16;
+	static constexpr int barHeight = 8;
+	static constexpr int spaceOff = 8;
+
+	static constexpr int bottomArrowY();
+	static constexpr int bottomArrowYOff();
+	static constexpr int totalHeight();
 
 private:
 	int mediaLength = 99;
 	int playerPosition = 0;
-
-	static const int arrowWidth;
-	static const int arrowHeight;
-	static const int barHeight;
 
 signals:
 

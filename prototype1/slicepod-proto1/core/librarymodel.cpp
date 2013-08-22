@@ -161,6 +161,14 @@ void LibraryModel::loadFromDatabase()
 		items << new LibraryItem(f);
 	}
 
+	// TODO
+
+	for (auto f: fragments) {
+		qDebug("episode: %s %p", qPrintable(f->episode->episodeName), f->episode.data());
+	}
+
+	// TODO
+
 	addItems(items);
 }
 

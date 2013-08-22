@@ -4,12 +4,14 @@
 #include <QString>
 #include <QStringList>
 #include <QTime>
+#include <QList>
 
 #include <taglib/taglib.h>
 #include <taglib/fileref.h>
 #include <taglib/tag.h>
 
 #include "../db_model/db_constants.hpp"
+//#include "fragmentmarker.hpp"
 
 class Fragment;
 
@@ -39,6 +41,8 @@ public:
 	TagLib::Tag *fileTags() const;
 	QString fileFullPath() const;
 
+//	QList<FragmentMarker>
+
 protected:
 	EntityType<Fragment>::ptr fragmentPtr_;
 
@@ -48,6 +52,8 @@ private:
 	QTime startTime_;
 	QTime endTime_;
 	QTime episodeLengthTime_;
+
+//	FragmentMarker marker_; // TODO
 
 };
 

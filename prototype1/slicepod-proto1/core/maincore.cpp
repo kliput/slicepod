@@ -200,11 +200,15 @@ Directory::ptr MainCore::scanDir(const char* dir_path, Podcast::ptr podcast)
 	}
 
 	// TODO: relations should be static
-	check_error(qx::dao::update_with_relation(
-					QStringList()
-					<< db::field::episode::START_FRAGMENT
-					<< db::field::episode::FRAGMENTS_LIST,
-					dir_model->episodesList));
+	static QStringList relations;
+	if (relations.isEmpty()) {
+		relations = QStringList()
+				<< db::field::episode::START_FRAGMENT
+				<< db::field::episode::FRAGMENTS_LIST;
+	}
+
+	check_error(qx::dao::update_with_relation(relations,
+											  dir_model->episodesList));
 
 	emit loadingProgress(tr("Podcast directory loading done!"), 100);
 
