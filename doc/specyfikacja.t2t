@@ -1,0 +1,64 @@
+= Slicepod =
+
+== Nazwy ==
+
+a.k.a. Podslicer
+
+
+== Cel ==
+
+Możliwość zaznaczania fragmentów w podcastach z dysku.
+
+
+== Słownik ==
+
+- **Odcinek** - ang. episode, plik muzyczny zawierający pojedynczy odcinek podcastu
+- **Fragment** - wycinek, fragment odcinka, w którym zaznaczony jest przynajmniej sekunda w danym odcinku
+
+== Wymagania ==
+
+=== Funkcjonalne ===
+
+- Tworzenie odcinków na podstawie plików i katalogów na dysku
+- Tworzenie fragmentów dla danego odcinka
+- Fragment posiada właściwości:
+  - początek -- sekunda rozpoczęcia fragmentu muzycznego w odcinku
+  - koniec (opcjonalne) -- jw. tylko zakończenie
+  - tytuł (opcjonalne)
+  - wykonawca (opcjonalne)
+  - ocena (opcjonalne)
+  - zbiór __tagów__
+  - metadane (opcjonalne) -- zawierają dodatkowe informacje w postaci: klucz -> wartość
+- Odcinek zawiera te same informacje co fragment (zbiór tagów, metadane itd.)
+- Edycja właściwości fragmentu
+- Posiadanie trwałej bazy fragmentów
+- Odtwarzanie całych odcinków i fragmentów
+- Posiadanie biblioteki odcinków i fragmentów
+  - użytkownik może wybrać odcinek lub fragment zarejestrowany w bibliotece
+- Układanie list odtwarzania z fragmentów
+- Każdy odcinek ma specjalny fragment "start", który wskazuje na początek odcinka
+- Filtrowanie biblioteki ze względu na:
+  - przynależność do podcastu
+  - osobno pola: tytuł, wykonawca, ocena (np. wyszukuje wykonawcę "Celticana", ale jeśli tytuł to "Celticana", to nie bierze go pod uwagę)
+  - osobno pola metadanych
+  - zbiór tagów (obecność, wykluczanie, zależności logiczne i/lub)
+  - czy fragment jest początkiem odcinka
+
+
+- Monitorowanie katalogu z plikami
+- System przyrostowy - możliwa zmiana modelu bazy z automatyczną konwersją
+- Użytkownik po zmianie ścieżki do katalogu oraz nazw plików może dość łatwo podać nowe ścieżki
+  - **realizacja:** przy zmianach wielu nazw - sumy kontrolne plików? - podpowiadanie które pliki pasują, albo długość utworu (nie ulega zmianie)
+
+=== Dalsze ===
+
+- eksport/import definicji dla jednego pliku
+
+
+=== Niefunkcjonalne ===
+
+- Pliki bazy:
+  - możliwe do ręcznej edycji poza programem
+  - nie ruszają plików z muzyką
+- Wieloplatformowe (Linux, Windows)
+- Metadane fragmentów mają być możliwie rozszerzalne

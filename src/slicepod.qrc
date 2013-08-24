@@ -1,0 +1,10 @@
+<RCC>
+    <qresource prefix="/">
+        <file>translations/slicepod_pl.qm</file>
+        <file>images/arrow-down-double-blue.png</file>
+        <file>images/arrow-up-green.png</file>
+        <file>images/arrow-up-red.png</file>
+        <file>images/arrow-up-yellow.png</file>
+        <file>images/arrow-right-black.png</file>
+    </qresource>
+</RCC>
