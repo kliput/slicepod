@@ -8,7 +8,9 @@
 
 #include "librarymodel.hpp"
 #include "settingsmanager.hpp"
-#include "../db_model.hpp"
+#include "db_engine/databaseengine.hpp"
+#include "db_engine/podcast.hpp"
+#include "db_engine/directory.hpp"
 #include "musicplayer.hpp"
 
 class MainCore : public QObject
@@ -19,8 +21,8 @@ public:
 
 	void loadDatabase();
 	void addPodcastDirectory(const QString& path,
-							 const EntityType<Podcast>::ptr &podcast);
-	Directory::ptr scanDir(const char* dir_path, Podcast::ptr podcast
+							 const Podcast::ptr &podcast);
+	Directory::ptr scanDir(const QString &dir_path, Podcast::ptr podcast
 						   = Podcast::ptr());
 	
 // -- getters --
@@ -40,6 +42,7 @@ private:
 	QSortFilterProxyModel *proxyModel_;
 	SettingsManager settings_;
 	MusicPlayer *player_;
+	DatabaseEngine *db_;
 };
 
 #endif // MAINCORE_HPP

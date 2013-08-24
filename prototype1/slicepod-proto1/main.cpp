@@ -11,15 +11,13 @@
  * details.
  */
 
-#include "precompiled.hpp"
-
 #include <QApplication>
 #include <QtCore>
 #include <QtGui>
 
 #include "gui/mainwindow.hpp"
 #include "core/utils.hpp"
-#include "db_model.hpp"
+#include "db_engine/databaseengine.hpp"
 
 #include "core/maincore.hpp"
 

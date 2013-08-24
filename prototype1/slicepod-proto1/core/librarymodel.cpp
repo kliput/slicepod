@@ -3,8 +3,9 @@
 #include <QImage>
 
 #include "librarymodel.hpp"
-#include "../core/libraryitem.hpp"
-#include "../db_model.hpp"
+#include "core/libraryitem.hpp"
+#include "db_engine/databaseengine.hpp"
+#include "db_engine/fragment.hpp"
 #include "utils.hpp"
 #include "musicplayer.hpp"
 
@@ -16,8 +17,8 @@ LibraryModel::LibraryModel(MusicPlayer *musicPlayer, QObject *parent) :
 	startFragmentIcon_ = QIcon::fromTheme("flag-green");
 
 	// TODO ?
-	qAssert(!startFragmentIcon_.isNull());
-	qAssert(!playImage_.isNull());
+	Q_ASSERT(!startFragmentIcon_.isNull());
+	Q_ASSERT(!playImage_.isNull());
 }
 
 int LibraryModel::rowCount(const QModelIndex& /*parent*/) const
@@ -130,6 +131,7 @@ void LibraryModel::addItem(LibraryItem *item)
 	endInsertRows();
 }
 
+//! Add items (rows) to list model.
 void LibraryModel::addItems(QList<LibraryItem *> itemsList)
 {
 	int first, last;
@@ -141,33 +143,15 @@ void LibraryModel::addItems(QList<LibraryItem *> itemsList)
 	endInsertRows();
 }
 
+//! Creates list of LibraryItems constructed with all fragments from database
+//! engine cache. Global DatabaseEngine instance is used.
+//! NOTICE: Fragments must be previously loaded into engine's cache.
 void LibraryModel::loadFromDatabase()
 {
-	Fragment::ptr_list fragments;
-
-	static QStringList relations;
-	if (relations.isEmpty()) {
-		relations << (QStringList()
-					  << db::field::fragment::EPISODE
-					  << db::field::episode::PODCAST
-					  ).join("->");
-		relations << QString(db::field::fragment::TAGS_LIST);
-	}
-
-	check_error(qx::dao::fetch_all_with_relation(relations, fragments));
-
 	QList<LibraryItem*> items;
-	for (auto f: fragments) {
+	for (const Fragment::ptr& f: db::global_engine()->list<Fragment>()) {
 		items << new LibraryItem(f);
 	}
-
-	// TODO
-
-	for (auto f: fragments) {
-		qDebug("episode: %s %p", qPrintable(f->episode->episodeName), f->episode.data());
-	}
-
-	// TODO
 
 	addItems(items);
 }

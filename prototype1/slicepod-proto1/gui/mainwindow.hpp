@@ -8,8 +8,8 @@
 #include <QtGui>
 
 #include "positionwidget.hpp"
-#include "../core/maincore.hpp"
-#include "../core/librarymodel.hpp"
+#include "core/maincore.hpp"
+#include "core/librarymodel.hpp"
 
 namespace Ui {
 class MainWindow;
@@ -20,7 +20,7 @@ class MainWindow : public QMainWindow
 	Q_OBJECT
 	
 public:
-	explicit MainWindow(MainCore *core, QWidget *parent = 0);
+	explicit MainWindow(MainCore* core, QWidget* parent = nullptr);
 	~MainWindow();
 
 	void fillItemInfoView(const LibraryItem *item);

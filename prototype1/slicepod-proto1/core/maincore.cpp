@@ -9,7 +9,10 @@
 #include "sqlexception.hpp"
 #include "utils.hpp"
 #include "libraryitem.hpp"
-#include "../db_model.hpp"
+#include "db_engine/databaseengine.hpp"
+#include "db_engine/directory.hpp"
+#include "db_engine/episode.hpp"
+#include "db_engine/fragment.hpp"
 #include "sqlexception.hpp"
 #include "musicplayer.hpp"
 
@@ -20,27 +23,27 @@ MainCore::MainCore(QObject *parent) :
 	libraryModel_ = new LibraryModel(player_, this);
 	proxyModel_ = new QSortFilterProxyModel(this);
 	proxyModel_->setSourceModel(libraryModel_);
+	db_ = db::global_engine();
 }
 
 void MainCore::loadDatabase()
 {
 	// -- check database --
 	QString dbPath = settings_.dbPath();
-	QFile dbFile(dbPath);
-	if (!dbFile.exists()) {
+
+	bool reCreate = !QFile(dbPath).exists();
+
+	qDebug() << "Connecting to database in file " << dbPath;
+	db_->open(dbPath);
+
+	if (reCreate) {
 		qDebug() << "Database file does not exists, creating...";
-		db_connect(dbPath); // creates file if does not exists
-		db_create_tables(); // NOTICE: there are no errors here
+		db_->createAllTables();
 		emit showMessage(QMessageBox::Information, tr("Database information"),
 				  QString(tr("New database created.")));
-	} else {
-		qDebug() << "Connecting to database in file " << dbPath;
-		// TODO: validate, if not valid, ask user to recreate database
-		db_connect(dbPath);
 	}
 
-
-
+	db_->fetchAllTables();
 
 	try {
 		libraryModel_->loadFromDatabase();
@@ -53,18 +56,18 @@ void MainCore::loadDatabase()
 }
 
 void MainCore::addPodcastDirectory(const QString &path,
-								   const EntityType<Podcast>::ptr& podcast)
+								   const Podcast::ptr& podcast)
 {
 	try {
-		auto dir = scanDir(path.toUtf8(), podcast);
+		Directory::ptr dir = scanDir(path.toUtf8(), podcast);
 
 		emit loadingProgress(tr("Updating media library..."), 100);
 
 		QList<LibraryItem*> newItems;
 
-		for (auto ep: dir->episodesList) {
-			for (auto fr: ep->fragmentsList) {
-				newItems << new LibraryItem(fr);
+		for (const Episode::ptr& ep: dir->getEpisodesList()) {
+			for (const Fragment::ptr fr: ep->getFragmentsList()) {
+				newItems << new LibraryItem(fr); // TODO: remember about allocation...
 			}
 		}
 
@@ -89,7 +92,7 @@ void MainCore::addPodcastDirectory(const QString &path,
  *  assosciates every Episode with this Podcast.
  * @return Smart pointer for Directory entity associated with directory path.
  */
-Directory::ptr MainCore::scanDir(const char* dir_path, Podcast::ptr podcast)
+Directory::ptr MainCore::scanDir(const QString& dir_path, Podcast::ptr podcast)
 {
 	/* Procedure:
 	 * - check path and create directory entity
@@ -110,8 +113,10 @@ Directory::ptr MainCore::scanDir(const char* dir_path, Podcast::ptr podcast)
 		return Directory::ptr(nullptr);
 	}
 
-	Directory::ptr dir_model(new Directory(dir_path));
-	check_error(qx::dao::save(dir_model), "saving first directory model");
+	Directory::ptr dir_model = Directory(dir_path).save();
+
+//	Directory::ptr dir_model(new Directory(dir_path));
+//	check_error(qx::dao::save(dir_model), "saving first directory model");
 
 	// -- scan files --
 	QStringList filters;
@@ -124,6 +129,8 @@ Directory::ptr MainCore::scanDir(const char* dir_path, Podcast::ptr podcast)
 	// TODO: make better progress informations
 
 	emit loadingProgress(tr("Scanning files..."), 0);
+
+	QList<Episode> episodesToAdd;
 
 	for (const QFileInfo& fi: files_list) {
 
@@ -160,55 +167,52 @@ Directory::ptr MainCore::scanDir(const char* dir_path, Podcast::ptr podcast)
 		// -- if user not specified Podcast, try to get it from tags --
 		if (podcast.isNull()) {
 
-			QString album = QString::fromUtf8(f.tag()->album().toCString(true));
+			// TODO: generate_podcast_name function
 
-			qx::QxSqlQuery pod_query;
-			// TODO: ignore case, etc.
-			pod_query.where(db::field::podcast::NAME).isEqualTo(album);
-			Podcast::ptr_list podcasts_list;
-			check_error(qx::dao::fetch_by_query(pod_query, podcasts_list));
+			QString album = taglib_qstring(f.tag()->album());
 
-			if (podcasts_list.size() > 0) {
-				// TODO behaviour on size > 1
-				podcast = podcasts_list[0];
-			} else {
-				podcast = Podcast::ptr(new Podcast(album));
-				check_error(qx::dao::save(podcast));
+			// check if there is already Podcast of generated name in db
+			for (const Podcast::ptr& pp: db_->list<Podcast>()) {
+				if (pp->getName() == album) {
+					podcast = pp;
+					break;
+				}
+			}
+
+			if (podcast.isNull()) {
+				podcast = Podcast(album).save();
 			}
 		}
 
 		// -- adding episode to database --
 		qDebug("adding episode to database: %s", qPrintable(title));
-		Episode::ptr ep_model(new Episode(fi.fileName(), title,
-										 dir_model, podcast));
-		dir_model->episodesList << ep_model;
+
+		episodesToAdd << Episode(fi.fileName(), title, podcast, dir_model);
+
 	}
 
 	emit loadingProgress(tr("Saving episodes information to database..."), 33);
 
-	check_error(qx::dao::update_with_all_relation(dir_model), "updating "
-				"directory model with episodes");
+//	check_error(qx::dao::update_with_all_relation(dir_model), "updating "
+//				"directory model with episodes");
 
-	emit loadingProgress(tr("Creating and saving start fragments..."), 66);
+	Episode::ptr_list addedEpisodes = db_->insertMultiple<Episode>(episodesToAdd);
 
-	qDebug() << "adding start fragments to saved episodes:";
-	for (const Episode::ptr& e: dir_model->episodesList) {
+	emit loadingProgress(tr("Creating and saving episodes starting points..."), 66);
 
-		qDebug("id: %ld, name: %s", (long) e->id, qPrintable(e->episodeName));
+	qDebug() << "adding start fragments to saved episodes";
+	QList<Fragment> startFragmentsToAdd;
+	for (const Episode::ptr& e: addedEpisodes) {
+		startFragmentsToAdd << Fragment(e, 0, QString());
+	}
+	Fragment::ptr_list addedStartFragments = db_->insertMultiple(startFragmentsToAdd);
 
-		create_start_fragment(e);
+	for (const Fragment::ptr fp: addedStartFragments) {
+		fp->getEpisode()->setStartFragment(fp);
 	}
 
-	// TODO: relations should be static
-	static QStringList relations;
-	if (relations.isEmpty()) {
-		relations = QStringList()
-				<< db::field::episode::START_FRAGMENT
-				<< db::field::episode::FRAGMENTS_LIST;
-	}
-
-	check_error(qx::dao::update_with_relation(relations,
-											  dir_model->episodesList));
+	// update episodes info about start fragments
+	db_->updateMultiple<Episode>(addedEpisodes); // TODO: this can be done in background!
 
 	emit loadingProgress(tr("Podcast directory loading done!"), 100);
 

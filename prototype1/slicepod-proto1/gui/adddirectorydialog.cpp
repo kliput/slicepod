@@ -3,7 +3,6 @@
 
 #include <QFileDialog>
 
-#include "../db_model.hpp"
 #include "addingfilesdialog.hpp"
 
 AddDirectoryDialog::AddDirectoryDialog(MainCore *core, QWidget *parent) :
@@ -44,10 +43,10 @@ void AddDirectoryDialog::selectDirectory()
 
 void AddDirectoryDialog::okButton()
 {
-	EntityType<Podcast>::ptr podcast(nullptr);
+	BaseRecord<Podcast>::ptr podcast(nullptr);
 	if (ui->assignToOneRadio->isChecked()) {
 		// TODO: choose podcast from db
-		podcast = EntityType<Podcast>::ptr(nullptr);
+		podcast = BaseRecord<Podcast>::ptr(nullptr);
 	} else if (ui->assignAutomaticRadio->isChecked()) {
 		auto progressDialog = new AddingFilesDialog(this->parentWidget());
 		progressDialog->setVisible(true);

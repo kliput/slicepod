@@ -12,18 +12,15 @@
 
 Q_DECLARE_METATYPE(QMessageBox::Icon)
 
-#include <QxOrm.h>
-
 // TODO: create LibraryManager class to manage library (move methods from here)
-#include "../core/utils.hpp"
-#include "../db_model.hpp"
-#include "../core/libraryitem.hpp"
-#include "../core/settingsmanager.hpp"
+#include "core/utils.hpp"
+#include "core/libraryitem.hpp"
+#include "core/settingsmanager.hpp"
 
-#include "../core/librarymodel.hpp"
+#include "core/librarymodel.hpp"
 #include <QSortFilterProxyModel>
 
-MainWindow::MainWindow(MainCore *core, QWidget *parent) :
+MainWindow::MainWindow(MainCore* core, QWidget* parent) :
 	QMainWindow(parent),
 	ui(new Ui::MainWindow),
 	core_(core)

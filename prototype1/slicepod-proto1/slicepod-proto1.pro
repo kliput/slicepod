@@ -10,19 +10,11 @@ QT       += gui
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
-TARGET = podslicer
-
-PRECOMPILED_HEADER = precompiled.hpp
+TARGET = slicepod
 
 TRANSLATIONS = translations/slicepod_pl.ts
 
 SOURCES += main.cpp\
-	db_model/directory.cpp\
-	db_model/episode.cpp\
-	db_model/playlist.cpp\
-	db_model/podcast.cpp\
-	db_model/fragment.cpp\
-	db_model/tag.cpp \
     core/utils.cpp \
     core/sqlexception.cpp \
 	gui/mainwindow.cpp \
@@ -35,33 +27,43 @@ SOURCES += main.cpp\
     gui/addingfilesdialog.cpp \
     gui/positionwidget.cpp \
     core/musicplayer.cpp \
-    core/fragmentmarker.cpp
+    core/fragmentmarker.cpp \
+    db_engine/tag.cpp \
+    db_engine/podcast.cpp \
+    db_engine/playlist.cpp \
+    db_engine/fragmenttagmap.cpp \
+    db_engine/fragmentplaylistmap.cpp \
+    db_engine/fragment.cpp \
+    db_engine/episode.cpp \
+    db_engine/directory.cpp \
+    db_engine/databaseengine.cpp \
+    db_engine/baserecord.cpp
 
 HEADERS  +=\
-	db_model/directory.hpp\
-	db_model/episode.hpp\
-	db_model/playlist.hpp\
-	db_model/podcast.hpp\
-	db_model/fragment.hpp\
-	db_model/tag.hpp \
     core/utils.hpp \
     precompiled.hpp \
-    export.hpp \
-    db_model.hpp \
-    db_model/db_constants.hpp \
     core/sqlexception.hpp \
 	gui/mainwindow.hpp \
 	core/librarymodel.hpp \
 	core/libraryitem.hpp \
     core/settingsmanager.hpp \
     core/testing.hpp \
-    core/maincore.hpp \
-    db_model/entitytype.hpp \
+	core/maincore.hpp \
     gui/adddirectorydialog.hpp \
     gui/addingfilesdialog.hpp \
     gui/positionwidget.hpp \
     core/musicplayer.hpp \
-    core/fragmentmarker.hpp
+    core/fragmentmarker.hpp \
+    db_engine/tag.hpp \
+    db_engine/podcast.hpp \
+    db_engine/playlist.hpp \
+    db_engine/fragmenttagmap.hpp \
+    db_engine/fragmentplaylistmap.hpp \
+    db_engine/fragment.hpp \
+    db_engine/episode.hpp \
+    db_engine/directory.hpp \
+    db_engine/databaseengine.hpp \
+    db_engine/baserecord.hpp
 
 FORMS    += gui/mainwindow.ui \
     gui/adddirectorydialog.ui \

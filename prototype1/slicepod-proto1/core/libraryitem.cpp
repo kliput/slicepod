@@ -1,14 +1,9 @@
-#include "../precompiled.hpp"
-
 #include <QtCore>
 
 #include "libraryitem.hpp"
-#include "../db_model/db_constants.hpp"
-#include "../db_model/entitytype.hpp"
-#include "../db_model/tag.hpp"
-#include "../db_model/fragment.hpp"
-#include "../core/sqlexception.hpp"
+#include "core/sqlexception.hpp"
 #include "utils.hpp"
+#include "db_engine/fragment.hpp"
 
 #include <taglib/taglib.h>
 #include <taglib/fileref.h>
@@ -23,26 +18,6 @@ LibraryItem::LibraryItem(const Fragment::ptr &fragment)
 	:
 	  fragmentPtr_(fragment)
 {
-	// -- complete data from database if needed
-
-	QStringList relations;
-
-	if (fragment->episode.isNull() || fragment->episode->podcast.isNull()) {
-		relations << db::field::fragment::EPISODE;
-		relations << QString("%1->%2").arg(db::field::fragment::EPISODE,
-										   db::field::episode::PODCAST);
-	}
-
-	if (fragment->tagsList.isEmpty()) {
-		relations << db::field::fragment::TAGS_LIST;
-	}
-
-	if (!relations.isEmpty()) {
-		check_error(qx::dao::fetch_by_id_with_relation(relations, fragmentPtr_));
-	}
-
-	// ---
-
 //	marker_ = FragmentMarker(this);
 
 	startTime_ = QTime().addSecs(fragmentStartSec());
@@ -54,37 +29,37 @@ LibraryItem::LibraryItem(const Fragment::ptr &fragment)
 
 const QString &LibraryItem::podcastName() const
 {
-	return fragmentPtr_->episode->podcast->name;
+	return fragmentPtr_->getEpisode()->getPodcast()->getName();
 }
 
 const QString &LibraryItem::episodeName() const
 {
-	return fragmentPtr_->episode->episodeName;
+	return fragmentPtr_->getEpisode()->getEpisodeName();
 }
 
 const QString &LibraryItem::fragmentTitle() const
 {
-	return fragmentPtr_->title;
+	return fragmentPtr_->getTitle();
 }
 
 const QString &LibraryItem::fragmentArtist() const
 {
-	return fragmentPtr_->artist;
+	return fragmentPtr_->getArtist();
 }
 
 int LibraryItem::fragmentStartSec() const
 {
-	return fragmentPtr_->start;
+	return fragmentPtr_->getStart();
 }
 
 int LibraryItem::fragmentEndSec() const
 {
-	return fragmentPtr_->end;
+	return fragmentPtr_->getEnd();
 }
 
 int LibraryItem::episodeLengthSec() const
 {
-	return fragmentPtr_->episode->audioLength(); // TODO check if it's fetched?
+	return fragmentPtr_->getEpisode()->audioLength(); // TODO check if it's fetched?
 }
 
 const QTime& LibraryItem::fragmentStartTime() const
@@ -104,24 +79,24 @@ const QTime& LibraryItem::episodeLengthTime() const
 
 bool LibraryItem::hasEnd() const
 {
-	return fragmentPtr_->end >= 0;
+	return fragmentPtr_->getEnd() >= 0;
 }
 
 TagLib::Tag *LibraryItem::fileTags() const
 {
-	return fragmentPtr_->episode->fileInfo().tag();
+	return fragmentPtr_->getEpisode()->fileInfo().tag();
 }
 
 QString LibraryItem::fileFullPath() const
 {
-	return fragmentPtr_->episode->fullPath();
+	return fragmentPtr_->getEpisode()->getFullPath();
 }
 
 QStringList LibraryItem::fragmentTagsList() const
 {
 	QStringList slist;
-	for (Tag::ptr t: fragmentPtr_->tagsList) {
-		slist << t->name;
+	for (Tag::ptr t: fragmentPtr_->getTagsList()) {
+		slist << t->getName();
 	}
 	return slist;
 }
@@ -131,7 +106,7 @@ bool LibraryItem::isStartFragment()
 	return fragmentPtr_->isStartFragment();
 }
 
-EntityType<Fragment>::ptr LibraryItem::fragmentPtr() const
+BaseRecord<Fragment>::ptr LibraryItem::fragmentPtr() const
 {
 	return fragmentPtr_;
 }

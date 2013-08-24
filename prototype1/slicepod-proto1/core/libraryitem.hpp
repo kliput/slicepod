@@ -10,7 +10,8 @@
 #include <taglib/fileref.h>
 #include <taglib/tag.h>
 
-#include "../db_model/db_constants.hpp"
+#include "db_engine/baserecord.hpp"
+
 //#include "fragmentmarker.hpp"
 
 class Fragment;
@@ -18,7 +19,7 @@ class Fragment;
 class LibraryItem
 {
 public:
-	LibraryItem(const EntityType<Fragment>::ptr &fragment);
+	LibraryItem(const BaseRecord<Fragment>::ptr &fragment);
 
 	const QString &podcastName() const;
 	const QString &episodeName() const;
@@ -30,7 +31,7 @@ public:
 	QStringList fragmentTagsList() const;
 	bool isStartFragment();
 
-	EntityType<Fragment>::ptr fragmentPtr() const;
+	BaseRecord<Fragment>::ptr fragmentPtr() const;
 
 	const QTime &fragmentStartTime() const;
 	const QTime &fragmentEndTime() const;
@@ -44,7 +45,7 @@ public:
 //	QList<FragmentMarker>
 
 protected:
-	EntityType<Fragment>::ptr fragmentPtr_;
+	BaseRecord<Fragment>::ptr fragmentPtr_;
 
 private:
 	// NOTICE: these fields values should be updated
