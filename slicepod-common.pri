@@ -1,11 +1,6 @@
 QMAKE_CXX = g++-4.8
-QMAKE_CXXFLAGS += -Wall -Wno-unused-local-typedefs -std=c++11
-
-CONFIG(debug, debug|release) {
-	QMAKE_CXXFLAGS -gdwarf-3
-} else {
-
-}
+QMAKE_CXXFLAGS += -Wall -Wextra -Wno-unused-local-typedefs -std=c++11
+QMAKE_CXXFLAGS_DEBUG += -gdwarf-3
 
 TEMPLATE = app
 

@@ -4,6 +4,11 @@
 #
 #-------------------------------------------------
 
+# CONFIG += debug
+
+CONFIG -= debug
+CONFIG += release
+
 include(slicepod-common.pri)
 
 QT       += gui
