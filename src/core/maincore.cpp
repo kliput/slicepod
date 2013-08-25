@@ -1,6 +1,11 @@
 #include <QtCore>
 #include <QDebug>
+
+#if QT_VERSION >= 0x050000
+#include <QtConcurrent/QtConcurrentRun>
+#else
 #include <QtConcurrentRun>
+#endif
 
 #include <taglib/taglib.h>
 #include <taglib/fileref.h>

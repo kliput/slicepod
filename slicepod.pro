@@ -4,10 +4,10 @@
 #
 #-------------------------------------------------
 
-# CONFIG += debug
+CONFIG += debug
 
-CONFIG -= debug
-CONFIG += release
+#CONFIG -= debug
+#CONFIG += release
 
 include(slicepod-common.pri)
 

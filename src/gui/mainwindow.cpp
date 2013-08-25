@@ -4,9 +4,14 @@
 #include <QtCore>
 #include <QtGui>
 #include <QWidget>
-#include <QtConcurrentRun>
 #include <QFutureWatcher>
 #include <QMetaType>
+
+#if QT_VERSION >= 0x050000
+#include <QtConcurrent/QtConcurrentRun>
+#else
+#include <QtConcurrentRun>
+#endif
 
 #include "adddirectorydialog.hpp"
 

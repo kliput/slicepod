@@ -219,7 +219,10 @@ QList<QSharedPointer<T>> DatabaseEngine::insertMultiple(QList<T> records)
 		query.addBindValue(mv);
 	}
 
+	database_.transaction();
 	bool status = query.execBatch();
+	database_.commit();
+
 	if (status) {
 
 		auto output = fetchOnlyNew<T>();
@@ -323,7 +326,10 @@ bool DatabaseEngine::updateMultiple(QList<QSharedPointer<T>> records)
 		query.addBindValue(mv);
 	}
 
+	database_.transaction();
 	bool status = query.execBatch();
+	database_.commit();
+
 	if (status) {
 		qDebug("Updated multiple records in %s", T::TABLE_NAME);
 		return true;

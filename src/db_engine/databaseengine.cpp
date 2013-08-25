@@ -60,12 +60,32 @@ bool DatabaseEngine::open(const QString& path)
 		return false;
 	}
 
-	QSqlQuery pragmaForeign("PRAGMA foreign_keys = ON");
+	{
+		QSqlQuery pragmaForeign("PRAGMA foreign_keys = ON");
 
-	if (!pragmaForeign.exec()) {
-		qCritical("Cannot set PRAGMA foreign_keys to ON. Wrong relations will not "
-			   "be detcted. SQL error: %s",
-			   qPrintable(pragmaForeign.lastError().text()));
+		if (!pragmaForeign.exec()) {
+			qCritical("Cannot set PRAGMA foreign_keys to ON. Wrong relations will not "
+				   "be detcted. SQL error: %s",
+				   qPrintable(pragmaForeign.lastError().text()));
+		}
+	}
+
+	{
+		QSqlQuery pragmaSynchronous("PRAGMA synchronous = OFF");
+		if (!pragmaSynchronous.exec()) {
+			qWarning("Cannot set PRAGMA synchronous to OFF. Database operations will be slower but safer. "
+				   "SQL error: %s",
+				   qPrintable(pragmaSynchronous.lastError().text()));
+		}
+	}
+
+	{
+		QSqlQuery pragmaJournal("PRAGMA journal_mode = MEMORY");
+		if (!pragmaJournal.exec()) {
+			qWarning("Cannot set PRAGMA journal_mode to MEMORY. Database operations will be slower but safer. "
+				   "SQL error: %s",
+				   qPrintable(pragmaJournal.lastError().text()));
+		}
 	}
 
 	return true;

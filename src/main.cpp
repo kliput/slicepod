@@ -30,7 +30,12 @@ QSqlError err;
 int main(int argc, char *argv[])
 {
 	QApplication a(argc, argv);
+
+#if QT_VERSION >= 0x050000
+#else
 	QTextCodec::setCodecForTr(QTextCodec::codecForName("UTF-8"));
+#endif
+
 
 	QTranslator qtTranslator;
 	qtTranslator.load("qt_" + QLocale::system().name(),
