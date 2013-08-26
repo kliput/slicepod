@@ -3,7 +3,8 @@
 #include "musicplayer.hpp"
 #include "libraryitem.hpp"
 
-#include <QtMultimediaKit/QMediaContent>
+//#include <QtMultimediaKit/QMediaContent>
+#include <QtMultimedia/QMediaContent>
 
 #include <taglib/taglib.h>
 #include <taglib/fileref.h>

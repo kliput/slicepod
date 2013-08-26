@@ -154,7 +154,7 @@ Directory::ptr MainCore::scanDir(const QString& dir_path, Podcast::ptr podcast)
 		}
 
 		// TODO: test UTF-8
-		TagLib::FileRef f(file_path, false);
+		TagLib::FileRef f(file_path.data(), false);
 
 		if (f.isNull()) {
 			qWarning() << "file cannot be read by TagLib: " << file_path;
