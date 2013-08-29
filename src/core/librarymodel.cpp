@@ -35,8 +35,7 @@ LibraryModel::LibraryModel(DatabaseEngine* dbEngine, MusicPlayer* musicPlayer, Q
 	playImage_ = QImage(":/images/arrow-right-black.png");
 	startFragmentIcon_ = QIcon::fromTheme("flag-green");
 
-	// TODO ?
-	Q_ASSERT(!startFragmentIcon_.isNull());
+	//Q_ASSERT(!startFragmentIcon_.isNull()); // TODO: bundle icon theme
 	Q_ASSERT(!playImage_.isNull());
 }
 
@@ -155,7 +154,8 @@ void LibraryModel::addItems(QList<LibraryItem *> itemsList)
 {
 	int first, last;
 	first = libraryItems_.size();
-	last = first + itemsList.size() - 1;
+	// prevent first > last if libraryItems_.size() < 0
+	last = itemsList.size() == 0 ? first : first + itemsList.size() - 1;
 
 	beginInsertRows(QModelIndex(), first, last);
 	libraryItems_ << itemsList;

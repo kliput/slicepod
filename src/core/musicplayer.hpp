@@ -21,8 +21,15 @@
 
 #include <QtCore>
 
+#if QT_VERSION >= 0x050000
+#include <QtMultimedia/QAudio>
+#include <QtMultimedia/QMediaPlayer>
+#else
 #include <QtMultimediaKit/QAudio>
 #include <QtMultimediaKit/QMediaPlayer>
+#endif
+
+
 #include "libraryitem.hpp"
 
 constexpr int POSITION_UPDATE_FREQ = 1000;

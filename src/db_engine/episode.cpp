@@ -149,7 +149,7 @@ TagLib::FileRef Episode::fileInfo() const
 
 	QString fpath = this->getFullPath();
 	// read audio info
-	TagLib::FileRef file_ref(fpath.toUtf8());
+    TagLib::FileRef file_ref(fpath.toUtf8().data());
 	if (!file_ref.isNull())
 	{
 		return file_ref;

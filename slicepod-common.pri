@@ -1,17 +1,20 @@
-QMAKE_CXX = g++-4.8
+unix: QMAKE_CXX = g++-4.8
+
 QMAKE_CXXFLAGS += -Wall -Wextra -Wno-unused-local-typedefs -std=c++11
 QMAKE_CXXFLAGS_DEBUG += -gdwarf-3
 
 TEMPLATE = app
 
 QT += core sql
+greaterThan(QT_MAJOR_VERSION, 4): QT += multimedia
 
 CONFIG -= app_bundle
 
-TAGLIB_PATH = /usr/
+win32: TAGLIB_PATH = G:\biblioteki\taglib-1.8 # EDIT HERE!
+#unix: TAGLIB_PATH = /usr
 
-LIBS +=	-lQtMultimediaKit\
-		-L$$TAGLIB_PATH/lib/ -ltag\
+LIBS +=	-L$$TAGLIB_PATH/lib/ -ltag\
+#unix: LIBS += -lQtMultimediaKit
 
 INCLUDEPATH += ./src \
 				$$TAGLIB_PATH/include\	# TagLib
