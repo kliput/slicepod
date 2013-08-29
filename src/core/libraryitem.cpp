@@ -131,7 +131,7 @@ BaseRecord<Fragment>::ptr LibraryItem::getFragment() const
 
 BaseRecord<Episode>::ptr LibraryItem::getEpisode() const
 {
-	fragmentPtr_->getEpisode();
+	return fragmentPtr_->getEpisode();
 }
 
 BaseRecord<Fragment>::ptr_list LibraryItem::episodeFragmentsList() const

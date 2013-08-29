@@ -21,16 +21,10 @@
 
 #include <QtCore>
 
-#if QT_VERSION >= 0x050000
-#include <QtMultimedia/QAudio>
-#include <QtMultimedia/QMediaPlayer>
-#else
-#include <QtMultimediaKit/QAudio>
-#include <QtMultimediaKit/QMediaPlayer>
-#endif
-
-
 #include "libraryitem.hpp"
+
+class VlcInstance;
+class VlcMediaPlayer;
 
 constexpr int POSITION_UPDATE_FREQ = 1000;
 
@@ -43,21 +37,26 @@ public:
 
 	bool loadMedia(LibraryItem *item);
 
-	LibraryItem *currentItem() const { return currentItem_; }
+	LibraryItem* currentItem() const { return currentItem_; }
+
+	VlcMediaPlayer* getVlcPlayer() { return vlcPlayer; }
+	void scheduleTimeChange(const int &pos);
 
 private:
-	QMediaPlayer *mediaPlayer_;
+	VlcInstance* vlcInstance;
+	VlcMediaPlayer* vlcPlayer;
 
 	LibraryItem *currentItem_ = nullptr;
 
+	int scheduledTime = -1;
+
 private slots:
-	//! Receive new position in ms and emit signal with rounded position in sec.
-	void emitPositionUpdate(qint64 positionMs);
+	void changeTime();
 
 public slots:
 	void play();
-	//! Set position of loaded media in seconds
-	void seek(int positionSec);
+//	! Set position of loaded media in seconds
+//	void seek(int positionSec);
 
 signals:
 	//! Music position change in seconds

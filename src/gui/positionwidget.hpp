@@ -23,6 +23,8 @@
 
 #include "core/libraryitem.hpp"
 
+class MusicPlayer;
+
 class PositionWidget : public QWidget
 {
 	Q_OBJECT
@@ -30,6 +32,7 @@ public:
 	explicit PositionWidget(QWidget *parent = 0);
 
 	void setCurrentItem(LibraryItem* item);
+	void setMusicPlayer(MusicPlayer* musicPlayer);
 
 protected:
 	void paintEvent(QPaintEvent *) override;
@@ -40,6 +43,7 @@ protected:
 	inline int translateArrowX(const int& positionSec);
 
 	void setMediaLength(int value) { mediaLength = value; }
+
 
 	static constexpr int arrowWidth = 16;
 	static constexpr int arrowHeight = 16;
@@ -55,6 +59,7 @@ private:
 	int playerPosition = 0;
 
 	LibraryItem* currentItem = nullptr;
+	MusicPlayer* musicPlayer = nullptr;
 
 signals:
 

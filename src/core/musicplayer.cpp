@@ -21,8 +21,10 @@
 #include "musicplayer.hpp"
 #include "libraryitem.hpp"
 
-//#include <QtMultimediaKit/QMediaContent>
-#include <QtMultimedia/QMediaContent>
+#include <vlc-qt/Common.h>
+#include <vlc-qt/Instance.h>
+#include <vlc-qt/Media.h>
+#include <vlc-qt/MediaPlayer.h>
 
 #include <taglib/taglib.h>
 #include <taglib/fileref.h>
@@ -31,14 +33,17 @@
 MusicPlayer::MusicPlayer(QObject *parent) :
 	QObject(parent)
 {
-	mediaPlayer_ = new QMediaPlayer(this);
+	vlcInstance = new VlcInstance(VlcCommon::args(), this);
+	vlcPlayer = new VlcMediaPlayer(vlcInstance);
 
-	connect(mediaPlayer_, SIGNAL(positionChanged(qint64)),
-			this, SLOT(emitPositionUpdate(qint64)));
+//	connect(mediaPlayer_, SIGNAL(positionChanged(qint64)),
+//			this, SLOT(emitPositionUpdate(qint64)));
 }
 
 MusicPlayer::~MusicPlayer()
 {
+	// delete vlcInstances? TODO: check
+	delete vlcPlayer->currentMedia();
 }
 
 bool MusicPlayer::loadMedia(LibraryItem* item)
@@ -50,71 +55,60 @@ bool MusicPlayer::loadMedia(LibraryItem* item)
 
 	currentItem_ = item;
 
-	QMediaContent content(QUrl::fromLocalFile(item->fileFullPath()));
+	VlcMedia* m = new VlcMedia(item->fileFullPath(), true, vlcInstance);
 
-	if (content.isNull()) {
-		qFatal("MusicPlayer::loadMedia(...) -- cannot create MediaContent");
+	if (!m->core()) {
+		qFatal("MusicPlayer::loadMedia(...) -- cannot create VlcMedia");
 		return false;
 	}
 
-	mediaPlayer_->setMedia(content);
+	delete vlcPlayer->currentMedia();
+	vlcPlayer->openOnly(m);
 
 	return true;
 }
 
-/**
- * @brief MusicPlayer::emitPositionUpdate slot is used to catch signal with
- * position change in milliseconds and emit signal with time value rounded to
- * seconds.
- * @param positionMs position of media in milliseconds
- */
-void MusicPlayer::emitPositionUpdate(qint64 positionMs)
-{
-	int n_pos = positionMs/1000;
+///**
+// * @brief MusicPlayer::emitPositionUpdate slot is used to catch signal with
+// * position change in milliseconds and emit signal with time value rounded to
+// * seconds.
+// * @param positionMs position of media in milliseconds
+// */
+//void MusicPlayer::emitPositionUpdate(qint64 positionMs)
+//{
+//	int n_pos = positionMs/1000;
 
-	if (positionMs%1000 >= 500) {
-		n_pos += 1;
-	}
+//	if (positionMs%1000 >= 500) {
+//		n_pos += 1;
+//	}
 
-	emit positionChanged(n_pos);
-}
+//	emit positionChanged(n_pos);
+//}
 
 void MusicPlayer::play()
 {
-	mediaPlayer_->play();
+	scheduleTimeChange(currentItem_->fragmentStartSec()*1000);
+	vlcPlayer->play();
 }
 
-/**
- * @brief MusicPlayer::seek blocking method used to change position in currently
- * loaded media. It can be used even when media is not played. If media position
- * cannot be changed for 2 seconds, it gives error TODO
- * @param positionSec new position of media in seconds.
- */
-void MusicPlayer::seek(int positionSec)
+void MusicPlayer::scheduleTimeChange(const int& pos)
 {
-	qint64 positionMs = positionSec*1000;
-
-	if (mediaPlayer_->isSeekable()) {
-		mediaPlayer_->setPosition(positionMs);
+	if (scheduledTime < 0) {
+		scheduledTime = pos;
+		connect(vlcPlayer, SIGNAL(playing()), this, SLOT(changeTime()));
 	} else {
-		qDebug() << "Media player is not seekable - waiting...";
-
-		QEventLoop loop;
-		QTimer timer;
-		timer.setSingleShot(true);
-		timer.setInterval(2000);
-		connect(mediaPlayer_, SIGNAL(seekableChanged(bool)),
-				&loop, SLOT(quit()));
-		connect(&timer, SIGNAL(timeout()),
-				&loop, SLOT(quit()));
-		loop.exec();
-
-		if (mediaPlayer_->isSeekable()) {
-			mediaPlayer_->setPosition(positionMs);
-		} else {
-			qFatal("Timeout on waiting for seekable media player");
-			// TODO error
-		}
+		qDebug("Error: there is currently scheduled position change!");
 	}
 }
 
+void MusicPlayer::changeTime()
+{
+	if (scheduledTime >= 0) {
+		qDebug("Changing position to %d", scheduledTime);
+		vlcPlayer->setTime(scheduledTime);
+		scheduledTime = -1; // reset
+		disconnect(vlcPlayer, SIGNAL(playing()), this, SLOT(changeTime()));
+	} else {
+		qDebug("Error: there is no currently scheduled position!");
+	}
+}

@@ -22,7 +22,10 @@
 #include <QtGui>
 #include <QDebug>
 
-#include <db_engine/fragment.hpp>
+#include <vlc-qt/MediaPlayer.h>
+
+#include "db_engine/fragment.hpp"
+#include "core/musicplayer.hpp"
 
 PositionWidget::PositionWidget(QWidget *parent) :
 	QWidget(parent)
@@ -46,20 +49,27 @@ constexpr int PositionWidget::totalHeight()
 	return bottomArrowYOff()+arrowHeight;
 }
 
-int PositionWidget::translateArrowX(const int& positionSec)
+int PositionWidget::translateArrowX(const int& positionMs)
 {
-	return (float(positionSec)/mediaLength)*(width()-arrowWidth);
+	return (float(positionMs)/mediaLength)*(width()-arrowWidth);
+}
+
+void PositionWidget::setMusicPlayer(MusicPlayer *musicPlayer)
+{
+	if (this->musicPlayer) {
+		disconnect(this->musicPlayer->getVlcPlayer(), SIGNAL(timeChanged(int)),
+				   this, SLOT(setPlayerPosition(int)));
+	}
+	this->musicPlayer = musicPlayer;
+	connect(this->musicPlayer->getVlcPlayer(), SIGNAL(timeChanged(int)),
+			this, SLOT(setPlayerPosition(int)));
 }
 
 void PositionWidget::setCurrentItem(LibraryItem* item)
 {
 	if (item) {
-		// TODO FIXME!!!
-		Episode::ptr e;
-		if (currentItem) e = currentItem->getEpisode();
-		auto b = item->getEpisode();
 		if (!currentItem || currentItem->getEpisode()->id() != item->getEpisode()->id()) {
-			setMediaLength(item->episodeLengthSec());
+			setMediaLength(item->episodeLengthSec()*1000);
 		}
 		currentItem = item;
 		update();
@@ -102,14 +112,14 @@ void PositionWidget::paintEvent(QPaintEvent *)
 
 		for (Fragment::ptr f: fragments) {
 			if (f->id() != currentFragment->id()) {
-				putBottomArrow(markerArrowImage, f->getStart(), painter);
+				putBottomArrow(markerArrowImage, f->getStart()*1000, painter);
 			}
 		}
 
 		// TODO: only if there's  playing fragment...
-		putBottomArrow(startArrowImage, currentFragment->getStart(), painter, true);
+		putBottomArrow(startArrowImage, currentFragment->getStart()*1000, painter, true);
 		if (currentFragment->hasEnd()) {
-			putBottomArrow(endArrowImage, currentFragment->getEnd(), painter, true);
+			putBottomArrow(endArrowImage, currentFragment->getEnd()*1000, painter, true);
 		}
 
 		// TODO: colorify and draw end for hovered marker

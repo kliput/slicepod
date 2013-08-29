@@ -53,6 +53,8 @@ MainWindow::MainWindow(MainCore* core, QWidget* parent) :
 	ui->libraryView->setModel(core_->proxyModel());
 	ui->libraryView->setVisible(true);
 
+	ui->positionWidget->setMusicPlayer(core_->musicPlayer());
+
 	// CONNECT
 	qRegisterMetaType<QMessageBox::Icon>();
 
@@ -83,8 +85,8 @@ MainWindow::MainWindow(MainCore* core, QWidget* parent) :
 	connect(ui->playButton, SIGNAL(clicked()),
 			this, SLOT(handlePlayButton()));
 
-	connect(core_->player(), SIGNAL(positionChanged(int)),
-			ui->positionWidget, SLOT(setPlayerPosition(int)));
+//	connect(core_->player(), SIGNAL(positionChanged(int)),
+//			ui->positionWidget, SLOT(setPlayerPosition(int)));
 
 	// START ACTIONS
 	ui->libraryView->setDisabled(true); // before loading from database
@@ -142,10 +144,10 @@ void MainWindow::activateLibraryItem(const QModelIndex &index)
 {
 	auto item = core_->libraryModel()->libraryItemData(index);
 
-	if (core_->player()->loadMedia(item)) {
+	if (core_->musicPlayer()->loadMedia(item)) {
 		ui->positionWidget->setCurrentItem(item);
-		core_->player()->seek(item->fragmentStartSec());
-		core_->player()->play();
+		core_->musicPlayer()->scheduleTimeChange(item->fragmentStartSec()*1000);
+		core_->musicPlayer()->play();
 		// TODO: emit data changed on played item to show play icon
 	} else {
 		qFatal("Cannot load media into player!");

@@ -6,20 +6,23 @@ QMAKE_CXXFLAGS_DEBUG += -gdwarf-3
 TEMPLATE = app
 
 QT += core sql
-greaterThan(QT_MAJOR_VERSION, 4): QT += multimedia
 
 CONFIG -= app_bundle
 
+# TODO: library path .pri file
+
 win32: TAGLIB_PATH = G:\biblioteki\taglib-1.8 # EDIT HERE!
-#unix: TAGLIB_PATH = /usr
+unix: TAGLIB_PATH = /usr
+
+VLC_PATH = /usr
+VLCQT_PATH = /home/kliput/Programowanie/lib/vlc-qt/ # EDIT HERE!
 
 LIBS +=	-L$$TAGLIB_PATH/lib/ -ltag\
-#unix: LIBS += -lQtMultimediaKit
+			-L$$VLCQT_PATH/lib/ -lvlc-qt\
+			-L$$VLC_PATH/lib/ -lvlc
 
 INCLUDEPATH += ./src \
 				$$TAGLIB_PATH/include\	# TagLib
-				/usr/include/QtMultimediaKit\	# QtMultimediaKit (part of QtMobility when using Qt4)
-				/usr/include/QtMobility\		# QtMobility (when using Qt4)
+				$$VLCQT_PATH/include\ # VLC-Qt
 				/usr/include
 
-DEPENDPATH += 	$$TAGLIB_PATH/include
