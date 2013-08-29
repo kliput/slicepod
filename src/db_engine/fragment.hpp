@@ -60,6 +60,7 @@ public:
 	FragmentTagMap bindTag(const QSharedPointer<Tag>& tag);
 
 	bool isStartFragment() const;
+	inline bool hasEnd() const { return end_ > 0; }
 
 	QList<QVariant> valuesList() const;
 	const QStringList& columnsList() const;

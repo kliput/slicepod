@@ -106,8 +106,18 @@ bool LibraryItem::isStartFragment()
 	return fragmentPtr_->isStartFragment();
 }
 
-BaseRecord<Fragment>::ptr LibraryItem::fragmentPtr() const
+BaseRecord<Fragment>::ptr LibraryItem::getFragment() const
 {
 	return fragmentPtr_;
+}
+
+BaseRecord<Episode>::ptr LibraryItem::getEpisode() const
+{
+	fragmentPtr_->getEpisode();
+}
+
+BaseRecord<Fragment>::ptr_list LibraryItem::episodeFragmentsList() const
+{
+	return fragmentPtr_->getEpisode()->getFragmentsList();
 }
 

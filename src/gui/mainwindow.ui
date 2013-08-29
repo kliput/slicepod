@@ -13,6 +13,10 @@
   <property name="windowTitle">
    <string>Slicepod</string>
   </property>
+  <property name="windowIcon">
+   <iconset resource="../slicepod.qrc">
+    <normaloff>:/images/icon-128.png</normaloff>:/images/icon-128.png</iconset>
+  </property>
   <widget class="QWidget" name="centralWidget">
    <layout class="QVBoxLayout" name="verticalLayout_2">
     <property name="spacing">
@@ -348,6 +352,8 @@
    <container>1</container>
   </customwidget>
  </customwidgets>
- <resources/>
+ <resources>
+  <include location="../slicepod.qrc"/>
+ </resources>
  <connections/>
 </ui>

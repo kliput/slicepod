@@ -43,6 +43,12 @@ bool MusicPlayer::loadMedia(LibraryItem* item)
 	return true;
 }
 
+/**
+ * @brief MusicPlayer::emitPositionUpdate slot is used to catch signal with
+ * position change in milliseconds and emit signal with time value rounded to
+ * seconds.
+ * @param positionMs position of media in milliseconds
+ */
 void MusicPlayer::emitPositionUpdate(qint64 positionMs)
 {
 	int n_pos = positionMs/1000;
@@ -59,6 +65,12 @@ void MusicPlayer::play()
 	mediaPlayer_->play();
 }
 
+/**
+ * @brief MusicPlayer::seek blocking method used to change position in currently
+ * loaded media. It can be used even when media is not played. If media position
+ * cannot be changed for 2 seconds, it gives error TODO
+ * @param positionSec new position of media in seconds.
+ */
 void MusicPlayer::seek(int positionSec)
 {
 	qint64 positionMs = positionSec*1000;

@@ -3,13 +3,15 @@
 
 #include <QWidget>
 
+#include "core/libraryitem.hpp"
+
 class PositionWidget : public QWidget
 {
 	Q_OBJECT
 public:
 	explicit PositionWidget(QWidget *parent = 0);
 
-	void setMediaLength(int value) { mediaLength = value; }
+	void setCurrentItem(LibraryItem* item);
 
 protected:
 	void paintEvent(QPaintEvent *) override;
@@ -18,6 +20,8 @@ protected:
 							   QPainter& painter, bool on = false);
 
 	inline int translateArrowX(const int& positionSec);
+
+	void setMediaLength(int value) { mediaLength = value; }
 
 	static constexpr int arrowWidth = 16;
 	static constexpr int arrowHeight = 16;
@@ -31,6 +35,8 @@ protected:
 private:
 	int mediaLength = 99;
 	int playerPosition = 0;
+
+	LibraryItem* currentItem = nullptr;
 
 signals:
 

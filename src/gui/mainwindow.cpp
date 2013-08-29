@@ -125,7 +125,7 @@ void MainWindow::activateLibraryItem(const QModelIndex &index)
 	auto item = core_->libraryModel()->libraryItemData(index);
 
 	if (core_->player()->loadMedia(item)) {
-		ui->positionWidget->setMediaLength(item->episodeLengthSec());
+		ui->positionWidget->setCurrentItem(item);
 		core_->player()->seek(item->fragmentStartSec());
 		core_->player()->play();
 		// TODO: emit data changed on played item to show play icon

@@ -31,7 +31,10 @@ public:
 	QStringList fragmentTagsList() const;
 	bool isStartFragment();
 
-	BaseRecord<Fragment>::ptr fragmentPtr() const;
+	BaseRecord<Fragment>::ptr_list episodeFragmentsList() const;
+
+	BaseRecord<Fragment>::ptr getFragment() const;
+	BaseRecord<Episode>::ptr getEpisode() const;
 
 	const QTime &fragmentStartTime() const;
 	const QTime &fragmentEndTime() const;
