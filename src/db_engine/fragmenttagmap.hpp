@@ -37,7 +37,7 @@ class FragmentTagMap : public BaseRecord<FragmentTagMap>
 public:
 	static constexpr const char* TABLE_NAME = db::fragment_tag_map::TABLE_NAME;
 	static const char* schemaString();
-	FragmentTagMap(QSqlRecord record, DatabaseEngine* engine = db::global_engine());
+	FragmentTagMap(QSqlRecord record);
 	FragmentTagMap(const QSharedPointer<Fragment>& fragment,
 				   const QSharedPointer<Tag>& tag);
 	virtual ~FragmentTagMap() {}
@@ -57,7 +57,7 @@ private:
 	int fragmentId_ = -1;
 	int tagId_ = -1;
 
-	FragmentTagMap(int fragmentId, int tagId, DatabaseEngine* engine = db::global_engine());
+	FragmentTagMap(int fragmentId, int tagId);
 };
 
 #endif // FRAGMENTTAGMAP_HPP

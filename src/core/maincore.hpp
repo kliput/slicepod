@@ -44,9 +44,11 @@ public:
 						   = Podcast::ptr());
 	
 // -- getters --
-	LibraryModel *libraryModel() { return libraryModel_; }
-	QSortFilterProxyModel *proxyModel() { return proxyModel_; }
-	MusicPlayer *player() { return player_; }
+	inline LibraryModel *libraryModel() { return libraryModel_; }
+	inline QSortFilterProxyModel *proxyModel() { return proxyModel_; }
+	inline MusicPlayer *player() { return player_; }
+	inline DatabaseEngine *dbEngine() { return DatabaseEngine::getInstance(); }
+
 
 signals:
 	void showMessage(QMessageBox::Icon icon, const QString& title,
@@ -60,7 +62,6 @@ private:
 	QSortFilterProxyModel *proxyModel_;
 	SettingsManager settings_;
 	MusicPlayer *player_;
-	DatabaseEngine *db_;
 };
 
 #endif // MAINCORE_HPP

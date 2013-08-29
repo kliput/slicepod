@@ -45,8 +45,8 @@ class Fragment : public BaseRecord<Fragment>
 public:
 	static constexpr const char* TABLE_NAME = db::fragment::TABLE_NAME;
 	static const char* schemaString();
-	Fragment(QSqlRecord record, DatabaseEngine* engine = db::global_engine());
-	Fragment(DatabaseEngine *engine = db::global_engine());
+	Fragment(QSqlRecord record);
+	Fragment();
 	Fragment(QSharedPointer<Episode> episode,
 			 int start, const QString& title, const QString& artist = QString(),
 			 int end=-1);

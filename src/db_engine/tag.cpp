@@ -22,8 +22,8 @@
 
 class FragmentTagMap;
 
-Tag::Tag(QSqlRecord record, DatabaseEngine *engine) :
-	BaseRecord<Tag>(record, engine),
+Tag::Tag(QSqlRecord record) :
+	BaseRecord<Tag>(record),
 	name_(record.value(db::tag::NAME).toString()),
 	metadata_(record.value(db::tag::METADATA).toString())
 {
@@ -48,7 +48,7 @@ const char *Tag::schemaString()
 
 QList<QSharedPointer<Fragment> > Tag::getFragmentsList() const
 {
-	QList<QSharedPointer<FragmentTagMap>> ftl = engine_->list<FragmentTagMap>();
+	QList<QSharedPointer<FragmentTagMap>> ftl = getEngine()->list<FragmentTagMap>();
 
 	QList<QSharedPointer<Fragment>> results;
 

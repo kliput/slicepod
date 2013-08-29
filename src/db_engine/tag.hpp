@@ -37,8 +37,8 @@ class Tag : public BaseRecord<Tag>
 public:
 	static constexpr const char* TABLE_NAME = db::tag::TABLE_NAME;
 	static const char* schemaString();
-	Tag(QSqlRecord record, DatabaseEngine* engine = db::global_engine());
-	Tag(const QString& name = QString());
+	Tag(QSqlRecord record);
+	Tag(const QString& name);
 	virtual ~Tag() {}
 
 	inline const QString& getMetadata() const { return metadata_; }

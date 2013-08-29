@@ -20,8 +20,8 @@
 #include "fragment.hpp"
 #include "tag.hpp"
 
-FragmentTagMap::FragmentTagMap(QSqlRecord record, DatabaseEngine *engine) :
-	BaseRecord<FragmentTagMap>(record, engine),
+FragmentTagMap::FragmentTagMap(QSqlRecord record) :
+	BaseRecord<FragmentTagMap>(record),
 	fragmentId_(record.value(db::fragment_tag_map::FRAGMENT).toInt()),
 	tagId_(record.value(db::fragment_tag_map::TAG).toInt())
 {
@@ -35,8 +35,8 @@ FragmentTagMap::FragmentTagMap(const QSharedPointer<Fragment>& fragment,
 	setTag(tag);
 }
 
-FragmentTagMap::FragmentTagMap(int fragmentId, int tagId, DatabaseEngine* engine) :
-	BaseRecord<FragmentTagMap>(engine),
+FragmentTagMap::FragmentTagMap(int fragmentId, int tagId) :
+	BaseRecord<FragmentTagMap>(),
 	fragmentId_(fragmentId),
 	tagId_(tagId)
 {
@@ -68,7 +68,7 @@ const QStringList &FragmentTagMap::columnsList() const
 
 QSharedPointer<Tag> FragmentTagMap::getTag() const
 {
-	return engine_->record<Tag>(tagId_);
+	return getEngine()->record<Tag>(tagId_);
 }
 
 void FragmentTagMap::setTag(QSharedPointer<Tag> tag)
@@ -81,7 +81,7 @@ void FragmentTagMap::setTag(QSharedPointer<Tag> tag)
 
 QSharedPointer<Fragment> FragmentTagMap::getFragment() const
 {
-	return engine_->record<Fragment>(fragmentId_);
+	return getEngine()->record<Fragment>(fragmentId_);
 }
 
 void FragmentTagMap::setFragment(QSharedPointer<Fragment> fragment)

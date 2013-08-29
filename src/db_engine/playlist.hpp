@@ -38,8 +38,8 @@ class Playlist : public BaseRecord<Playlist>
 public:
 	static constexpr const char* TABLE_NAME = db::playlist::TABLE_NAME;
 	static const char* schemaString();
-	Playlist(QSqlRecord record, DatabaseEngine* engine = db::global_engine());
-	Playlist(const QString& name = QString());
+	Playlist(QSqlRecord record);
+	Playlist(const QString& name);
 	virtual ~Playlist() {}
 
 	inline const QString& getMetadata() const { return metadata_; }

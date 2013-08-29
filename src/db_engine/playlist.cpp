@@ -22,8 +22,8 @@
 
 class FragmentPlaylistMap;
 
-Playlist::Playlist(QSqlRecord record, DatabaseEngine *engine) :
-	BaseRecord<Playlist>(record, engine),
+Playlist::Playlist(QSqlRecord record) :
+	BaseRecord<Playlist>(record),
 	name_(record.value(db::playlist::NAME).toString()),
 	metadata_(record.value(db::playlist::METADATA).toString())
 {
@@ -48,7 +48,7 @@ const char *Playlist::schemaString()
 
 QList<QSharedPointer<Fragment> > Playlist::getFragmentsList() const
 {
-	QList<QSharedPointer<FragmentPlaylistMap>> fpl = engine_->list<FragmentPlaylistMap>();
+	QList<QSharedPointer<FragmentPlaylistMap>> fpl = getEngine()->list<FragmentPlaylistMap>();
 
 	QList<QSharedPointer<Fragment>> results;
 
@@ -76,5 +76,5 @@ const QStringList &Playlist::columnsList() const
 
 FragmentPlaylistMap Playlist::Playlist::bindFragment(const QSharedPointer<Fragment> &fragment)
 {
-	return FragmentPlaylistMap(engine_, this->id(), fragment->id());
+	return FragmentPlaylistMap(this->id(), fragment->id());
 }

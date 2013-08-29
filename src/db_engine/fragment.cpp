@@ -20,8 +20,8 @@
 #include "fragmenttagmap.hpp"
 #include "tag.hpp"
 
-Fragment::Fragment(QSqlRecord record, DatabaseEngine *engine) :
-	BaseRecord<Fragment>(record, engine),
+Fragment::Fragment(QSqlRecord record) :
+	BaseRecord<Fragment>(record),
 	episodeId_(record.value(db::fragment::EPISODE).toInt()),
 	start_(record.value(db::fragment::START).toInt()),
 	end_(record.value(db::fragment::END).toInt()),
@@ -32,8 +32,8 @@ Fragment::Fragment(QSqlRecord record, DatabaseEngine *engine) :
 {
 }
 
-Fragment::Fragment(DatabaseEngine *engine) :
-	BaseRecord<Fragment>(engine)
+Fragment::Fragment() :
+	BaseRecord<Fragment>()
 {
 }
 
@@ -76,12 +76,12 @@ const char *Fragment::schemaString()
 
 QSharedPointer<Episode> Fragment::getEpisode() const
 {
-	return engine_->record<Episode>(episodeId_);
+	return getEngine()->record<Episode>(episodeId_);
 }
 
 QList<QSharedPointer<Tag> > Fragment::getTagsList() const
 {
-	QList<QSharedPointer<FragmentTagMap>> ftl = engine_->list<FragmentTagMap>();
+	QList<QSharedPointer<FragmentTagMap>> ftl = getEngine()->list<FragmentTagMap>();
 
 	QList<QSharedPointer<Tag>> results;
 
@@ -96,7 +96,7 @@ QList<QSharedPointer<Tag> > Fragment::getTagsList() const
 
 FragmentTagMap Fragment::bindTag(const QSharedPointer<Tag> &tag)
 {
-	return FragmentTagMap(this->id(), tag->id(), engine_);
+	return FragmentTagMap(this->id(), tag->id());
 }
 
 QList<QVariant> Fragment::valuesList() const

@@ -54,7 +54,7 @@ QSqlError DatabaseEngine::fetchAll()
 		mp.clear();
 
 		for (int i=0; i < tableModel.rowCount(); ++i) {
-			auto m = QSharedPointer<T>(new T(tableModel.record(i), this));
+			auto m = QSharedPointer<T>(new T(tableModel.record(i)));
 			map<T>().insert(m->id(), m);
 		}
 		return QSqlError();
@@ -111,14 +111,7 @@ bool DatabaseEngine::open(const QString& path)
 
 DatabaseEngine::~DatabaseEngine()
 {
-	// TODO: set all records stored_ to false?
-	// TO REMOVE: now there are smart pointers in map
-//	qDeleteAll(map<Directory>());
-//	qDeleteAll(map<Podcast>());
-//	qDeleteAll(map<Episode>());
-//	qDeleteAll(map<Fragment>());
-//	qDeleteAll(map<FragmentTagMap>());
-//	qDeleteAll(map<Tag>());
+	// TODO: maybe set all records stored_ to false?
 }
 
 void DatabaseEngine::fetchAllTables()
@@ -144,12 +137,4 @@ void DatabaseEngine::createAllTables()
 	createTable<Tag>();
 	createTable<Playlist>();
 	createTable<FragmentPlaylistMap>();
-}
-
-namespace db {
-DatabaseEngine* global_engine()
-{
-	static DatabaseEngine* instance = new DatabaseEngine();
-	return instance;
-}
 }

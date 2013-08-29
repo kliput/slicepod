@@ -38,7 +38,7 @@ class FragmentPlaylistMap : public BaseRecord<FragmentPlaylistMap>
 public:
 	static constexpr const char* TABLE_NAME = db::fragment_playlist_map::TABLE_NAME;
 	static const char* schemaString();
-	FragmentPlaylistMap(QSqlRecord record, DatabaseEngine* engine = db::global_engine());
+	FragmentPlaylistMap(QSqlRecord record);
 	FragmentPlaylistMap(const QSharedPointer<Fragment>& fragment,
 				   const QSharedPointer<Playlist>& playlist);
 	virtual ~FragmentPlaylistMap() {}
@@ -58,7 +58,7 @@ private:
 	int fragmentId_ = -1;
 	int playlistId_ = -1;
 
-	FragmentPlaylistMap(DatabaseEngine *engine, int fragmentId, int playlistId);
+	FragmentPlaylistMap(int fragmentId, int playlistId);
 };
 
 #endif // FRAGMENTPLAYLISTMAP_HPP

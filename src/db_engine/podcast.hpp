@@ -36,8 +36,8 @@ class Podcast : public BaseRecord<Podcast>
 public:
 	static constexpr const char* TABLE_NAME = db::podcast::TABLE_NAME;
 	static const char* schemaString();
-	Podcast(QSqlRecord record, DatabaseEngine* engine = db::global_engine());
-	Podcast(const QString& name, DatabaseEngine* engine = db::global_engine());
+	Podcast(QSqlRecord record);
+	Podcast(const QString& name);
 	virtual ~Podcast() {}
 
 	inline const QString& getName() const { return name_; }

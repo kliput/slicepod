@@ -20,8 +20,8 @@
 #include "fragment.hpp"
 #include "tag.hpp"
 
-FragmentPlaylistMap::FragmentPlaylistMap(QSqlRecord record, DatabaseEngine *engine) :
-	BaseRecord<FragmentPlaylistMap>(record, engine),
+FragmentPlaylistMap::FragmentPlaylistMap(QSqlRecord record) :
+	BaseRecord<FragmentPlaylistMap>(record),
 	fragmentId_(record.value(db::fragment_playlist_map::FRAGMENT).toInt()),
 	playlistId_(record.value(db::fragment_playlist_map::PLAYLIST).toInt())
 {
@@ -35,8 +35,8 @@ FragmentPlaylistMap::FragmentPlaylistMap(const QSharedPointer<Fragment>& fragmen
 	setPlaylist(playlist);
 }
 
-FragmentPlaylistMap::FragmentPlaylistMap(DatabaseEngine *engine, int fragmentId, int playlistId) :
-	BaseRecord<FragmentPlaylistMap>(engine),
+FragmentPlaylistMap::FragmentPlaylistMap(int fragmentId, int playlistId) :
+	BaseRecord<FragmentPlaylistMap>(),
 	fragmentId_(fragmentId),
 	playlistId_(playlistId)
 {
@@ -68,7 +68,7 @@ const QStringList &FragmentPlaylistMap::columnsList() const
 
 QSharedPointer<Playlist> FragmentPlaylistMap::getPlaylist() const
 {
-	return engine_->record<Playlist>(playlistId_);
+	return getEngine()->record<Playlist>(playlistId_);
 }
 
 void FragmentPlaylistMap::setPlaylist(QSharedPointer<Playlist> playlist)
@@ -81,7 +81,7 @@ void FragmentPlaylistMap::setPlaylist(QSharedPointer<Playlist> playlist)
 
 QSharedPointer<Fragment> FragmentPlaylistMap::getFragment() const
 {
-	return engine_->record<Fragment>(fragmentId_);
+	return getEngine()->record<Fragment>(fragmentId_);
 }
 
 void FragmentPlaylistMap::setFragment(QSharedPointer<Fragment> fragment)

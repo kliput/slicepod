@@ -26,12 +26,13 @@
 
 class LibraryItem;
 class MusicPlayer;
+class DatabaseEngine;
 
 class LibraryModel : public QAbstractTableModel
 {
 	Q_OBJECT
 public:
-	explicit LibraryModel(MusicPlayer* musicPlayer, QObject *parent = 0);
+	explicit LibraryModel(DatabaseEngine *dbEngine, MusicPlayer* musicPlayer, QObject *parent = 0);
 	virtual int rowCount(const QModelIndex &parent = QModelIndex()) const override;
 	virtual int columnCount(const QModelIndex &parent = QModelIndex()) const override;
 	virtual QVariant data(const QModelIndex &index, int role) const override;
@@ -65,6 +66,7 @@ public slots:
 
 private:
 	QList<LibraryItem*> libraryItems_;
+	DatabaseEngine* dbEngine_;
 	MusicPlayer* player_;
 	QImage playImage_;
 	QIcon startFragmentIcon_;

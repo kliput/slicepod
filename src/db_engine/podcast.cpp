@@ -19,15 +19,15 @@
 #include "podcast.hpp"
 #include "episode.hpp"
 
-Podcast::Podcast(QSqlRecord record, DatabaseEngine *engine) :
-	BaseRecord<Podcast>(record, engine),
+Podcast::Podcast(QSqlRecord record) :
+	BaseRecord<Podcast>(record),
 	name_(record.value(db::podcast::NAME).toString()),
 	metadata_(record.value(db::podcast::METADATA).toString())
 {
 }
 
-Podcast::Podcast(const QString &name, DatabaseEngine *engine) :
-	BaseRecord<Podcast>(engine),
+Podcast::Podcast(const QString &name) :
+	BaseRecord<Podcast>(),
 	name_(name)
 {
 }
@@ -45,7 +45,7 @@ const char *Podcast::schemaString()
 
 QList<QSharedPointer<Episode> > Podcast::getEpisodesList() const
 {
-	return engine_->refs<Podcast, Episode>(id());
+	return getEngine()->refs<Podcast, Episode>(id());
 }
 
 QList<QVariant> Podcast::valuesList() const

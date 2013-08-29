@@ -32,22 +32,22 @@ const char *Directory::schemaString()
 	)";
 }
 
-Directory::Directory(QSqlRecord record, DatabaseEngine *engine) :
-	BaseRecord<Directory>(record, engine),
+Directory::Directory(QSqlRecord record) :
+	BaseRecord<Directory>(record),
 	path_(record.value(db::directory::PATH).toString()),
 	metadata_(record.value(db::directory::METADATA).toString())
 {
 }
 
-Directory::Directory(const QString &path, DatabaseEngine *engine) :
-	BaseRecord<Directory>(engine),
+Directory::Directory(const QString &path) :
+	BaseRecord<Directory>(),
 	path_(path)
 {
 }
 
 QList<QSharedPointer<Episode> > Directory::getEpisodesList() const
 {
-	return engine_->refs<Directory, Episode>(id());
+	return getEngine()->refs<Directory, Episode>(id());
 }
 
 QList<QVariant> Directory::valuesList() const

@@ -35,8 +35,8 @@ class Directory : public BaseRecord<Directory>
 public:
 	static constexpr const char* TABLE_NAME = db::directory::TABLE_NAME;
 	static const char* schemaString();
-	Directory(QSqlRecord record, DatabaseEngine* engine = db::global_engine());
-	Directory(const QString& path, DatabaseEngine* engine = db::global_engine());
+	Directory(QSqlRecord record);
+	Directory(const QString& path);
 	virtual ~Directory() {}
 
 	inline const QString& getPath() const { return path_; }

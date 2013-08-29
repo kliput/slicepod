@@ -44,8 +44,8 @@ const char *Episode::schemaString()
 	)";
 }
 
-Episode::Episode(QSqlRecord record, DatabaseEngine* engine) :
-	BaseRecord<Episode>(record, engine),
+Episode::Episode(QSqlRecord record) :
+	BaseRecord<Episode>(record),
 	episodeName_(record.value(db::episode::EPISODE_NAME).toString()),
 	directoryId_(record.value(db::episode::DIRECTORY).toInt()),
 	fileName_(record.value(db::episode::FILE_NAME).toString()),
@@ -63,8 +63,8 @@ Episode::Episode(QSqlRecord record, DatabaseEngine* engine) :
 }
 
 Episode::Episode(const QString& fileName, const QString& episodeName,
-				 Podcast::ptr podcast, Directory::ptr directory, DatabaseEngine *engine) :
-	BaseRecord<Episode>(engine),
+				 Podcast::ptr podcast, Directory::ptr directory) :
+	BaseRecord<Episode>(),
 	episodeName_(episodeName),
 	fileName_(fileName)
 {
@@ -74,17 +74,17 @@ Episode::Episode(const QString& fileName, const QString& episodeName,
 
 QSharedPointer<Directory> Episode::getDirectory() const
 {
-	return engine_->record<Directory>(directoryId_);
+	return getEngine()->record<Directory>(directoryId_);
 }
 
 QSharedPointer<Podcast> Episode::getPodcast() const
 {
-	return engine_->record<Podcast>(podcastId_);
+	return getEngine()->record<Podcast>(podcastId_);
 }
 
 QSharedPointer<Fragment> Episode::getStartFragment() const
 {
-	return engine_->record<Fragment>(startFragmentId_);
+	return getEngine()->record<Fragment>(startFragmentId_);
 }
 
 void Episode::setDirectory(QSharedPointer<Directory> directory)
@@ -113,7 +113,7 @@ void Episode::setStartFragment(QSharedPointer<Fragment> startFragment)
 
 QList<QSharedPointer<Fragment> > Episode::getFragmentsList() const
 {
-	return engine_->refs<Episode, Fragment>(id());
+	return getEngine()->refs<Episode, Fragment>(id());
 }
 
 QString Episode::getFullPath() const

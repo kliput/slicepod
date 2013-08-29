@@ -34,7 +34,11 @@ class FragmentPlaylistMap;
 class DatabaseEngine
 {
 public:
-	~DatabaseEngine();
+	inline static DatabaseEngine* getInstance() {
+		static auto instance = new DatabaseEngine();
+		return instance;
+	}
+
 	bool open(const QString &path);
 
 	template <class T> QSharedPointer<T> record(int id);
@@ -73,6 +77,13 @@ protected:
 private:
 	QSqlDatabase database_;
 	bool opened_ = false;
+
+	// THIS CLASS IS SINGLETON
+	DatabaseEngine() {}
+	~DatabaseEngine();
+	DatabaseEngine(const DatabaseEngine&);
+	DatabaseEngine& operator=(const DatabaseEngine&);
+
 };
 
 template <class T>
@@ -103,9 +114,9 @@ QSharedPointer<T> DatabaseEngine::insertRecord(int id, const QSqlRecord& record)
 {
 	if (map<T>().contains(id)) {
 	   // if entry with id already exists, copy into smart pointer data
-	   *map<T>()[id] = T(record, this);
+	   *map<T>()[id] = T(record);
 	} else {
-	   auto m = QSharedPointer<T>(new T(record, this));
+	   auto m = QSharedPointer<T>(new T(record));
 	   map<T>().insert(m->id(), m);
 	}
 	return map<T>()[id];
@@ -152,7 +163,7 @@ QList<QSharedPointer<T>> DatabaseEngine::fetchOnlyNew()
 			// add record to cache map if it's not there already (get ID)
 			// NOTICE: "id" is not constant here from db:: namespace
 			if (!mp.contains(tableModel.record(i).value("id").toInt())) {
-				auto m = QSharedPointer<T>(new T(tableModel.record(i), this));
+				auto m = QSharedPointer<T>(new T(tableModel.record(i)));
 				map<T>().insert(m->id(), m);
 				nRecords << m;
 			}
@@ -403,10 +414,10 @@ bool DatabaseEngine::dropTable()
 }
 
 
-namespace db {
-//// --- GET GLOBAL INSTANCE (SINGLETON) ---
-DatabaseEngine* global_engine();
-}
+//namespace db {
+////// --- GET GLOBAL INSTANCE (SINGLETON) ---
+//DatabaseEngine* global_engine();
+//}
 
 
 #endif // DATABASEENGINE_HPP

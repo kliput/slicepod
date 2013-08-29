@@ -24,7 +24,7 @@
 #include <QSharedPointer>
 #include <QMap>
 
-#include "databaseengine.hpp" // includes db::global_engine()
+#include "databaseengine.hpp"
 
 namespace db {
 constexpr const char* ID = "id";
@@ -32,12 +32,19 @@ constexpr const char* ID = "id";
 
 class QSqlRecord;
 
+/**
+ * @brief The BaseRecord template class is used as base for Slicepod data model
+ * record classes. By record class "B" it should be inherited as:
+ * public BaseRecord<B>. This version of class uses global database engine
+ * instance for convenince. However, it has getEngine() method, if in future
+ * multiple instances of DatabaseEngine will be needed.
+ */
 template <class T>
 class BaseRecord
 {
 public:
-	BaseRecord(QSqlRecord record, DatabaseEngine* engine = db::global_engine());
-	BaseRecord(DatabaseEngine* engine = db::global_engine());
+	BaseRecord(QSqlRecord record);
+	BaseRecord();
 
 	typedef QSharedPointer<T> ptr;
 	typedef QString str;
@@ -54,8 +61,9 @@ public:
 	virtual QList<QVariant> valuesList() const = 0;
 	virtual const QStringList& columnsList() const = 0;
 
+	inline DatabaseEngine* getEngine() const { return DatabaseEngine::getInstance(); }
+
 protected:
-	DatabaseEngine* engine_;
 	bool dirty_ = false;
 
 	//! Insert this record into database and if successful - returns pointer
@@ -63,6 +71,7 @@ protected:
 	QSharedPointer<T> insert();
 	QSharedPointer<T> update();
 
+	//! This method should be invoked on every record object's field change
 	inline void fieldChange() { dirty_ = true; }
 
 private:
@@ -72,22 +81,25 @@ private:
 
 
 template <class T>
-BaseRecord<T>::BaseRecord(QSqlRecord record, DatabaseEngine* engine) :
-	engine_(engine),
+BaseRecord<T>::BaseRecord(QSqlRecord record) :
 	id_(record.value(db::ID).toInt()),
 	stored_(true)
 {
 }
 
 template <class T>
-BaseRecord<T>::BaseRecord(DatabaseEngine *engine) :
-	engine_(engine),
+BaseRecord<T>::BaseRecord() :
 	id_(-1),
 	stored_(false)
 {
 }
 
 template <class T>
+/**
+ * @brief BaseRecord<T>::save if record's object has valid id it updates record
+ * in database. Otherwise, it tries to insert new record.
+ * @return shared pointer to saved record's object in database engine
+ */
 QSharedPointer<T> BaseRecord<T>::save()
 {
 	if (id_ >= 0) {
@@ -100,7 +112,7 @@ QSharedPointer<T> BaseRecord<T>::save()
 template <class T>
 QSharedPointer<T> BaseRecord<T>::insert()
 {
-	QSharedPointer<T> db_record = engine_->insert<T>(columnsList(), valuesList());
+	QSharedPointer<T> db_record = getEngine()->template insert<T>(columnsList(), valuesList());
 	if (db_record) {
 		id_ = db_record->id();
 		dirty_ = false;
@@ -111,7 +123,7 @@ QSharedPointer<T> BaseRecord<T>::insert()
 template <class T>
 QSharedPointer<T> BaseRecord<T>::update()
 {
-	return engine_->update<T>(id(), columnsList(), valuesList());
+	return getEngine()->template update<T>(id(), columnsList(), valuesList());
 }
 
 

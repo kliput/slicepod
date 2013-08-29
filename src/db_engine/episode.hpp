@@ -1,4 +1,4 @@
-/****************************************************************************
+﻿/****************************************************************************
 * Slicepod
 * Copyright (C) 2013 Jakub Liput <jakub.liput@gmail.com>
 *
@@ -14,9 +14,9 @@
 *
 * You should have received a copy of the GNU General Public License
 * along with this program. If not, see <http://www.gnu.org/licenses/>.
-*****************************************************************************/ 
+*****************************************************************************/
 
-﻿#ifndef EPISODE_HPP
+#ifndef EPISODE_HPP
 #define EPISODE_HPP
 
 #include <QString>
@@ -50,9 +50,9 @@ class Episode : public BaseRecord<Episode>
 public:
 	static constexpr const char* TABLE_NAME = db::episode::TABLE_NAME;
 	static const char* schemaString();
-	Episode(QSqlRecord record, DatabaseEngine* engine = db::global_engine());
+	Episode(QSqlRecord record);
 	Episode(const QString& fileName, const QString& title, Podcast::ptr podcast,
-			Directory::ptr directory, DatabaseEngine *engine = db::global_engine());
+			Directory::ptr directory);
 	virtual ~Episode() {}
 
 	inline const QString& getEpisodeName() const { return episodeName_; }

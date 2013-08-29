@@ -27,8 +27,9 @@
 #include "utils.hpp"
 #include "musicplayer.hpp"
 
-LibraryModel::LibraryModel(MusicPlayer *musicPlayer, QObject *parent) :
+LibraryModel::LibraryModel(DatabaseEngine* dbEngine, MusicPlayer* musicPlayer, QObject* parent) :
 	QAbstractTableModel(parent),
+	dbEngine_(dbEngine),
 	player_(musicPlayer)
 {
 	playImage_ = QImage(":/images/arrow-right-black.png");
@@ -167,7 +168,7 @@ void LibraryModel::addItems(QList<LibraryItem *> itemsList)
 void LibraryModel::loadFromDatabase()
 {
 	QList<LibraryItem*> items;
-	for (const Fragment::ptr& f: db::global_engine()->list<Fragment>()) {
+	for (const Fragment::ptr& f: dbEngine_->template list<Fragment>()) {
 		items << new LibraryItem(f);
 	}
 
