@@ -21,7 +21,7 @@
 
 #include <QtCore>
 
-#include "libraryitem.hpp"
+#include "libraryinfo.hpp"
 
 class VlcInstance;
 class VlcMediaPlayer;
@@ -35,9 +35,9 @@ public:
 	explicit MusicPlayer(QObject *parent = nullptr);
 	virtual ~MusicPlayer();
 
-	bool loadMedia(LibraryItem *item);
+	bool loadFragmentMedia(Fragment::ptr fragment);
 
-	LibraryItem* currentItem() const { return currentItem_; }
+	Fragment::ptr getCurrentFragment() { return currentFragment; }
 
 	VlcMediaPlayer* getVlcPlayer() { return vlcPlayer; }
 	void scheduleTimeChange(const int &pos);
@@ -46,7 +46,7 @@ private:
 	VlcInstance* vlcInstance;
 	VlcMediaPlayer* vlcPlayer;
 
-	LibraryItem *currentItem_ = nullptr;
+	Fragment::ptr currentFragment;
 
 	int scheduledTime = -1;
 

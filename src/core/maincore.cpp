@@ -31,7 +31,7 @@
 #include "maincore.hpp"
 #include "sqlexception.hpp"
 #include "utils.hpp"
-#include "libraryitem.hpp"
+#include "libraryinfo.hpp"
 #include "db_engine/databaseengine.hpp"
 #include "db_engine/directory.hpp"
 #include "db_engine/episode.hpp"
@@ -85,15 +85,13 @@ void MainCore::addPodcastDirectory(const QString &path,
 
 		emit loadingProgress(tr("Updating media library..."), 100);
 
-		QList<LibraryItem*> newItems;
+		QList<Fragment::ptr> newItems;
 
 		for (const Episode::ptr& ep: dir->getEpisodesList()) {
-			for (const Fragment::ptr fr: ep->getFragmentsList()) {
-				newItems << new LibraryItem(fr); // TODO: remember about allocation...
-			}
+			newItems << ep->getFragmentsList();
 		}
 
-		libraryModel_->addItems(newItems);
+		libraryModel_->addFragments(newItems);
 
 		emit loadingFinished();
 

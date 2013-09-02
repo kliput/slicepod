@@ -20,6 +20,8 @@
 #include "fragmenttagmap.hpp"
 #include "tag.hpp"
 
+#include "core/libraryinfo.hpp"
+
 Fragment::Fragment(QSqlRecord record) :
 	BaseRecord<Fragment>(record),
 	episodeId_(record.value(db::fragment::EPISODE).toInt()),
@@ -50,6 +52,11 @@ Fragment::Fragment(QSharedPointer<Episode> episode,
 	setEpisode(episode);
 }
 
+Fragment::~Fragment()
+{
+	delete libraryInfo_;
+}
+
 void Fragment::setEpisode(QSharedPointer<Episode> episode)
 {
 	if (episode) {
@@ -58,20 +65,29 @@ void Fragment::setEpisode(QSharedPointer<Episode> episode)
 	}
 }
 
-// TODO: parametrize
-const char *Fragment::schemaString()
+const QString &Fragment::schemaString()
 {
-	return R"(Fragments (
-				id integer primary key,
-				episode_id integer references Episodes(id) on delete cascade on update cascade,
-				start integer not null,
-				end integer,
-				title text,
-				artist text,
-				rating integer,
-				metadata text
-			)
-	)";
+	using namespace db::fragment;
+	static QString schema = QString("%1 ("
+				"%2 integer primary key,"
+				"%3 integer references %4(%5) on delete cascade on update cascade,"
+				"%6 integer not null,"
+				"%7 integer,"
+				"%8 text,"
+				"%9 text,"
+				"%10 integer,"
+				"%11 text)"
+			).arg(TABLE_NAME,
+				  db::ID,
+				  EPISODE, db::episode::TABLE_NAME, db::ID,
+				  START,
+				  END,
+				  TITLE).arg(
+				ARTIST,
+				RATING,
+				METADATA);
+
+	return schema;
 }
 
 QSharedPointer<Episode> Fragment::getEpisode() const
@@ -112,6 +128,22 @@ const QStringList &Fragment::columnsList() const
 	return cl;
 }
 
+LibraryInfo* Fragment::getLibraryInfo()
+{
+	if (!libraryInfo_) {
+		libraryInfo_ = new LibraryInfo(this);
+	}
+
+	return libraryInfo_;
+}
+
+void Fragment::fieldChange()
+{
+	BaseRecord<Fragment>::fieldChange();
+	if (libraryInfo_) {
+		libraryInfo_->update(this);
+	}
+}
 
 bool Fragment::isStartFragment() const
 {

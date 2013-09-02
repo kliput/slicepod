@@ -39,18 +39,19 @@ constexpr const char* METADATA = "metadata";
 }
 
 class Tag;
+class LibraryInfo;
 
 class Fragment : public BaseRecord<Fragment>
 {
 public:
 	static constexpr const char* TABLE_NAME = db::fragment::TABLE_NAME;
-	static const char* schemaString();
+	static const QString& schemaString();
 	Fragment(QSqlRecord record);
 	Fragment();
 	Fragment(QSharedPointer<Episode> episode,
 			 int start, const QString& title, const QString& artist = QString(),
 			 int end=-1);
-	virtual ~Fragment() {}
+	virtual ~Fragment();
 
 	void setEpisode(QSharedPointer<Episode> episode);
 	QSharedPointer<Episode> getEpisode() const;
@@ -85,6 +86,17 @@ public:
 
 	template <class T> int referenceId() const;
 
+	/**
+	 * @brief getLibraryInfo returns LibraryInfo for this Fragment - LibraryInfo
+	 * is lazy-created on first call of this method.
+	 * @return pointer to LibraryInfo object containing information about this
+	 * Fragment
+	 */
+	LibraryInfo* getLibraryInfo();
+
+protected:
+	void fieldChange();
+
 private:
 	int episodeId_ = -1;
 	int start_ = -1;
@@ -93,6 +105,8 @@ private:
 	QString artist_;
 	int rating_ = -1;
 	QString metadata_;
+
+	LibraryInfo* libraryInfo_ = nullptr;
 };
 
 template <> inline int Fragment::referenceId<Episode>() const { return getEpisode()->id(); }

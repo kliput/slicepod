@@ -34,10 +34,7 @@ class FragmentPlaylistMap;
 class DatabaseEngine
 {
 public:
-	inline static DatabaseEngine* getInstance() {
-		static auto instance = new DatabaseEngine();
-		return instance;
-	}
+	static DatabaseEngine* getInstance();
 
 	bool open(const QString &path);
 
@@ -104,6 +101,8 @@ inline QSharedPointer<T> DatabaseEngine::record(int id)
 {
 	return map<T>().value(id);
 }
+
+// TODO: change name to one that refers to "cache"
 
 //! Inserts record class based on BaseRecord constructed with record to map
 //! of T-records. If there is already record with id, it's smart pointer data
@@ -209,7 +208,7 @@ QSharedPointer<T> DatabaseEngine::insert(const QStringList& columns,
 
 		if (!p) { // inserted, but cannot fetch
 			qCritical("Previously inserted record with id=%d to table %s "
-				   "cannot be fetched. Please check database readibiliy.",
+				   "cannot be fetched. Please check if database is readable.",
 				   n_id, T::TABLE_NAME);
 		}
 
@@ -224,7 +223,7 @@ QSharedPointer<T> DatabaseEngine::insert(const QStringList& columns,
 template <class T>
 QList<QSharedPointer<T>> DatabaseEngine::insertMultiple(QList<T> records)
 {
-	Q_ASSERT(!records.empty());
+	Q_ASSERT(!records.empty()); // TODO
 
 	const QStringList& columns = records[0].columnsList();
 
@@ -248,9 +247,9 @@ QList<QSharedPointer<T>> DatabaseEngine::insertMultiple(QList<T> records)
 		query.addBindValue(mv);
 	}
 
-	database_.transaction();
+//	database_.transaction();
 	bool status = query.execBatch();
-	database_.commit();
+//	database_.commit();
 
 	if (status) {
 

@@ -21,9 +21,11 @@
 
 #include <QWidget>
 
-#include "core/libraryitem.hpp"
+#include "core/libraryinfo.hpp"
+#include "db_engine/fragment.hpp"
 
 class MusicPlayer;
+class ImagesManager;
 
 class PositionWidget : public QWidget
 {
@@ -31,8 +33,11 @@ class PositionWidget : public QWidget
 public:
 	explicit PositionWidget(QWidget *parent = 0);
 
-	void setCurrentItem(LibraryItem* item);
+	void setCurrentFragment(Fragment::ptr fragment);
 	void setMusicPlayer(MusicPlayer* musicPlayer);
+
+	void drawBar(QPainter &painter);
+	void drawBarSelection(QPainter &painter, const int positionX1, const int positionX2, const QColor &color);
 
 protected:
 	void paintEvent(QPaintEvent *) override;
@@ -54,12 +59,23 @@ protected:
 	static constexpr int bottomArrowYOff();
 	static constexpr int totalHeight();
 
+	int barOffset();
+	int barY1();
+	int barWidth();
+	int barY2();
+
 private:
 	int mediaLength = 99;
 	int playerPosition = 0;
 
-	LibraryItem* currentItem = nullptr;
+	Fragment::ptr currentFragment;
 	MusicPlayer* musicPlayer = nullptr;
+	ImagesManager* images = nullptr;
+
+	// TODO: static, but it must be initialized after loading system palette
+	QColor barColor;
+	QColor barFragmentSelectionColor;
+	QColor barCurrentSelectionColor;
 
 signals:
 

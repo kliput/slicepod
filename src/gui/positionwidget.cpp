@@ -25,14 +25,31 @@
 #include <vlc-qt/MediaPlayer.h>
 
 #include "db_engine/fragment.hpp"
+#include "db_engine/episode.hpp"
 #include "core/musicplayer.hpp"
+#include "gui/imagesmanager.hpp"
 
 PositionWidget::PositionWidget(QWidget *parent) :
-	QWidget(parent)
+	QWidget(parent),
+	images(ImagesManager::getInstance())
 {
 	setPlayerPosition(0);
 	setMinimumHeight(totalHeight());
+
+	barColor = QApplication::palette().color(QPalette::Base);
+	barColor.setAlpha(160);
+
+	barCurrentSelectionColor = QApplication::palette().color(QPalette::Highlight);
+
+	barFragmentSelectionColor = QColor(QApplication::palette().color(QPalette::Highlight));
+	barFragmentSelectionColor.setAlpha(80);
 }
+
+//inline int PositionWidget::barMarginX() { return arrowWidth/2; }
+
+inline int PositionWidget::barOffset() { return arrowWidth/2; }
+inline int PositionWidget::barY1() { return arrowWidth; }
+inline int PositionWidget::barWidth() { return width()-arrowWidth; }
 
 constexpr int PositionWidget::bottomArrowY()
 {
@@ -65,13 +82,13 @@ void PositionWidget::setMusicPlayer(MusicPlayer *musicPlayer)
 			this, SLOT(setPlayerPosition(int)));
 }
 
-void PositionWidget::setCurrentItem(LibraryItem* item)
+void PositionWidget::setCurrentFragment(Fragment::ptr fragment)
 {
-	if (item) {
-		if (!currentItem || currentItem->getEpisode()->id() != item->getEpisode()->id()) {
-			setMediaLength(item->episodeLengthSec()*1000);
+	if (fragment) {
+		if (!currentFragment || currentFragment->getEpisode()->id() != fragment->getEpisode()->id()) {
+			setMediaLength(fragment->getEpisode()->audioLength());
 		}
-		currentItem = item;
+		currentFragment = fragment;
 		update();
 	}
 }
@@ -85,42 +102,67 @@ inline void PositionWidget::putBottomArrow(const QImage& image,
 						  bottomArrowY() : bottomArrowYOff(), image);
 }
 
+void PositionWidget::drawBar(QPainter &painter)
+{
+	painter.setPen(Qt::NoPen);
+	painter.setBrush(barColor);
+	painter.drawRect(barOffset(), barY1(),
+					 barWidth(), barHeight);
+}
+
+void PositionWidget::drawBarSelection(QPainter& painter, const int positionX1,
+									  const int positionX2, const QColor& color)
+{
+	painter.setPen(Qt::NoPen);
+	painter.setBrush(color);
+//	painter.drawRect(translateArrowX(positionX1), barY1(),
+//					 translateArrowX(positionX2), barY2());
+
+	int posX = barOffset() + translateArrowX(positionX1);
+	int width = translateArrowX(positionX2)-translateArrowX(positionX1);
+
+	painter.drawRect(posX, barY1(), width, barHeight);
+}
+
 void PositionWidget::paintEvent(QPaintEvent *)
 {
-	static const QColor barColor(255, 255, 255, 160);
-	static const QImage playArrowImage(":/images/arrow-down-double-blue.png");
-	static const QImage startArrowImage(":/images/arrow-up-green.png");
-	static const QImage endArrowImage(":/images/arrow-up-red.png");
-	static const QImage markerArrowImage(":/images/arrow-up-yellow.png");
-
 	QPainter painter(this);
 	painter.setRenderHint(QPainter::Antialiasing);
 
-	painter.setPen(Qt::NoPen);
-	painter.setBrush(barColor);
-	painter.drawRect(arrowWidth/2, arrowWidth,
-					 width()-arrowWidth, barHeight);
+	drawBar(painter);
 
-	if (currentItem) {
-
+	if (currentFragment) {
 		// draw position on top of bar
-		painter.drawImage(translateArrowX(playerPosition), 0, playArrowImage);
+		painter.drawImage(translateArrowX(playerPosition), 0, images->getPlayArrow());
 
 		// TODO: cache fragments list
-		auto fragments = currentItem->episodeFragmentsList();
-		auto currentFragment = currentItem->getFragment();
+		QList<Fragment::ptr> fragments = currentFragment->getEpisode()->getFragmentsList();
 
 		for (Fragment::ptr f: fragments) {
 			if (f->id() != currentFragment->id()) {
-				putBottomArrow(markerArrowImage, f->getStart()*1000, painter);
+				putBottomArrow(images->getMarkerArrow(), f->getStart(), painter);
+
+				if (f->hasEnd()) {
+					drawBarSelection(painter, f->getStart(),
+									 f->getEnd(), barFragmentSelectionColor);
+				} else {
+					// TODO: draw only line above marker
+				}
 			}
 		}
 
 		// TODO: only if there's  playing fragment...
-		putBottomArrow(startArrowImage, currentFragment->getStart()*1000, painter, true);
+		int selectionEnd;;
+		putBottomArrow(images->getStartArrow(), currentFragment->getStart(), painter, true);
 		if (currentFragment->hasEnd()) {
-			putBottomArrow(endArrowImage, currentFragment->getEnd()*1000, painter, true);
+			putBottomArrow(images->getEndArrow(), currentFragment->getEnd(), painter, true);
+			selectionEnd = currentFragment->getEnd();
+		} else {
+			selectionEnd = currentFragment->getEpisode()->audioLength();
 		}
+
+		drawBarSelection(painter, currentFragment->getStart(),
+						 selectionEnd, barCurrentSelectionColor);
 
 		// TODO: colorify and draw end for hovered marker
 	}

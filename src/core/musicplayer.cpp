@@ -19,7 +19,7 @@
 #include <QtCore>
 
 #include "musicplayer.hpp"
-#include "libraryitem.hpp"
+#include "libraryinfo.hpp"
 
 #include <vlc-qt/Common.h>
 #include <vlc-qt/Instance.h>
@@ -46,24 +46,30 @@ MusicPlayer::~MusicPlayer()
 	delete vlcPlayer->currentMedia();
 }
 
-bool MusicPlayer::loadMedia(LibraryItem* item)
+bool MusicPlayer::loadFragmentMedia(Fragment::ptr fragment)
 {
-	if (!item) {
+	if (!fragment) {
 		qFatal("MusicPlayer::loadMedia(item) -- item is null!");
 		return false;
 	}
 
-	currentItem_ = item;
 
-	VlcMedia* m = new VlcMedia(item->fileFullPath(), true, vlcInstance);
+	Episode::ptr ep = fragment->getEpisode();
+	if (!currentFragment || ep->id() != currentFragment->getEpisode()->id()) {
 
-	if (!m->core()) {
-		qFatal("MusicPlayer::loadMedia(...) -- cannot create VlcMedia");
-		return false;
+		currentFragment = fragment;
+
+		VlcMedia* m = new VlcMedia(ep->getFullPath(), true, vlcInstance);
+
+		if (!m->core()) {
+			qFatal("MusicPlayer::loadMedia(...) -- cannot create VlcMedia");
+			return false;
+		}
+
+		delete vlcPlayer->currentMedia();
+		vlcPlayer->openOnly(m);
+
 	}
-
-	delete vlcPlayer->currentMedia();
-	vlcPlayer->openOnly(m);
 
 	return true;
 }
@@ -87,12 +93,16 @@ bool MusicPlayer::loadMedia(LibraryItem* item)
 
 void MusicPlayer::play()
 {
-	scheduleTimeChange(currentItem_->fragmentStartSec()*1000);
+	scheduleTimeChange(currentFragment->getStart());
 	vlcPlayer->play();
 }
 
 void MusicPlayer::scheduleTimeChange(const int& pos)
-{
+{	
+	if (vlcPlayer->state() == Vlc::Playing) {
+		vlcPlayer->setTime(scheduledTime);
+	}
+
 	if (scheduledTime < 0) {
 		scheduledTime = pos;
 		connect(vlcPlayer, SIGNAL(playing()), this, SLOT(changeTime()));

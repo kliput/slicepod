@@ -16,19 +16,38 @@
 * along with this program. If not, see <http://www.gnu.org/licenses/>.
 *****************************************************************************/ 
 
-#ifndef FRAGMENTMARKER_HPP
-#define FRAGMENTMARKER_HPP
+#ifndef LIBRARYITEM_HPP
+#define LIBRARYITEM_HPP
 
-class LibraryItem;
+#include <QTime>
+#include <QString>
 
-class FragmentMarker
+#include "db_engine/fragment.hpp"
+
+class Fragment;
+
+/**
+ * @brief The LibraryInfo class is used for caching some information needed by
+ * media library, originally provided by database model classes.
+ */
+class LibraryInfo
 {
 public:
-	FragmentMarker() {}
-	FragmentMarker(LibraryItem* item);
-	bool hasEnd();
+	LibraryInfo(Fragment *fragment);
+
+	inline const QTime& getFragmentStartTime() const { return startTime_; }
+	inline const QTime& getFragmentEndTime() const { return endTime_; }
+	inline const QTime& getEpisodeLengthTime() const { return episodeLengthTime_; }
+	inline const QString& getTagsString() const { return tagsString_; }
+
+	void update(Fragment *fragment);
+
 private:
-	const LibraryItem* item_ = nullptr;
+	QTime startTime_;
+	QTime endTime_;
+	QTime episodeLengthTime_;
+	QString tagsString_;
+
 };
 
-#endif // FRAGMENTMARKER_HPP
+#endif // LIBRARYITEM_HPP

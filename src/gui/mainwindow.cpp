@@ -37,7 +37,7 @@ Q_DECLARE_METATYPE(QMessageBox::Icon)
 
 // TODO: create LibraryManager class to manage library (move methods from here)
 #include "core/utils.hpp"
-#include "core/libraryitem.hpp"
+#include "core/libraryinfo.hpp"
 #include "core/settingsmanager.hpp"
 
 #include "core/librarymodel.hpp"
@@ -76,7 +76,7 @@ MainWindow::MainWindow(MainCore* core, QWidget* parent) :
 			ui->endTimeEdit, SLOT(setEnabled(bool)));
 
 	// set disabled
-	fillItemInfoView(nullptr);
+	fillFragmentInfoView();
 
 	connect(ui->libraryView, SIGNAL(activated(QModelIndex)),
 			this, SLOT(activateLibraryItem(QModelIndex)));
@@ -106,22 +106,23 @@ void MainWindow::addDirectoryDialog()
 	dialog->setAttribute(Qt::WA_DeleteOnClose);
 }
 
-void MainWindow::fillItemInfoView(const LibraryItem* item)
+void MainWindow::fillFragmentInfoView(const Fragment::ptr fragment)
 {
-	if (!item) {
+	if (!fragment) {
 		setSelectedFragmentPanelEnabled(false);
 	} else {
 		setSelectedFragmentPanelEnabled(true);
 
-		ui->selectedPodcastLabel->setText(item->podcastName());
-		ui->selectedEpisodeLabel->setText(item->episodeName());
+		ui->selectedPodcastLabel->setText(fragment->getEpisode()->getPodcast()->getName());
+		ui->selectedEpisodeLabel->setText(fragment->getEpisode()->getEpisodeName());
 
-		ui->startTimeEdit->setTimeRange(QTime(), item->episodeLengthTime());
-		ui->startTimeEdit->setTime(item->fragmentStartTime());
+		// TODO: cached time
+		ui->startTimeEdit->setTimeRange(QTime(), fragment->getLibraryInfo()->getFragmentEndTime());
+		ui->startTimeEdit->setTime(fragment->getLibraryInfo()->getFragmentStartTime());
 
-		if (item->hasEnd()) {
-			ui->endTimeEdit->setTimeRange(QTime(), item->episodeLengthTime());
-			ui->endTimeEdit->setTime(item->fragmentEndTime());
+		if (fragment->hasEnd()) {
+			ui->endTimeEdit->setTimeRange(QTime(), fragment->getLibraryInfo()->getEpisodeLengthTime());
+			ui->endTimeEdit->setTime(fragment->getLibraryInfo()->getFragmentEndTime());
 			ui->endTimeCheckBox->setChecked(true);
 			ui->endTimeEdit->setEnabled(true);
 		} else {
@@ -134,19 +135,19 @@ void MainWindow::fillItemInfoView(const LibraryItem* item)
 void MainWindow::updateItemInfoView(const QModelIndex& current,
 									const QModelIndex& /*prev*/)
 {
-	auto item = core_->libraryModel()->libraryItemData(current);
+	auto item = core_->libraryModel()->getFragmentData(current);
 
-	fillItemInfoView(item);
+	fillFragmentInfoView(item);
 
 }
 
 void MainWindow::activateLibraryItem(const QModelIndex &index)
 {
-	auto item = core_->libraryModel()->libraryItemData(index);
+	Fragment::ptr fragment = core_->libraryModel()->getFragmentData(index);
 
-	if (core_->musicPlayer()->loadMedia(item)) {
-		ui->positionWidget->setCurrentItem(item);
-		core_->musicPlayer()->scheduleTimeChange(item->fragmentStartSec()*1000);
+	if (core_->musicPlayer()->loadFragmentMedia(fragment)) {
+		ui->positionWidget->setCurrentFragment(fragment);
+		core_->musicPlayer()->scheduleTimeChange(fragment->getStart());
 		core_->musicPlayer()->play();
 		// TODO: emit data changed on played item to show play icon
 	} else {

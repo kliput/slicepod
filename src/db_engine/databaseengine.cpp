@@ -61,6 +61,12 @@ QSqlError DatabaseEngine::fetchAll()
 	}
 }
 
+DatabaseEngine *DatabaseEngine::getInstance()
+{
+	static auto instance = new DatabaseEngine();
+	return instance;
+}
+
 bool DatabaseEngine::open(const QString& path)
 {
 	database_ = QSqlDatabase::addDatabase("QSQLITE");
@@ -70,12 +76,13 @@ bool DatabaseEngine::open(const QString& path)
 	database_.setUserName("root");
 	database_.setPassword("");
 
-	if (!database_.open())
-	{
+	if (!database_.open()) {
 		qDebug("Error: could not connect to database: %s",
 			   qPrintable(database_.lastError().text()));
 		opened_ = false;
 		return false;
+	} else {
+		opened_ = true;
 	}
 
 	{

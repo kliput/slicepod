@@ -24,7 +24,8 @@
 #include <QImage>
 #include <QIcon>
 
-class LibraryItem;
+#include <db_engine/fragment.hpp>
+
 class MusicPlayer;
 class DatabaseEngine;
 
@@ -40,14 +41,14 @@ public:
 
 	virtual ~LibraryModel();
 
-	const QList<LibraryItem*> libraryItems() { return libraryItems_; }
+	inline const QList<Fragment::ptr> getFragmentsList() const { return fragmentsList_; }
 
-	void addItem(LibraryItem *item);
-	void addItems(QList<LibraryItem*> itemsList);
+	void addFragment(Fragment::ptr fragment);
+	void addFragments(QList<Fragment::ptr> fragmentsList);
 
 	void loadFromDatabase();
 
-	LibraryItem *libraryItemData(const QModelIndex &index);
+	Fragment::ptr getFragmentData(const QModelIndex &index);
 
 	enum Column {
 		COL_PODCAST = 0,
@@ -65,7 +66,7 @@ signals:
 public slots:
 
 private:
-	QList<LibraryItem*> libraryItems_;
+	QList<Fragment::ptr> fragmentsList_;
 	DatabaseEngine* dbEngine_;
 	MusicPlayer* player_;
 	QImage playImage_;

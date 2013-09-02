@@ -16,16 +16,30 @@
 * along with this program. If not, see <http://www.gnu.org/licenses/>.
 *****************************************************************************/ 
 
-#include "fragmentmarker.hpp"
+#include <QtCore>
 
-FragmentMarker::FragmentMarker(LibraryItem* item) :
-	item_(item)
+#include "libraryinfo.hpp"
+#include "db_engine/fragment.hpp"
+#include "db_engine/tag.hpp"
+
+LibraryInfo::LibraryInfo(Fragment* fragment)
 {
-	if (!item) throw 0; // TODO: handle error
+	update(fragment);
 }
 
-bool FragmentMarker::hasEnd()
+void LibraryInfo::update(Fragment* fragment)
 {
-//	return end >= 0;
-	return false;
+	startTime_ = QTime().addMSecs(fragment->getStart());
+	endTime_ = QTime().addMSecs(fragment->getEnd());
+	episodeLengthTime_ = QTime().addMSecs(fragment->getEpisode()->audioLength());
+
+	auto tl = fragment->getTagsList();
+	QStringList tsl;
+
+	tsl.reserve(tl.size());
+	for (auto& t: fragment->getTagsList()) {
+		tsl << t->getName();
+	}
+
+	tagsString_ = tsl.join(", ");
 }

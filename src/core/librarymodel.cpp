@@ -21,7 +21,7 @@
 #include <QImage>
 
 #include "librarymodel.hpp"
-#include "core/libraryitem.hpp"
+#include "core/libraryinfo.hpp"
 #include "db_engine/databaseengine.hpp"
 #include "db_engine/fragment.hpp"
 #include "utils.hpp"
@@ -41,7 +41,7 @@ LibraryModel::LibraryModel(DatabaseEngine* dbEngine, MusicPlayer* musicPlayer, Q
 
 int LibraryModel::rowCount(const QModelIndex& /*parent*/) const
 {
-	return this->libraryItems_.size();
+	return getFragmentsList().size();
 }
 
 int LibraryModel::columnCount(const QModelIndex& /*parent*/) const
@@ -57,26 +57,26 @@ QVariant LibraryModel::data(const QModelIndex &index, int role) const
 	}
 
 
-	LibraryItem* const item = libraryItems_[index.row()];
+	const Fragment::ptr& fragment = getFragmentsList()[index.row()];
 
 	if (role == Qt::DisplayRole) {
 		switch (index.column()) {
 		case COL_PODCAST:
-			return item->podcastName();
+			return fragment->getEpisode()->getPodcast()->getName();
 		case COL_EPISODE:
-			return item->episodeName();
+			return fragment->getEpisode()->getEpisodeName();
 		case COL_TITLE:
-			if (item->isStartFragment()) {
+			if (fragment->isStartFragment()) {
 				return tr("Beginning");
 			} else {
-				return item->fragmentTitle();
+				return fragment->getTitle();
 			}
 		case COL_ARTIST:
-			return item->fragmentArtist();
+			return fragment->getArtist();
 		case COL_START:
-			return QTime().addSecs(item->fragmentStartSec()).toString("HH:mm:ss");
+			return fragment->getLibraryInfo()->getFragmentStartTime().toString("HH:mm:ss");
 		case COL_TAGS:
-			return item->fragmentTagsList().join(", ");
+			return fragment->getLibraryInfo()->getTagsString();
 		default:
 			return QVariant();
 		}
@@ -86,7 +86,7 @@ QVariant LibraryModel::data(const QModelIndex &index, int role) const
 //		// TODO: react on column order changes
 //		return playImage_;
 	} else if (role == Qt::DecorationRole && index.column() == COL_TITLE
-			   && item->isStartFragment()) {
+			   && fragment->isStartFragment()) {
 		return startFragmentIcon_;
 	} else {
 		return QVariant();
@@ -94,17 +94,18 @@ QVariant LibraryModel::data(const QModelIndex &index, int role) const
 }
 
 //! Gets LibraryItem* associated with given QModelIndex. Does range checking.
-LibraryItem* LibraryModel::libraryItemData(const QModelIndex& index)
+Fragment::ptr LibraryModel::getFragmentData(const QModelIndex& index)
 {
 	if (!index.isValid() || index.row() > this->rowCount()
 			|| index.column() >= this->columnCount()
-			|| index.row() >= libraryItems_.size() || index.row() < 0) {
+			|| index.row() >= getFragmentsList().size() || index.row() < 0) {
 		qFatal("Tried to access invalid index from LibraryModel: %d, %d",
 			   index.row(), index.column());
-		return nullptr;
+
+		return Fragment::ptr();
 	}
 
-	return libraryItems_[index.row()];
+	return getFragmentsList()[index.row()];
 }
 
 QVariant LibraryModel::headerData(int section, Qt::Orientation orientation, int role) const
@@ -136,42 +137,33 @@ QVariant LibraryModel::headerData(int section, Qt::Orientation orientation, int 
 
 LibraryModel::~LibraryModel()
 {
-	qDeleteAll(this->libraryItems_);
 	qDebug() << "Library model destructed";
 }
 
-void LibraryModel::addItem(LibraryItem *item)
+void LibraryModel::addFragment(Fragment::ptr fragment)
 {
 	int first, last;
-	first = last = libraryItems_.size();
+	first = last = getFragmentsList().size();
 	beginInsertRows(QModelIndex(), first, last);
-	libraryItems_ << item;
+	fragmentsList_ << fragment;
 	endInsertRows();
 }
 
 //! Add items (rows) to list model.
-void LibraryModel::addItems(QList<LibraryItem *> itemsList)
+void LibraryModel::addFragments(QList<Fragment::ptr> fragmentsList)
 {
 	int first, last;
-	first = libraryItems_.size();
+	first = getFragmentsList().size();
 	// prevent first > last if libraryItems_.size() < 0
-	last = itemsList.size() == 0 ? first : first + itemsList.size() - 1;
+	last = fragmentsList.size() == 0 ? first : first + fragmentsList.size() - 1;
 
 	beginInsertRows(QModelIndex(), first, last);
-	libraryItems_ << itemsList;
+	fragmentsList_ << fragmentsList;
 	endInsertRows();
 }
 
-//! Creates list of LibraryItems constructed with all fragments from database
-//! engine cache. Global DatabaseEngine instance is used.
-//! NOTICE: Fragments must be previously loaded into engine's cache.
 void LibraryModel::loadFromDatabase()
 {
-	QList<LibraryItem*> items;
-	for (const Fragment::ptr& f: dbEngine_->template list<Fragment>()) {
-		items << new LibraryItem(f);
-	}
-
-	addItems(items);
+	addFragments(dbEngine_->template list<Fragment>());
 }
 

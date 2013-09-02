@@ -41,7 +41,7 @@ public:
 	explicit MainWindow(MainCore* core, QWidget* parent = nullptr);
 	~MainWindow();
 
-	void fillItemInfoView(const LibraryItem *item);
+	void fillFragmentInfoView(const Fragment::ptr fragment = Fragment::ptr());
 	void setSelectedFragmentPanelEnabled(bool state);
 
 private:

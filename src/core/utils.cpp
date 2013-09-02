@@ -17,7 +17,6 @@
 *****************************************************************************/ 
 
 #include <QtCore>
-#include <QtGui>
 
 #include "core/utils.hpp"
 #include "core/sqlexception.hpp"
