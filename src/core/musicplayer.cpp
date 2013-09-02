@@ -93,7 +93,6 @@ bool MusicPlayer::loadFragmentMedia(Fragment::ptr fragment)
 
 void MusicPlayer::play()
 {
-	scheduleTimeChange(currentFragment->getStart());
 	vlcPlayer->play();
 }
 
