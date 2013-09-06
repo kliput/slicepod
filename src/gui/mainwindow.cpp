@@ -145,7 +145,7 @@ void MainWindow::activateLibraryItem(const QModelIndex &index)
 {
 	Fragment::ptr fragment = core_->libraryModel()->getFragmentData(index);
 
-	if (core_->musicPlayer()->loadFragmentMedia(fragment)) {
+	if (core_->musicPlayer()->loadFragment(fragment)) {
 		ui->positionWidget->setCurrentFragment(fragment);
 		core_->musicPlayer()->scheduleTimeChange(fragment->getStart());
 		core_->musicPlayer()->play();

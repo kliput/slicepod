@@ -35,13 +35,14 @@ public:
 	explicit MusicPlayer(QObject *parent = nullptr);
 	virtual ~MusicPlayer();
 
-	bool loadFragmentMedia(Fragment::ptr fragment);
+	bool loadFragment(Fragment::ptr fragment);
 
 	Fragment::ptr getCurrentFragment() { return currentFragment; }
 
 	VlcMediaPlayer* getVlcPlayer() { return vlcPlayer; }
 	void scheduleTimeChange(const int &pos);
 
+	int getMediaLengthMs();
 private:
 	VlcInstance* vlcInstance;
 	VlcMediaPlayer* vlcPlayer;

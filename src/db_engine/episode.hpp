@@ -81,7 +81,7 @@ public:
 	template <class T> int referenceId() const;
 
 	TagLib::FileRef fileInfo() const;
-	int audioLength() const;
+	int getAudioLengthSec() const;
 
 private :
 	QString episodeName_;

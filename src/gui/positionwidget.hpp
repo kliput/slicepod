@@ -47,9 +47,6 @@ protected:
 
 	inline int translateArrowX(const int& positionSec);
 
-	void setMediaLength(int value) { mediaLength = value; }
-
-
 	static constexpr int arrowWidth = 16;
 	static constexpr int arrowHeight = 16;
 	static constexpr int barHeight = 8;
@@ -81,6 +78,8 @@ signals:
 
 public slots:
 	void setPlayerPosition(int position);
+	void handleVlcStateChange();
+	void setMediaLength(int value);
 };
 
 #endif // POSITIONWIDGET_HPP

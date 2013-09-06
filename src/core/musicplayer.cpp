@@ -26,6 +26,9 @@
 #include <vlc-qt/Media.h>
 #include <vlc-qt/MediaPlayer.h>
 
+#include <vlc/libvlc.h>
+#include <vlc/libvlc_media.h>
+
 #include <taglib/taglib.h>
 #include <taglib/fileref.h>
 #include <taglib/tag.h>
@@ -46,7 +49,7 @@ MusicPlayer::~MusicPlayer()
 	delete vlcPlayer->currentMedia();
 }
 
-bool MusicPlayer::loadFragmentMedia(Fragment::ptr fragment)
+bool MusicPlayer::loadFragment(Fragment::ptr fragment)
 {
 	if (!fragment) {
 		qFatal("MusicPlayer::loadMedia(item) -- item is null!");
@@ -67,46 +70,50 @@ bool MusicPlayer::loadFragmentMedia(Fragment::ptr fragment)
 		}
 
 		delete vlcPlayer->currentMedia();
+
 		vlcPlayer->openOnly(m);
 
 	}
 
+	qDebug("MusicPlayer loaded media with length: %d", getMediaLengthMs());
+
 	return true;
 }
-
-///**
-// * @brief MusicPlayer::emitPositionUpdate slot is used to catch signal with
-// * position change in milliseconds and emit signal with time value rounded to
-// * seconds.
-// * @param positionMs position of media in milliseconds
-// */
-//void MusicPlayer::emitPositionUpdate(qint64 positionMs)
-//{
-//	int n_pos = positionMs/1000;
-
-//	if (positionMs%1000 >= 500) {
-//		n_pos += 1;
-//	}
-
-//	emit positionChanged(n_pos);
-//}
 
 void MusicPlayer::play()
 {
 	vlcPlayer->play();
 }
 
+// TODO: use media length changed notification to update length to accurate values
+int MusicPlayer::getMediaLengthMs()
+{
+	if (currentFragment) {
+		if (vlcPlayer->state() == Vlc::Playing) {
+			int len = vlcPlayer->length();
+			if (len > 0) {
+				return len;
+			}
+		} else {
+			return currentFragment->getEpisode()->getAudioLengthSec()*1000;
+		}
+	} else {
+		return 0;
+	}
+
+}
+
 void MusicPlayer::scheduleTimeChange(const int& pos)
 {	
 	if (vlcPlayer->state() == Vlc::Playing) {
-		vlcPlayer->setTime(scheduledTime);
-	}
-
-	if (scheduledTime < 0) {
-		scheduledTime = pos;
-		connect(vlcPlayer, SIGNAL(playing()), this, SLOT(changeTime()));
+		vlcPlayer->setTime(pos);
 	} else {
-		qDebug("Error: there is currently scheduled position change!");
+		if (scheduledTime < 0) {
+			scheduledTime = pos;
+			connect(vlcPlayer, SIGNAL(playing()), this, SLOT(changeTime()));
+		} else {
+			qDebug("Error: there is currently scheduled position change!");
+		}
 	}
 }
 

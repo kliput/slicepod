@@ -31,7 +31,7 @@ void LibraryInfo::update(Fragment* fragment)
 {
 	startTime_ = QTime().addMSecs(fragment->getStart());
 	endTime_ = QTime().addMSecs(fragment->getEnd());
-	episodeLengthTime_ = QTime().addMSecs(fragment->getEpisode()->audioLength());
+	episodeLengthTime_ = QTime().addSecs(fragment->getEpisode()->getAudioLengthSec());
 
 	auto tl = fragment->getTagsList();
 	QStringList tsl;

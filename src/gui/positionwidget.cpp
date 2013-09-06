@@ -73,20 +73,35 @@ int PositionWidget::translateArrowX(const int& positionMs)
 
 void PositionWidget::setMusicPlayer(MusicPlayer *musicPlayer)
 {
+	VlcMediaPlayer* vm = musicPlayer->getVlcPlayer();
+
+	// disconnect from previous musicPlayer connections
 	if (this->musicPlayer) {
-		disconnect(this->musicPlayer->getVlcPlayer(), SIGNAL(timeChanged(int)),
+		disconnect(vm, SIGNAL(timeChanged(int)),
 				   this, SLOT(setPlayerPosition(int)));
+		disconnect(vm, SIGNAL(stateChanged()),
+				this, SLOT(handleVlcStateChange()));
+//		disconnect(vm, SIGNAL(lengthChanged(int)),
+//				this, SLOT(setMediaLength(int)));
 	}
+
 	this->musicPlayer = musicPlayer;
-	connect(this->musicPlayer->getVlcPlayer(), SIGNAL(timeChanged(int)),
+	connect(vm, SIGNAL(timeChanged(int)),
 			this, SLOT(setPlayerPosition(int)));
+	connect(vm, SIGNAL(stateChanged()),
+			this, SLOT(handleVlcStateChange()));
+//	connect(vm, SIGNAL(lengthChanged(int)),
+//			this, SLOT(setMediaLength(int)));
 }
 
 void PositionWidget::setCurrentFragment(Fragment::ptr fragment)
 {
 	if (fragment) {
 		if (!currentFragment || currentFragment->getEpisode()->id() != fragment->getEpisode()->id()) {
-			setMediaLength(fragment->getEpisode()->audioLength());
+			// TODO: not necessarily?
+//			setMediaLength(fragment->getEpisode()->getAudioLengthSec()*1000);
+//			setMediaLength(musicPlayer->getVlcPlayer()->length());
+			setMediaLength(musicPlayer->getMediaLengthMs());
 		}
 		currentFragment = fragment;
 		update();
@@ -152,13 +167,13 @@ void PositionWidget::paintEvent(QPaintEvent *)
 		}
 
 		// TODO: only if there's  playing fragment...
-		int selectionEnd;;
+		int selectionEnd;
 		putBottomArrow(images->getStartArrow(), currentFragment->getStart(), painter, true);
 		if (currentFragment->hasEnd()) {
 			putBottomArrow(images->getEndArrow(), currentFragment->getEnd(), painter, true);
 			selectionEnd = currentFragment->getEnd();
 		} else {
-			selectionEnd = currentFragment->getEpisode()->audioLength();
+			selectionEnd = mediaLength;
 		}
 
 		drawBarSelection(painter, currentFragment->getStart(),
@@ -170,6 +185,34 @@ void PositionWidget::paintEvent(QPaintEvent *)
 
 void PositionWidget::setPlayerPosition(int position)
 {
-	playerPosition = position;
+//	qDebug("set player position to %d", position);
+	playerPosition = position<=mediaLength ? position : mediaLength;
+	update();
+}
+
+void PositionWidget::handleVlcStateChange()
+{
+	VlcMediaPlayer* vmp = musicPlayer->getVlcPlayer();
+
+	qDebug("handle vlc state change %d", vmp->state());
+
+	switch (vmp->state()) {
+	case Vlc::Paused:
+	case Vlc::Stopped:
+		setPlayerPosition(vmp->time());
+		break;
+	case Vlc::Ended:
+		// because sometimes vlc-readed length is wrong
+		setPlayerPosition(mediaLength);
+		break;
+	default:
+		break;
+	}
+}
+
+void PositionWidget::setMediaLength(int value)
+{
+	qDebug("set media length to %d", value);
+	mediaLength = value;
 	update();
 }

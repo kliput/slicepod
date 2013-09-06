@@ -164,12 +164,12 @@ TagLib::FileRef Episode::fileInfo() const
  * @brief Episode::audio_length
  * @return Rounded Episode's file audio length in milliseconds.
  */
-int Episode::audioLength() const
+int Episode::getAudioLengthSec() const
 {
 	auto file_ref = this->fileInfo();
 	auto audio_p = file_ref.audioProperties();
 	if (audio_p) {
-		return audio_p->length()*1000;
+		return audio_p->length();
 	} else {
 		throw QString("TODO cannot read file audio properties");
 		// return -1;
