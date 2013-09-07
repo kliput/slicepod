@@ -152,10 +152,15 @@ void LibraryModel::addFragment(Fragment::ptr fragment)
 //! Add items (rows) to list model.
 void LibraryModel::addFragments(QList<Fragment::ptr> fragmentsList)
 {
+	if (fragmentsList.size() == 0) {
+		return;
+	}
+
 	int first, last;
-	first = getFragmentsList().size();
-	// prevent first > last if libraryItems_.size() < 0
-	last = fragmentsList.size() == 0 ? first : first + fragmentsList.size() - 1;
+	first = this->getFragmentsList().size(); // last element index + 1
+	// prevent first > last if libraryItems_.size() == 0 TODO
+//	last = fragmentsList.size() == 0 ? first : first + fragmentsList.size() - 1;
+	last = first + fragmentsList.size() - 1;
 
 	beginInsertRows(QModelIndex(), first, last);
 	fragmentsList_ << fragmentsList;

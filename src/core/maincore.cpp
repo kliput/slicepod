@@ -46,6 +46,7 @@ MainCore::MainCore(QObject *parent) :
 	libraryModel_ = new LibraryModel(getDbEngine(), player_, this);
 	proxyModel_ = new QSortFilterProxyModel(this);
 	proxyModel_->setSortLocaleAware(true);
+	proxyModel_->setDynamicSortFilter(true);
 
 	proxyModel_->setSourceModel(libraryModel_);
 }
