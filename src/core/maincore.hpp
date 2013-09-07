@@ -45,7 +45,7 @@ public:
 	
 // -- getters --
 	inline LibraryModel *getLibraryModel() { return libraryModel_; }
-	inline QSortFilterProxyModel *getProxyModel() { return proxyModel_; }
+	inline QSortFilterProxyModel *getLibraryProxyModel() { return proxyModel_; }
 	inline MusicPlayer *getMusicPlayer() { return player_; }
 	inline DatabaseEngine *getDbEngine() { return DatabaseEngine::getInstance(); }
 

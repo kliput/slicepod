@@ -50,7 +50,7 @@ MainWindow::MainWindow(MainCore* core, QWidget* parent) :
 {
 	ui->setupUi(this);
 
-	ui->libraryView->setModel(core_->getProxyModel());
+	ui->libraryView->setModel(core_->getLibraryProxyModel());
 	ui->libraryView->setVisible(true);
 
 	ui->positionWidget->setMusicPlayer(core_->getMusicPlayer());
@@ -135,7 +135,8 @@ void MainWindow::fillFragmentInfoView(const Fragment::ptr fragment)
 void MainWindow::updateItemInfoView(const QModelIndex& current,
 									const QModelIndex& /*prev*/)
 {
-	auto item = core_->getLibraryModel()->getFragmentData(current);
+	auto item = core_->getLibraryModel()->getFragmentData(
+				core_->getLibraryProxyModel()->mapToSource(current));
 
 	fillFragmentInfoView(item);
 
@@ -143,7 +144,8 @@ void MainWindow::updateItemInfoView(const QModelIndex& current,
 
 void MainWindow::activateLibraryItem(const QModelIndex &index)
 {
-	Fragment::ptr fragment = core_->getLibraryModel()->getFragmentData(index);
+	Fragment::ptr fragment = core_->getLibraryModel()->getFragmentData(
+				core_->getLibraryProxyModel()->mapToSource(index));
 
 	if (core_->getMusicPlayer()->loadFragment(fragment)) {
 		core_->getMusicPlayer()->scheduleTimeChange(fragment->getStart());
