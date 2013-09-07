@@ -7,5 +7,13 @@
         <file>images/arrow-up-yellow.png</file>
         <file>images/arrow-right-black.png</file>
         <file>images/icon-128.png</file>
+        <file>images/media-playback-pause.png</file>
+        <file>images/media-playback-start.png</file>
+        <file>images/media-playback-stop.png</file>
+        <file>images/list-add.png</file>
+        <file>images/document-edit.png</file>
+        <file>images/document-save.png</file>
+        <file>images/edit-delete.png</file>
+        <file>images/folder-new.png</file>
     </qresource>
 </RCC>

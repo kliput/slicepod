@@ -35,7 +35,58 @@
      <number>3</number>
     </property>
     <item>
-     <layout class="QHBoxLayout" name="horizontalLayout">
+     <layout class="QHBoxLayout" name="upperPlayerLayout">
+      <item>
+       <layout class="QHBoxLayout" name="playerButtonsLayout">
+        <property name="sizeConstraint">
+         <enum>QLayout::SetDefaultConstraint</enum>
+        </property>
+        <item>
+         <widget class="QToolButton" name="playButton">
+          <property name="text">
+           <string/>
+          </property>
+          <property name="icon">
+           <iconset resource="../slicepod.qrc">
+            <normaloff>:/images/media-playback-start.png</normaloff>:/images/media-playback-start.png</iconset>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QToolButton" name="stopButton">
+          <property name="text">
+           <string/>
+          </property>
+          <property name="icon">
+           <iconset resource="../slicepod.qrc">
+            <normaloff>:/images/media-playback-stop.png</normaloff>:/images/media-playback-stop.png</iconset>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QToolButton" name="toolButton">
+          <property name="text">
+           <string/>
+          </property>
+          <property name="icon">
+           <iconset resource="../slicepod.qrc">
+            <normaloff>:/images/list-add.png</normaloff>:/images/list-add.png</iconset>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QToolButton" name="toolButton_2">
+          <property name="text">
+           <string/>
+          </property>
+          <property name="icon">
+           <iconset resource="../slicepod.qrc">
+            <normaloff>:/images/document-edit.png</normaloff>:/images/document-edit.png</iconset>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
       <item>
        <widget class="QLabel" name="playingStatusStaticLabel">
         <property name="sizePolicy">
@@ -59,40 +110,16 @@
      </layout>
     </item>
     <item>
-     <layout class="QHBoxLayout" name="playerLayout">
+     <layout class="QHBoxLayout" name="lowerPlayerLayout">
       <item>
-       <layout class="QHBoxLayout" name="playerButtonsLayout">
-        <property name="sizeConstraint">
-         <enum>QLayout::SetDefaultConstraint</enum>
+       <widget class="PositionWidget" name="positionWidget" native="true">
+        <property name="minimumSize">
+         <size>
+          <width>0</width>
+          <height>56</height>
+         </size>
         </property>
-        <item>
-         <widget class="QToolButton" name="playButton">
-          <property name="text">
-           <string/>
-          </property>
-          <property name="icon">
-           <iconset theme="media-playback-start">
-            <normaloff/>
-           </iconset>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QToolButton" name="toolButton">
-          <property name="text">
-           <string/>
-          </property>
-          <property name="icon">
-           <iconset theme="media-playback-stop">
-            <normaloff/>
-           </iconset>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="PositionWidget" name="positionWidget" native="true"/>
-        </item>
-       </layout>
+       </widget>
       </item>
      </layout>
     </item>
@@ -101,123 +128,102 @@
       <property name="title">
        <string>Fragment properties</string>
       </property>
-      <layout class="QGridLayout" name="gridLayout">
-       <item row="2" column="1">
-        <layout class="QFormLayout" name="timesLayout">
-         <item row="0" column="0">
-          <widget class="QLabel" name="startTimeLabel">
-           <property name="text">
-            <string>Start time:</string>
+      <layout class="QVBoxLayout" name="verticalLayout">
+       <item>
+        <layout class="QHBoxLayout" name="editHL1">
+         <item>
+          <layout class="QFormLayout" name="selectedLeftformLayout">
+           <property name="fieldGrowthPolicy">
+            <enum>QFormLayout::AllNonFixedFieldsGrow</enum>
            </property>
-          </widget>
-         </item>
-         <item row="0" column="1">
-          <widget class="QTimeEdit" name="startTimeEdit">
-           <property name="displayFormat">
-            <string>HH:mm:ss</string>
-           </property>
-          </widget>
-         </item>
-         <item row="1" column="0">
-          <widget class="QLabel" name="endTimeLabel">
-           <property name="text">
-            <string>End time:</string>
-           </property>
-          </widget>
-         </item>
-         <item row="1" column="1">
-          <layout class="QHBoxLayout" name="endTimeLayout">
-           <item>
-            <widget class="QCheckBox" name="endTimeCheckBox">
+           <item row="0" column="0">
+            <widget class="QLabel" name="selectedPodcastStaticLabel">
              <property name="text">
-              <string/>
+              <string>Podcast:</string>
              </property>
             </widget>
            </item>
-           <item>
-            <widget class="QTimeEdit" name="endTimeEdit">
-             <property name="displayFormat">
-              <string>HH:mm:ss</string>
+           <item row="0" column="1">
+            <widget class="QLabel" name="selectedPodcastLabel">
+             <property name="text">
+              <string>&lt;not selected&gt;</string>
+             </property>
+            </widget>
+           </item>
+           <item row="1" column="0">
+            <widget class="QLabel" name="selectedEpisodeStaticLabel">
+             <property name="text">
+              <string>Episode:</string>
+             </property>
+            </widget>
+           </item>
+           <item row="1" column="1">
+            <widget class="QLabel" name="selectedEpisodeLabel">
+             <property name="text">
+              <string>&lt;not selected&gt;</string>
              </property>
             </widget>
            </item>
           </layout>
          </item>
+         <item>
+          <layout class="QFormLayout" name="timesLayout">
+           <item row="0" column="0">
+            <widget class="QLabel" name="startTimeLabel">
+             <property name="text">
+              <string>Start time:</string>
+             </property>
+            </widget>
+           </item>
+           <item row="0" column="1">
+            <widget class="QTimeEdit" name="startTimeEdit">
+             <property name="displayFormat">
+              <string>HH:mm:ss</string>
+             </property>
+            </widget>
+           </item>
+           <item row="1" column="0">
+            <widget class="QLabel" name="endTimeLabel">
+             <property name="text">
+              <string>End time:</string>
+             </property>
+            </widget>
+           </item>
+           <item row="1" column="1">
+            <layout class="QHBoxLayout" name="endTimeLayout">
+             <item>
+              <widget class="QCheckBox" name="endTimeCheckBox">
+               <property name="text">
+                <string/>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QTimeEdit" name="endTimeEdit">
+               <property name="displayFormat">
+                <string>HH:mm:ss</string>
+               </property>
+              </widget>
+             </item>
+            </layout>
+           </item>
+          </layout>
+         </item>
         </layout>
        </item>
-       <item row="2" column="0">
-        <layout class="QFormLayout" name="selectedLeftformLayout">
-         <property name="fieldGrowthPolicy">
-          <enum>QFormLayout::AllNonFixedFieldsGrow</enum>
-         </property>
-         <item row="0" column="0">
-          <widget class="QLabel" name="selectedPodcastStaticLabel">
-           <property name="text">
-            <string>Podcast:</string>
-           </property>
-          </widget>
-         </item>
-         <item row="0" column="1">
-          <widget class="QLabel" name="selectedPodcastLabel">
-           <property name="text">
-            <string>&lt;not selected&gt;</string>
-           </property>
-          </widget>
-         </item>
-         <item row="1" column="0">
-          <widget class="QLabel" name="selectedEpisodeStaticLabel">
-           <property name="text">
-            <string>Episode:</string>
-           </property>
-          </widget>
-         </item>
-         <item row="1" column="1">
-          <widget class="QLabel" name="selectedEpisodeLabel">
-           <property name="text">
-            <string>&lt;not selected&gt;</string>
-           </property>
-          </widget>
-         </item>
-        </layout>
-       </item>
-       <item row="0" column="0" colspan="2">
+       <item>
         <layout class="QHBoxLayout" name="horizontalLayout_3">
          <item>
-          <widget class="QPushButton" name="createFragmentButton">
-           <property name="sizePolicy">
-            <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-             <horstretch>0</horstretch>
-             <verstretch>0</verstretch>
-            </sizepolicy>
-           </property>
-           <property name="toolTip">
-            <string>Create new fragment in </string>
-           </property>
+          <widget class="QLabel" name="selectedTagsStaticLabel">
            <property name="text">
-            <string>Create new fragment</string>
-           </property>
-           <property name="icon">
-            <iconset theme="list-add">
-             <normaloff/>
-            </iconset>
+            <string>Tags:</string>
            </property>
           </widget>
          </item>
          <item>
-          <widget class="QPushButton" name="editCurrentlyPlayingButton">
-           <property name="sizePolicy">
-            <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-             <horstretch>0</horstretch>
-             <verstretch>0</verstretch>
-            </sizepolicy>
-           </property>
+          <widget class="QLabel" name="label">
            <property name="text">
-            <string>Edit currently playing</string>
-           </property>
-           <property name="icon">
-            <iconset theme="document-edit">
-             <normaloff/>
-            </iconset>
+            <string>...</string>
            </property>
           </widget>
          </item>
@@ -235,37 +241,28 @@
           </spacer>
          </item>
          <item>
-          <widget class="QPushButton" name="pushButton_3">
+          <widget class="QPushButton" name="fragmentEditSave">
            <property name="text">
             <string>Save changes</string>
            </property>
            <property name="icon">
-            <iconset theme="document-save">
-             <normaloff/>
-            </iconset>
+            <iconset resource="../slicepod.qrc">
+             <normaloff>:/images/document-save.png</normaloff>:/images/document-save.png</iconset>
            </property>
           </widget>
          </item>
          <item>
-          <widget class="QPushButton" name="pushButton_4">
+          <widget class="QPushButton" name="fragmentEditRemove">
            <property name="text">
             <string>Remove</string>
            </property>
            <property name="icon">
-            <iconset theme="edit-delete">
-             <normaloff/>
-            </iconset>
+            <iconset resource="../slicepod.qrc">
+             <normaloff>:/images/edit-delete.png</normaloff>:/images/edit-delete.png</iconset>
            </property>
           </widget>
          </item>
         </layout>
-       </item>
-       <item row="3" column="0">
-        <widget class="QLabel" name="selectedTagsStaticLabel">
-         <property name="text">
-          <string>Tags:</string>
-         </property>
-        </widget>
        </item>
       </layout>
      </widget>

@@ -23,7 +23,7 @@
       <item>
        <widget class="QRadioButton" name="assignAutomaticRadio">
         <property name="text">
-         <string>Automatic (by album tag)</string>
+         <string>&amp;Automatic (by album tag)</string>
         </property>
         <property name="checked">
          <bool>true</bool>
@@ -33,7 +33,7 @@
       <item>
        <widget class="QRadioButton" name="assignToOneRadio">
         <property name="text">
-         <string>Assign all to one podcast:</string>
+         <string>Assign all to &amp;one podcast:</string>
         </property>
        </widget>
       </item>
@@ -52,12 +52,11 @@
         <item>
          <widget class="QPushButton" name="podcastAddButton">
           <property name="text">
-           <string>Add...</string>
+           <string>A&amp;dd...</string>
           </property>
           <property name="icon">
-           <iconset theme="list-add">
-            <normaloff/>
-           </iconset>
+           <iconset resource="../slicepod.qrc">
+            <normaloff>:/images/list-add.png</normaloff>:/images/list-add.png</iconset>
           </property>
          </widget>
         </item>
@@ -78,12 +77,11 @@
      <item>
       <widget class="QPushButton" name="selectDirectoryButton">
        <property name="text">
-        <string>Select directory...</string>
+        <string>Select &amp;directory...</string>
        </property>
        <property name="icon">
-        <iconset theme="archive-insert-directory">
-         <normaloff/>
-        </iconset>
+        <iconset resource="../slicepod.qrc">
+         <normaloff>:/images/folder-new.png</normaloff>:/images/folder-new.png</iconset>
        </property>
       </widget>
      </item>
@@ -114,7 +112,9 @@
    </item>
   </layout>
  </widget>
- <resources/>
+ <resources>
+  <include location="../slicepod.qrc"/>
+ </resources>
  <connections>
   <connection>
    <sender>buttonBox</sender>
