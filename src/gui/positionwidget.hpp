@@ -33,7 +33,6 @@ class PositionWidget : public QWidget
 public:
 	explicit PositionWidget(QWidget *parent = 0);
 
-	void setCurrentFragment(Fragment::ptr fragment);
 	void setMusicPlayer(MusicPlayer* musicPlayer);
 
 	void drawBar(QPainter &painter);
@@ -70,6 +69,7 @@ private:
 	ImagesManager* images = nullptr;
 
 	// TODO: static, but it must be initialized after loading system palette
+	// maybe getters with static variable?
 	QColor barColor;
 	QColor barFragmentSelectionColor;
 	QColor barCurrentSelectionColor;
@@ -77,6 +77,7 @@ private:
 signals:
 
 public slots:
+	void setCurrentFragment(Fragment::ptr fragment);
 	void setPlayerPosition(int position);
 	void handleVlcStateChange();
 	void setMediaLength(int value);

@@ -44,10 +44,10 @@ public:
 						   = Podcast::ptr());
 	
 // -- getters --
-	inline LibraryModel *libraryModel() { return libraryModel_; }
-	inline QSortFilterProxyModel *proxyModel() { return proxyModel_; }
-	inline MusicPlayer *musicPlayer() { return player_; }
-	inline DatabaseEngine *dbEngine() { return DatabaseEngine::getInstance(); }
+	inline LibraryModel *getLibraryModel() { return libraryModel_; }
+	inline QSortFilterProxyModel *getProxyModel() { return proxyModel_; }
+	inline MusicPlayer *getMusicPlayer() { return player_; }
+	inline DatabaseEngine *getDbEngine() { return DatabaseEngine::getInstance(); }
 
 
 signals:

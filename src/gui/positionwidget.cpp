@@ -73,34 +73,31 @@ int PositionWidget::translateArrowX(const int& positionMs)
 
 void PositionWidget::setMusicPlayer(MusicPlayer *musicPlayer)
 {
-	VlcMediaPlayer* vm = musicPlayer->getVlcPlayer();
+	VlcMediaPlayer* vmp = musicPlayer->getVlcPlayer();
 
 	// disconnect from previous musicPlayer connections
 	if (this->musicPlayer) {
-		disconnect(vm, SIGNAL(timeChanged(int)),
+		disconnect(vmp, SIGNAL(timeChanged(int)),
 				   this, SLOT(setPlayerPosition(int)));
-		disconnect(vm, SIGNAL(stateChanged()),
+		disconnect(vmp, SIGNAL(stateChanged()),
 				this, SLOT(handleVlcStateChange()));
-//		disconnect(vm, SIGNAL(lengthChanged(int)),
-//				this, SLOT(setMediaLength(int)));
+		disconnect(musicPlayer, SIGNAL(fragmentLoaded(Fragment::ptr)),
+				this, SLOT(setCurrentFragment(Fragment::ptr)));
 	}
 
 	this->musicPlayer = musicPlayer;
-	connect(vm, SIGNAL(timeChanged(int)),
+	connect(vmp, SIGNAL(timeChanged(int)),
 			this, SLOT(setPlayerPosition(int)));
-	connect(vm, SIGNAL(stateChanged()),
+	connect(vmp, SIGNAL(stateChanged()),
 			this, SLOT(handleVlcStateChange()));
-//	connect(vm, SIGNAL(lengthChanged(int)),
-//			this, SLOT(setMediaLength(int)));
+	connect(musicPlayer, SIGNAL(fragmentLoaded(Fragment::ptr)),
+			this, SLOT(setCurrentFragment(Fragment::ptr)));
 }
 
 void PositionWidget::setCurrentFragment(Fragment::ptr fragment)
 {
 	if (fragment) {
 		if (!currentFragment || currentFragment->getEpisode()->id() != fragment->getEpisode()->id()) {
-			// TODO: not necessarily?
-//			setMediaLength(fragment->getEpisode()->getAudioLengthSec()*1000);
-//			setMediaLength(musicPlayer->getVlcPlayer()->length());
 			setMediaLength(musicPlayer->getMediaLengthMs());
 		}
 		currentFragment = fragment;

@@ -43,7 +43,7 @@ MainCore::MainCore(QObject *parent) :
 	QObject(parent)
 {
 	player_ = new MusicPlayer(this);
-	libraryModel_ = new LibraryModel(dbEngine(), player_, this);
+	libraryModel_ = new LibraryModel(getDbEngine(), player_, this);
 	proxyModel_ = new QSortFilterProxyModel(this);
 	proxyModel_->setSourceModel(libraryModel_);
 }
@@ -56,16 +56,16 @@ void MainCore::loadDatabase()
 	bool reCreate = !QFile(dbPath).exists();
 
 	qDebug() << "Connecting to database in file " << dbPath;
-	dbEngine()->open(dbPath);
+	getDbEngine()->open(dbPath);
 
 	if (reCreate) {
 		qDebug() << "Database file does not exists, creating...";
-		dbEngine()->createAllTables();
+		getDbEngine()->createAllTables();
 		emit showMessage(QMessageBox::Information, tr("Database information"),
 				  QString(tr("New database created.")));
 	}
 
-	dbEngine()->fetchAllTables();
+	getDbEngine()->fetchAllTables();
 
 	try {
 		libraryModel_->loadFromDatabase();
@@ -192,7 +192,7 @@ Directory::ptr MainCore::scanDir(const QString& dir_path, Podcast::ptr podcast)
 			QString album = taglib_qstring(f.tag()->album());
 
 			// check if there is already Podcast of generated name in db
-			for (const Podcast::ptr& pp: dbEngine()->list<Podcast>()) {
+			for (const Podcast::ptr& pp: getDbEngine()->list<Podcast>()) {
 				if (pp->getName() == album) {
 					podcast = pp;
 					break;
@@ -216,7 +216,7 @@ Directory::ptr MainCore::scanDir(const QString& dir_path, Podcast::ptr podcast)
 //	check_error(qx::dao::update_with_all_relation(dir_model), "updating "
 //				"directory model with episodes");
 
-	Episode::ptr_list addedEpisodes = dbEngine()->insertMultiple<Episode>(episodesToAdd);
+	Episode::ptr_list addedEpisodes = getDbEngine()->insertMultiple<Episode>(episodesToAdd);
 
 	emit loadingProgress(tr("Creating and saving episodes starting points..."), 66);
 
@@ -225,14 +225,14 @@ Directory::ptr MainCore::scanDir(const QString& dir_path, Podcast::ptr podcast)
 	for (const Episode::ptr& e: addedEpisodes) {
 		startFragmentsToAdd << Fragment(e, 0, QString());
 	}
-	Fragment::ptr_list addedStartFragments = dbEngine()->insertMultiple(startFragmentsToAdd);
+	Fragment::ptr_list addedStartFragments = getDbEngine()->insertMultiple(startFragmentsToAdd);
 
 	for (const Fragment::ptr fp: addedStartFragments) {
 		fp->getEpisode()->setStartFragment(fp);
 	}
 
 	// update episodes info about start fragments
-	dbEngine()->updateMultiple<Episode>(addedEpisodes); // TODO: this can be done in background!
+	getDbEngine()->updateMultiple<Episode>(addedEpisodes); // TODO: this can be done in background!
 
 	emit loadingProgress(tr("Podcast directory loading done!"), 100);
 

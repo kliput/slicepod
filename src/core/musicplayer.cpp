@@ -60,8 +60,6 @@ bool MusicPlayer::loadFragment(Fragment::ptr fragment)
 	Episode::ptr ep = fragment->getEpisode();
 	if (!currentFragment || ep->id() != currentFragment->getEpisode()->id()) {
 
-		currentFragment = fragment;
-
 		VlcMedia* m = new VlcMedia(ep->getFullPath(), true, vlcInstance);
 
 		if (!m->core()) {
@@ -74,6 +72,10 @@ bool MusicPlayer::loadFragment(Fragment::ptr fragment)
 		vlcPlayer->openOnly(m);
 
 	}
+
+	currentFragment = fragment;
+
+	emit fragmentLoaded(currentFragment);
 
 	qDebug("MusicPlayer loaded media with length: %d", getMediaLengthMs());
 
@@ -94,9 +96,9 @@ int MusicPlayer::getMediaLengthMs()
 			if (len > 0) {
 				return len;
 			}
-		} else {
-			return currentFragment->getEpisode()->getAudioLengthSec()*1000;
 		}
+
+		return currentFragment->getEpisode()->getAudioLengthSec()*1000;
 	} else {
 		return 0;
 	}

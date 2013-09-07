@@ -26,8 +26,6 @@
 class VlcInstance;
 class VlcMediaPlayer;
 
-constexpr int POSITION_UPDATE_FREQ = 1000;
-
 class MusicPlayer : public QObject
 {
 	Q_OBJECT
@@ -60,8 +58,7 @@ public slots:
 //	void seek(int positionSec);
 
 signals:
-	//! Music position change in seconds
-	void positionChanged(int);
+	void fragmentLoaded(Fragment::ptr);
 
 };
 

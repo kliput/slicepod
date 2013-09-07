@@ -50,10 +50,10 @@ MainWindow::MainWindow(MainCore* core, QWidget* parent) :
 {
 	ui->setupUi(this);
 
-	ui->libraryView->setModel(core_->proxyModel());
+	ui->libraryView->setModel(core_->getProxyModel());
 	ui->libraryView->setVisible(true);
 
-	ui->positionWidget->setMusicPlayer(core_->musicPlayer());
+	ui->positionWidget->setMusicPlayer(core_->getMusicPlayer());
 
 	// CONNECT
 	qRegisterMetaType<QMessageBox::Icon>();
@@ -135,7 +135,7 @@ void MainWindow::fillFragmentInfoView(const Fragment::ptr fragment)
 void MainWindow::updateItemInfoView(const QModelIndex& current,
 									const QModelIndex& /*prev*/)
 {
-	auto item = core_->libraryModel()->getFragmentData(current);
+	auto item = core_->getLibraryModel()->getFragmentData(current);
 
 	fillFragmentInfoView(item);
 
@@ -143,12 +143,11 @@ void MainWindow::updateItemInfoView(const QModelIndex& current,
 
 void MainWindow::activateLibraryItem(const QModelIndex &index)
 {
-	Fragment::ptr fragment = core_->libraryModel()->getFragmentData(index);
+	Fragment::ptr fragment = core_->getLibraryModel()->getFragmentData(index);
 
-	if (core_->musicPlayer()->loadFragment(fragment)) {
-		ui->positionWidget->setCurrentFragment(fragment);
-		core_->musicPlayer()->scheduleTimeChange(fragment->getStart());
-		core_->musicPlayer()->play();
+	if (core_->getMusicPlayer()->loadFragment(fragment)) {
+		core_->getMusicPlayer()->scheduleTimeChange(fragment->getStart());
+		core_->getMusicPlayer()->play();
 		// TODO: emit data changed on played item to show play icon
 	} else {
 		qFatal("Cannot load media into player!");
