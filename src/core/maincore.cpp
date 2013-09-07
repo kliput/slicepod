@@ -129,6 +129,9 @@ Directory::ptr MainCore::scanDir(const QString& dir_path, Podcast::ptr podcast)
 
 	// -- check path and create directory model --
 
+	// if podcast not specified - generate for every file
+	bool miscPodcasts = podcast.isNull();
+
 	QDir qdir(dir_path);
 
 	if (!qdir.exists()) {
@@ -137,9 +140,6 @@ Directory::ptr MainCore::scanDir(const QString& dir_path, Podcast::ptr podcast)
 	}
 
 	Directory::ptr dir_model = Directory(dir_path).save();
-
-//	Directory::ptr dir_model(new Directory(dir_path));
-//	check_error(qx::dao::save(dir_model), "saving first directory model");
 
 	// -- scan files --
 	QStringList filters;
@@ -188,7 +188,8 @@ Directory::ptr MainCore::scanDir(const QString& dir_path, Podcast::ptr podcast)
 		if (title.isEmpty()) title = fi.fileName();
 
 		// -- if user not specified Podcast, try to get it from tags --
-		if (podcast.isNull()) {
+		if (miscPodcasts) {
+			podcast.clear();
 
 			// TODO: generate_podcast_name function
 

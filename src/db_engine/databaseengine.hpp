@@ -90,6 +90,7 @@ inline QMap<int, QSharedPointer<T>>& DatabaseEngine::map()
 	return mp;
 }
 
+// TODO: this operation should be cached - implement memory data modify flag
 template <class T>
 inline QList<QSharedPointer<T> > DatabaseEngine::list()
 {

@@ -58,7 +58,8 @@ bool MusicPlayer::loadFragment(Fragment::ptr fragment)
 
 
 	Episode::ptr ep = fragment->getEpisode();
-	if (!currentFragment || ep->id() != currentFragment->getEpisode()->id()) {
+	if (!currentFragment || vlcPlayer->state() == Vlc::Ended ||
+			ep->id() != currentFragment->getEpisode()->id()) {
 
 		VlcMedia* m = new VlcMedia(ep->getFullPath(), true, vlcInstance);
 
