@@ -43,11 +43,12 @@ public:
 
 	inline const QList<Fragment::ptr> getFragmentsList() const { return fragmentsList_; }
 
-	void addFragment(Fragment::ptr fragment);
+	int addFragment(Fragment::ptr fragment);
 	void addFragments(QList<Fragment::ptr> fragmentsList);
 
 	void loadFromDatabase();
 
+	QVector<QModelIndex> createIndexesForRow(const int row);
 	Fragment::ptr getFragmentData(const QModelIndex &index);
 
 	enum Column {

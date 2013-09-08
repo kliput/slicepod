@@ -75,6 +75,13 @@ MainWindow::MainWindow(MainCore* core, QWidget* parent) :
 	connect(ui->endTimeCheckBox, SIGNAL(toggled(bool)),
 			ui->endTimeEdit, SLOT(setEnabled(bool)));
 
+	// add new fragment
+
+	connect(core_, SIGNAL(fragmentCreated(int)),
+			this, SLOT(handleFragmentCreated(int)));
+	connect(ui->addFragmentButton, SIGNAL(clicked()),
+			this, SLOT(handleAddFragmentButton()));
+
 	// set disabled
 	fillFragmentInfoView();
 
@@ -193,5 +200,26 @@ void MainWindow::setSelectedFragmentPanelEnabled(bool state)
 
 void MainWindow::handlePlayButton()
 {
+	
+}
+
+void MainWindow::handleAddFragmentButton()
+{
+	QtConcurrent::run(core_, &MainCore::createFragment,
+					  core_->getMusicPlayer()->getCurrentFragment()->getEpisode(),
+					  core_->getMusicPlayer()->getPositionMs());
+}
+
+void MainWindow::handleFragmentCreated(int row)
+{
+	auto rowIndexes = core_->getLibraryModel()->createIndexesForRow(row);
+
+	ui->libraryView->clearSelection();
+
+	for (const auto& index: rowIndexes) {
+		ui->libraryView->selectionModel()->setCurrentIndex(
+					core_->getLibraryProxyModel()->mapFromSource(index),
+					QItemSelectionModel::Select);
+	}
 
 }

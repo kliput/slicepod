@@ -42,6 +42,7 @@ public:
 							 const Podcast::ptr &podcast);
 	Directory::ptr scanDir(const QString &dir_path, Podcast::ptr podcast
 						   = Podcast::ptr());
+	void createFragment(const Episode::ptr &episode, int startMs);
 	
 // -- getters --
 	inline LibraryModel *getLibraryModel() { return libraryModel_; }
@@ -56,6 +57,7 @@ signals:
 	void loadDatabaseSuccess();
 	void loadingProgress(const QString& message, const int percent);
 	void loadingFinished();
+	void fragmentCreated(int row);
 
 private:
 	LibraryModel *libraryModel_;

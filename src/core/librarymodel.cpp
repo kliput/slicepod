@@ -99,7 +99,7 @@ Fragment::ptr LibraryModel::getFragmentData(const QModelIndex& index)
 	if (!index.isValid() || index.row() > this->rowCount()
 			|| index.column() >= this->columnCount()
 			|| index.row() >= getFragmentsList().size() || index.row() < 0) {
-		qFatal("Tried to access invalid index from LibraryModel: %d, %d",
+		qCritical("Tried to access invalid index from LibraryModel: %d, %d",
 			   index.row(), index.column());
 
 		return Fragment::ptr();
@@ -140,13 +140,16 @@ LibraryModel::~LibraryModel()
 	qDebug() << "Library model destructed";
 }
 
-void LibraryModel::addFragment(Fragment::ptr fragment)
+//! Adds fragment to model and return LibraryModel row index (NOTICE: not proxy!)
+int LibraryModel::addFragment(Fragment::ptr fragment)
 {
 	int first, last;
 	first = last = getFragmentsList().size();
 	beginInsertRows(QModelIndex(), first, last);
 	fragmentsList_ << fragment;
 	endInsertRows();
+
+	return first;
 }
 
 //! Add items (rows) to list model.
@@ -172,3 +175,12 @@ void LibraryModel::loadFromDatabase()
 	addFragments(dbEngine_->template list<Fragment>());
 }
 
+QVector<QModelIndex> LibraryModel::createIndexesForRow(const int row)
+{
+	QVector<QModelIndex> vec(COLUMN_COUNT);
+	for (int i=0; i<COLUMN_COUNT; ++i) {
+		vec[i] = createIndex(row, i);
+	}
+
+	return vec;
+}

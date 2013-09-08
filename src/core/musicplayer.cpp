@@ -106,6 +106,11 @@ int MusicPlayer::getMediaLengthMs()
 
 }
 
+int MusicPlayer::getPositionMs()
+{
+	return vlcPlayer->time();
+}
+
 void MusicPlayer::scheduleTimeChange(const int& pos)
 {	
 	if (vlcPlayer->state() == Vlc::Playing) {

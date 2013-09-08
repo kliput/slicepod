@@ -41,6 +41,8 @@ public:
 	void scheduleTimeChange(const int &pos);
 
 	int getMediaLengthMs();
+	int getPositionMs();
+
 private:
 	VlcInstance* vlcInstance;
 	VlcMediaPlayer* vlcPlayer;

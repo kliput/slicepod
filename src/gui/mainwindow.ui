@@ -64,7 +64,7 @@
          </widget>
         </item>
         <item>
-         <widget class="QToolButton" name="toolButton">
+         <widget class="QToolButton" name="addFragmentButton">
           <property name="text">
            <string/>
           </property>
@@ -75,7 +75,7 @@
          </widget>
         </item>
         <item>
-         <widget class="QToolButton" name="toolButton_2">
+         <widget class="QToolButton" name="editFragmentButton">
           <property name="text">
            <string/>
           </property>

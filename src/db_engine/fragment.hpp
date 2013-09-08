@@ -49,7 +49,7 @@ public:
 	Fragment(QSqlRecord record);
 	Fragment();
 	Fragment(QSharedPointer<Episode> episode,
-			 int start, const QString& title, const QString& artist = QString(),
+			 int start, const QString& title = QString(), const QString& artist = QString(),
 			 int end=-1);
 	virtual ~Fragment();
 

@@ -242,3 +242,14 @@ Directory::ptr MainCore::scanDir(const QString& dir_path, Podcast::ptr podcast)
 
 	return dir_model;
 }
+
+void MainCore::createFragment(const Episode::ptr &episode, int startMs)
+{
+	Fragment::ptr fragment = Fragment(episode, startMs).save();
+	auto library = getLibraryModel();
+	int row = library->addFragment(fragment);
+
+	emit fragmentCreated(row);
+	// TODO: change selection on library view?
+
+}

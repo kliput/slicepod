@@ -57,6 +57,9 @@ public slots:
 										const QModelIndex& /*prev*/);
 	void activateLibraryItem(const QModelIndex& index);
 	void handlePlayButton();
+	void handleAddFragmentButton();
+
+	void handleFragmentCreated(int row);
 
 
 };

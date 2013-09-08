@@ -248,11 +248,12 @@ QList<QSharedPointer<T>> DatabaseEngine::insertMultiple(QList<T> records)
 		query.addBindValue(mv);
 	}
 
-//	database_.transaction();
+	database_.transaction();
 	bool status = query.execBatch();
-//	database_.commit();
 
 	if (status) {
+
+		database_.commit();
 
 		auto output = fetchOnlyNew<T>();
 		if (output.size() != records.size()) {
@@ -265,6 +266,9 @@ QList<QSharedPointer<T>> DatabaseEngine::insertMultiple(QList<T> records)
 		return output;
 
 	} else {
+
+		database_.rollback();
+
 		qCritical("Inserting multiple records to table %s failed: %s", T::TABLE_NAME,
 				   qPrintable(query.lastError().text()));
 
