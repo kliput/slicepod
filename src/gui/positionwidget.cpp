@@ -61,6 +61,7 @@ constexpr int PositionWidget::bottomArrowYOff()
 	return bottomArrowY()+spaceOff;
 }
 
+// TODO?
 constexpr int PositionWidget::totalHeight()
 {
 	return bottomArrowYOff()+arrowHeight;

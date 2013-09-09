@@ -107,241 +107,39 @@
      </layout>
     </item>
     <item>
-     <layout class="QHBoxLayout" name="lowerPlayerLayout">
-      <item>
-       <widget class="PositionWidget" name="positionWidget" native="true">
-        <property name="minimumSize">
-         <size>
-          <width>0</width>
-          <height>56</height>
-         </size>
-        </property>
-       </widget>
-      </item>
-     </layout>
+     <widget class="PositionWidget" name="positionWidget" native="true"/>
     </item>
     <item>
-     <widget class="QGroupBox" name="editorBox">
-      <property name="title">
-       <string>Fragment properties</string>
+     <widget class="FragmentEditorWidget" name="fragmentEditorWidget" native="true">
+      <property name="enabled">
+       <bool>false</bool>
       </property>
-      <layout class="QVBoxLayout" name="verticalLayout">
-       <item>
-        <layout class="QHBoxLayout" name="editorHL1">
-         <item>
-          <layout class="QFormLayout" name="editorLeftformLayout">
-           <property name="fieldGrowthPolicy">
-            <enum>QFormLayout::AllNonFixedFieldsGrow</enum>
-           </property>
-           <item row="0" column="0">
-            <widget class="QLabel" name="editorPodcastStaticLabel">
-             <property name="text">
-              <string>Podcast:</string>
-             </property>
-            </widget>
-           </item>
-           <item row="0" column="1">
-            <widget class="QLabel" name="editorPodcastLabel">
-             <property name="text">
-              <string>&lt;not selected&gt;</string>
-             </property>
-            </widget>
-           </item>
-           <item row="1" column="0">
-            <widget class="QLabel" name="editorEpisodeStaticLabel">
-             <property name="text">
-              <string>Episode:</string>
-             </property>
-            </widget>
-           </item>
-           <item row="1" column="1">
-            <widget class="QLabel" name="editorEpisodeLabel">
-             <property name="text">
-              <string>&lt;not selected&gt;</string>
-             </property>
-            </widget>
-           </item>
-          </layout>
-         </item>
-         <item>
-          <layout class="QFormLayout" name="editorTimesLayout">
-           <item row="0" column="0">
-            <widget class="QLabel" name="editorStartTimeLabel">
-             <property name="text">
-              <string>Start time:</string>
-             </property>
-            </widget>
-           </item>
-           <item row="0" column="1">
-            <widget class="QTimeEdit" name="editorStartTimeEdit">
-             <property name="displayFormat">
-              <string>HH:mm:ss</string>
-             </property>
-            </widget>
-           </item>
-           <item row="1" column="0">
-            <widget class="QLabel" name="editorEndTimeLabel">
-             <property name="text">
-              <string>End time:</string>
-             </property>
-            </widget>
-           </item>
-           <item row="1" column="1">
-            <layout class="QHBoxLayout" name="editorEndTimeLayout">
-             <item>
-              <widget class="QCheckBox" name="editorEndTimeCheckBox">
-               <property name="text">
-                <string/>
-               </property>
-              </widget>
-             </item>
-             <item>
-              <widget class="QTimeEdit" name="editorEndTimeEdit">
-               <property name="displayFormat">
-                <string>HH:mm:ss</string>
-               </property>
-              </widget>
-             </item>
-            </layout>
-           </item>
-          </layout>
-         </item>
-        </layout>
-       </item>
-       <item>
-        <layout class="QHBoxLayout" name="editorLayout_3">
-         <item>
-          <widget class="QLabel" name="editorTagsStaticLabel">
-           <property name="text">
-            <string>Tags:</string>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QLabel" name="editorTagsListLabel">
-           <property name="text">
-            <string>...</string>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <layout class="QHBoxLayout" name="editorTagAddLayout">
-           <property name="spacing">
-            <number>0</number>
-           </property>
-           <item>
-            <widget class="QToolButton" name="editorAddTagButton">
-             <property name="text">
-              <string/>
-             </property>
-             <property name="icon">
-              <iconset resource="../slicepod.qrc">
-               <normaloff>:/images/list-add.png</normaloff>:/images/list-add.png</iconset>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QComboBox" name="editorAddTagCombo"/>
-           </item>
-           <item>
-            <spacer name="editorHorizontalSpacer_2">
-             <property name="orientation">
-              <enum>Qt::Horizontal</enum>
-             </property>
-             <property name="sizeHint" stdset="0">
-              <size>
-               <width>40</width>
-               <height>20</height>
-              </size>
-             </property>
-            </spacer>
-           </item>
-          </layout>
-         </item>
-        </layout>
-       </item>
-       <item>
-        <layout class="QHBoxLayout" name="editorHorizontalLayout">
-         <item>
-          <spacer name="editorHorizontalSpacer">
-           <property name="orientation">
-            <enum>Qt::Horizontal</enum>
-           </property>
-           <property name="sizeHint" stdset="0">
-            <size>
-             <width>40</width>
-             <height>20</height>
-            </size>
-           </property>
-          </spacer>
-         </item>
-         <item>
-          <widget class="QPushButton" name="editorSaveButton">
-           <property name="enabled">
-            <bool>false</bool>
-           </property>
-           <property name="text">
-            <string>Save changes</string>
-           </property>
-           <property name="icon">
-            <iconset resource="../slicepod.qrc">
-             <normaloff>:/images/document-save.png</normaloff>:/images/document-save.png</iconset>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QPushButton" name="editorRemoveButton">
-           <property name="enabled">
-            <bool>false</bool>
-           </property>
-           <property name="text">
-            <string>Remove</string>
-           </property>
-           <property name="icon">
-            <iconset resource="../slicepod.qrc">
-             <normaloff>:/images/edit-delete.png</normaloff>:/images/edit-delete.png</iconset>
-           </property>
-          </widget>
-         </item>
-        </layout>
-       </item>
-      </layout>
      </widget>
     </item>
     <item>
-     <layout class="QHBoxLayout" name="fragmentsLayout">
-      <property name="spacing">
-       <number>3</number>
+     <widget class="QTreeView" name="libraryView">
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
       </property>
-      <property name="sizeConstraint">
-       <enum>QLayout::SetDefaultConstraint</enum>
+      <property name="alternatingRowColors">
+       <bool>true</bool>
       </property>
-      <item>
-       <widget class="QTreeView" name="libraryView">
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
-        </property>
-        <property name="alternatingRowColors">
-         <bool>true</bool>
-        </property>
-        <property name="rootIsDecorated">
-         <bool>false</bool>
-        </property>
-        <property name="itemsExpandable">
-         <bool>false</bool>
-        </property>
-        <property name="sortingEnabled">
-         <bool>true</bool>
-        </property>
-        <property name="expandsOnDoubleClick">
-         <bool>false</bool>
-        </property>
-       </widget>
-      </item>
-     </layout>
+      <property name="rootIsDecorated">
+       <bool>false</bool>
+      </property>
+      <property name="itemsExpandable">
+       <bool>false</bool>
+      </property>
+      <property name="sortingEnabled">
+       <bool>true</bool>
+      </property>
+      <property name="expandsOnDoubleClick">
+       <bool>false</bool>
+      </property>
+     </widget>
     </item>
    </layout>
   </widget>
@@ -374,6 +172,12 @@
    <class>PositionWidget</class>
    <extends>QWidget</extends>
    <header>gui/positionwidget.hpp</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>FragmentEditorWidget</class>
+   <extends>QWidget</extends>
+   <header>src/gui/fragmenteditorwidget.hpp</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

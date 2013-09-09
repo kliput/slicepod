@@ -44,7 +44,8 @@ SOURCES +=\
 	src/db_engine/databaseengine.cpp \
 	src/db_engine/baserecord.cpp \
     src/core/libraryinfo.cpp \
-    src/gui/imagesmanager.cpp
+    src/gui/imagesmanager.cpp \
+    src/gui/fragmenteditorwidget.cpp
 
 HEADERS  +=\
 	src/core/utils.hpp \
@@ -69,12 +70,14 @@ HEADERS  +=\
 	src/db_engine/directory.hpp \
 	src/db_engine/databaseengine.hpp \
 	src/db_engine/baserecord.hpp \
-    src/gui/imagesmanager.hpp
+    src/gui/imagesmanager.hpp \
+    src/gui/fragmenteditorwidget.hpp
 
 FORMS +=\
 	src/gui/mainwindow.ui \
 	src/gui/adddirectorydialog.ui \
-	src/gui/addingfilesdialog.ui
+	src/gui/addingfilesdialog.ui \
+    src/gui/fragmenteditorwidget.ui
 
 RESOURCES += \
 	src/slicepod.qrc
