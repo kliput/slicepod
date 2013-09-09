@@ -70,10 +70,10 @@ MainWindow::MainWindow(MainCore* core, QWidget* parent) :
 	// -- library item info panel --
 	connect(ui->libraryView->selectionModel(),
 			SIGNAL(currentRowChanged(QModelIndex,QModelIndex)),
-			this, SLOT(updateItemInfoView(QModelIndex,QModelIndex)));
+			this, SLOT(updateItemEditorView(QModelIndex,QModelIndex)));
 
-	connect(ui->endTimeCheckBox, SIGNAL(toggled(bool)),
-			ui->endTimeEdit, SLOT(setEnabled(bool)));
+	connect(ui->editorEndTimeCheckBox, SIGNAL(toggled(bool)),
+			ui->editorEndTimeEdit, SLOT(setEnabled(bool)));
 
 	// add new fragment
 
@@ -83,7 +83,7 @@ MainWindow::MainWindow(MainCore* core, QWidget* parent) :
 			this, SLOT(handleAddFragmentButton()));
 
 	// set disabled
-	fillFragmentInfoView();
+	fillFragmentEditorView();
 
 	connect(ui->libraryView, SIGNAL(activated(QModelIndex)),
 			this, SLOT(activateLibraryItem(QModelIndex)));
@@ -113,39 +113,43 @@ void MainWindow::addDirectoryDialog()
 	dialog->setAttribute(Qt::WA_DeleteOnClose);
 }
 
-void MainWindow::fillFragmentInfoView(const Fragment::ptr fragment)
+void MainWindow::fillFragmentEditorView(const Fragment::ptr fragment)
 {
 	if (!fragment) {
 		setSelectedFragmentPanelEnabled(false);
 	} else {
 		setSelectedFragmentPanelEnabled(true);
 
-		ui->selectedPodcastLabel->setText(fragment->getEpisode()->getPodcast()->getName());
-		ui->selectedEpisodeLabel->setText(fragment->getEpisode()->getEpisodeName());
+		updateEditorSaveButton(fragment);
+		updateEditorRemoveButton(fragment);
 
-		// TODO: cached time
-		ui->startTimeEdit->setTimeRange(QTime(), fragment->getLibraryInfo()->getFragmentEndTime());
-		ui->startTimeEdit->setTime(fragment->getLibraryInfo()->getFragmentStartTime());
+		ui->editorPodcastLabel->setText(fragment->getEpisode()->getPodcast()->getName());
+		ui->editorEpisodeLabel->setText(fragment->getEpisode()->getEpisodeName());
+
+		ui->editorStartTimeEdit->setTimeRange(QTime(), fragment->getLibraryInfo()->getFragmentEndTime());
+		ui->editorStartTimeEdit->setTime(fragment->getLibraryInfo()->getFragmentStartTime());
 
 		if (fragment->hasEnd()) {
-			ui->endTimeEdit->setTimeRange(QTime(), fragment->getLibraryInfo()->getEpisodeLengthTime());
-			ui->endTimeEdit->setTime(fragment->getLibraryInfo()->getFragmentEndTime());
-			ui->endTimeCheckBox->setChecked(true);
-			ui->endTimeEdit->setEnabled(true);
+			ui->editorEndTimeEdit->setTimeRange(QTime(), fragment->getLibraryInfo()->getEpisodeLengthTime());
+			ui->editorEndTimeEdit->setTime(fragment->getLibraryInfo()->getFragmentEndTime());
+			ui->editorEndTimeCheckBox->setChecked(true);
+			ui->editorEndTimeEdit->setEnabled(true);
 		} else {
-			ui->endTimeCheckBox->setChecked(false);
-			ui->endTimeEdit->setEnabled(false);
+			ui->editorEndTimeCheckBox->setChecked(false);
+			ui->editorEndTimeEdit->setEnabled(false);
 		}
+
+		ui->editorTagsListLabel->setText(fragment->getLibraryInfo()->getTagsString());
 	}
 }
 
-void MainWindow::updateItemInfoView(const QModelIndex& current,
+void MainWindow::updateItemEditorView(const QModelIndex& current,
 									const QModelIndex& /*prev*/)
 {
-	auto item = core_->getLibraryModel()->getFragmentData(
+	auto fragment = core_->getLibraryModel()->getFragmentData(
 				core_->getLibraryProxyModel()->mapToSource(current));
 
-	fillFragmentInfoView(item);
+	fillFragmentEditorView(fragment);
 
 }
 
@@ -179,16 +183,23 @@ void MainWindow::loadDatabaseSuccess()
 void MainWindow::setSelectedFragmentPanelEnabled(bool state)
 {
 	static QWidget* fragmentPanelElements[] = {
-		ui->endTimeCheckBox,
-		ui->endTimeEdit,
-		ui->startTimeEdit,
-		ui->startTimeLabel,
-		ui->selectedEpisodeLabel,
-		ui->selectedEpisodeStaticLabel,
-		ui->selectedFragmentBox,
-		ui->selectedPodcastLabel,
-		ui->selectedPodcastStaticLabel,
-		ui->selectedTagsStaticLabel
+		ui->editorEndTimeCheckBox,
+		ui->editorEndTimeEdit,
+		ui->editorStartTimeEdit,
+		ui->editorStartTimeLabel,
+		ui->editorEpisodeLabel,
+		ui->editorEpisodeStaticLabel,
+		ui->editorBox,
+		ui->editorPodcastLabel,
+		ui->editorPodcastStaticLabel,
+		ui->editorTagsStaticLabel,
+		ui->editorTagsListLabel,
+		ui->editorAddTagButton,
+		ui->editorAddTagCombo,
+		// save button should be updated separately after this method with updateEditorSaveButton()
+		ui->editorSaveButton,
+		// remove button should be updated separately after this method with updateEditorRemoveButton()
+		ui->editorRemoveButton
 	};
 
 	for (auto w: fragmentPanelElements) {
@@ -222,4 +233,14 @@ void MainWindow::handleFragmentCreated(int row)
 					QItemSelectionModel::Select);
 	}
 
+}
+
+void MainWindow::updateEditorSaveButton(const Fragment::ptr& fragment)
+{
+	ui->editorSaveButton->setEnabled(fragment->isStored() && fragment->isDirty());
+}
+
+void MainWindow::updateEditorRemoveButton(const Fragment::ptr& fragment)
+{
+	ui->editorSaveButton->setEnabled(fragment->canRemove());
 }

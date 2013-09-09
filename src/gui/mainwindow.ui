@@ -38,9 +38,6 @@
      <layout class="QHBoxLayout" name="upperPlayerLayout">
       <item>
        <layout class="QHBoxLayout" name="playerButtonsLayout">
-        <property name="sizeConstraint">
-         <enum>QLayout::SetDefaultConstraint</enum>
-        </property>
         <item>
          <widget class="QToolButton" name="playButton">
           <property name="text">
@@ -124,41 +121,41 @@
      </layout>
     </item>
     <item>
-     <widget class="QGroupBox" name="selectedFragmentBox">
+     <widget class="QGroupBox" name="editorBox">
       <property name="title">
        <string>Fragment properties</string>
       </property>
       <layout class="QVBoxLayout" name="verticalLayout">
        <item>
-        <layout class="QHBoxLayout" name="editHL1">
+        <layout class="QHBoxLayout" name="editorHL1">
          <item>
-          <layout class="QFormLayout" name="selectedLeftformLayout">
+          <layout class="QFormLayout" name="editorLeftformLayout">
            <property name="fieldGrowthPolicy">
             <enum>QFormLayout::AllNonFixedFieldsGrow</enum>
            </property>
            <item row="0" column="0">
-            <widget class="QLabel" name="selectedPodcastStaticLabel">
+            <widget class="QLabel" name="editorPodcastStaticLabel">
              <property name="text">
               <string>Podcast:</string>
              </property>
             </widget>
            </item>
            <item row="0" column="1">
-            <widget class="QLabel" name="selectedPodcastLabel">
+            <widget class="QLabel" name="editorPodcastLabel">
              <property name="text">
               <string>&lt;not selected&gt;</string>
              </property>
             </widget>
            </item>
            <item row="1" column="0">
-            <widget class="QLabel" name="selectedEpisodeStaticLabel">
+            <widget class="QLabel" name="editorEpisodeStaticLabel">
              <property name="text">
               <string>Episode:</string>
              </property>
             </widget>
            </item>
            <item row="1" column="1">
-            <widget class="QLabel" name="selectedEpisodeLabel">
+            <widget class="QLabel" name="editorEpisodeLabel">
              <property name="text">
               <string>&lt;not selected&gt;</string>
              </property>
@@ -167,39 +164,39 @@
           </layout>
          </item>
          <item>
-          <layout class="QFormLayout" name="timesLayout">
+          <layout class="QFormLayout" name="editorTimesLayout">
            <item row="0" column="0">
-            <widget class="QLabel" name="startTimeLabel">
+            <widget class="QLabel" name="editorStartTimeLabel">
              <property name="text">
               <string>Start time:</string>
              </property>
             </widget>
            </item>
            <item row="0" column="1">
-            <widget class="QTimeEdit" name="startTimeEdit">
+            <widget class="QTimeEdit" name="editorStartTimeEdit">
              <property name="displayFormat">
               <string>HH:mm:ss</string>
              </property>
             </widget>
            </item>
            <item row="1" column="0">
-            <widget class="QLabel" name="endTimeLabel">
+            <widget class="QLabel" name="editorEndTimeLabel">
              <property name="text">
               <string>End time:</string>
              </property>
             </widget>
            </item>
            <item row="1" column="1">
-            <layout class="QHBoxLayout" name="endTimeLayout">
+            <layout class="QHBoxLayout" name="editorEndTimeLayout">
              <item>
-              <widget class="QCheckBox" name="endTimeCheckBox">
+              <widget class="QCheckBox" name="editorEndTimeCheckBox">
                <property name="text">
                 <string/>
                </property>
               </widget>
              </item>
              <item>
-              <widget class="QTimeEdit" name="endTimeEdit">
+              <widget class="QTimeEdit" name="editorEndTimeEdit">
                <property name="displayFormat">
                 <string>HH:mm:ss</string>
                </property>
@@ -212,23 +209,61 @@
         </layout>
        </item>
        <item>
-        <layout class="QHBoxLayout" name="horizontalLayout_3">
+        <layout class="QHBoxLayout" name="editorLayout_3">
          <item>
-          <widget class="QLabel" name="selectedTagsStaticLabel">
+          <widget class="QLabel" name="editorTagsStaticLabel">
            <property name="text">
             <string>Tags:</string>
            </property>
           </widget>
          </item>
          <item>
-          <widget class="QLabel" name="label">
+          <widget class="QLabel" name="editorTagsListLabel">
            <property name="text">
             <string>...</string>
            </property>
           </widget>
          </item>
          <item>
-          <spacer name="horizontalSpacer">
+          <layout class="QHBoxLayout" name="editorTagAddLayout">
+           <property name="spacing">
+            <number>0</number>
+           </property>
+           <item>
+            <widget class="QToolButton" name="editorAddTagButton">
+             <property name="text">
+              <string/>
+             </property>
+             <property name="icon">
+              <iconset resource="../slicepod.qrc">
+               <normaloff>:/images/list-add.png</normaloff>:/images/list-add.png</iconset>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QComboBox" name="editorAddTagCombo"/>
+           </item>
+           <item>
+            <spacer name="editorHorizontalSpacer_2">
+             <property name="orientation">
+              <enum>Qt::Horizontal</enum>
+             </property>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>40</width>
+               <height>20</height>
+              </size>
+             </property>
+            </spacer>
+           </item>
+          </layout>
+         </item>
+        </layout>
+       </item>
+       <item>
+        <layout class="QHBoxLayout" name="editorHorizontalLayout">
+         <item>
+          <spacer name="editorHorizontalSpacer">
            <property name="orientation">
             <enum>Qt::Horizontal</enum>
            </property>
@@ -241,7 +276,10 @@
           </spacer>
          </item>
          <item>
-          <widget class="QPushButton" name="fragmentEditSave">
+          <widget class="QPushButton" name="editorSaveButton">
+           <property name="enabled">
+            <bool>false</bool>
+           </property>
            <property name="text">
             <string>Save changes</string>
            </property>
@@ -252,7 +290,10 @@
           </widget>
          </item>
          <item>
-          <widget class="QPushButton" name="fragmentEditRemove">
+          <widget class="QPushButton" name="editorRemoveButton">
+           <property name="enabled">
+            <bool>false</bool>
+           </property>
            <property name="text">
             <string>Remove</string>
            </property>

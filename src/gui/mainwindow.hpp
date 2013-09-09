@@ -41,8 +41,11 @@ public:
 	explicit MainWindow(MainCore* core, QWidget* parent = nullptr);
 	~MainWindow();
 
-	void fillFragmentInfoView(const Fragment::ptr fragment = Fragment::ptr());
+	void fillFragmentEditorView(const Fragment::ptr fragment = Fragment::ptr());
 	void setSelectedFragmentPanelEnabled(bool state);
+
+	void updateEditorSaveButton(const Fragment::ptr &fragment);
+	void updateEditorRemoveButton(const Fragment::ptr &fragment);
 
 private:
 	Ui::MainWindow *ui;
@@ -53,7 +56,7 @@ public slots:
 				   const QString& text);
 	void loadDatabaseSuccess();
 	void addDirectoryDialog();
-	void updateItemInfoView(const QModelIndex& current,
+	void updateItemEditorView(const QModelIndex& current,
 										const QModelIndex& /*prev*/);
 	void activateLibraryItem(const QModelIndex& index);
 	void handlePlayButton();

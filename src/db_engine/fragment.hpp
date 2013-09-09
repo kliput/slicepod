@@ -80,6 +80,7 @@ public:
 
 	bool isStartFragment() const;
 	inline bool hasEnd() const { return end_ > 0; }
+	inline bool canRemove() const { return !isStartFragment(); }
 
 	QList<QVariant> valuesList() const;
 	const QStringList& columnsList() const;
