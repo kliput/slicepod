@@ -184,3 +184,22 @@ QVector<QModelIndex> LibraryModel::createIndexesForRow(const int row)
 
 	return vec;
 }
+
+void LibraryModel::removeFragment(Fragment::ptr fragment)
+{
+	// TODO: efficiency?
+	int index = -1;
+	for (const Fragment::ptr& f: fragmentsList_) {
+		if (f->id() == fragment->id()) {
+			index = fragmentsList_.indexOf(f);
+		}
+	}
+
+	if (index >= 0) {
+		beginRemoveRows(QModelIndex(), index, index);
+		fragmentsList_.removeAt(index);
+		endRemoveRows();
+	} else {
+		// some exception TODO
+	}
+}

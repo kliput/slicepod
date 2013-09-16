@@ -178,8 +178,9 @@ void FragmentEditorWidget::handleRemoveButton()
 {
 	if (fragment->canRemove()) {
 		if (fragment->remove()) {
-			handleCurrentFragmentRemoved(); // TODO: use as slot for signal from baserecord?
-			emit fragmentRemoved(fragment);
+			auto fragmentCopy = fragment;
+			emit fragmentRemoved(fragmentCopy);
+			handleCurrentFragmentRemoved();
 		} else {
 			qCritical("Current fragment from fragment editor cannot be removed,"
 					  " because of database engine error.");

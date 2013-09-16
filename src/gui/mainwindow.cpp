@@ -72,8 +72,8 @@ MainWindow::MainWindow(MainCore* core, QWidget* parent) :
 			SIGNAL(currentRowChanged(QModelIndex,QModelIndex)),
 			this, SLOT(updateFragmentEditorView(QModelIndex,QModelIndex)));
 
-//	connect(ui->editorEndTimeCheckBox, SIGNAL(toggled(bool)),
-//			ui->editorEndTimeEdit, SLOT(setEnabled(bool)));
+	connect(ui->fragmentEditorWidget, SIGNAL(fragmentRemoved(Fragment::ptr)),
+			core_->getLibraryModel(), SLOT(removeFragment(Fragment::ptr)));
 
 	// add new fragment
 

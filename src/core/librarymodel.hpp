@@ -65,6 +65,7 @@ public:
 signals:
 
 public slots:
+	void removeFragment(Fragment::ptr fragment);
 
 private:
 	QList<Fragment::ptr> fragmentsList_;

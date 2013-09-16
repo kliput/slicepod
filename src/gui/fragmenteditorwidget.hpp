@@ -45,6 +45,7 @@ private:
 
 signals:
 	void fragmentRemoved(Fragment::ptr);
+	void fragmentDataChanged(Fragment::ptr);
 };
 
 #endif // FRAGMENTEDITORWIDGET_HPP
