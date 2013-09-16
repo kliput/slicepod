@@ -22,10 +22,29 @@ public:
 
 	void updateRemoveButton();
 	void updateSaveButton();
+	void updateUndoButton();
+
+	void updateButtons();
+	void updateEndAvailability();
+
+	void setTimeReadOnly(bool readOnly);
+
+private slots:
+	void changeStart(const QTime &time);
+	void changeEnd(const QTime &time);
+	void changeEndAvailability(bool hasEnd);
+	void handleUndoButton();
+	void handleSaveButton();
+	void handleRemoveButton();
+
+	void handleCurrentFragmentRemoved();
 
 private:
 	Ui::FragmentEditorWidget *ui;
 	Fragment::ptr fragment;
+
+signals:
+	void fragmentRemoved(Fragment::ptr);
 };
 
 #endif // FRAGMENTEDITORWIDGET_HPP

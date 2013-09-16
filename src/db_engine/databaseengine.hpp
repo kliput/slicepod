@@ -396,7 +396,7 @@ bool DatabaseEngine::createTable()
 	auto queryStr = QString("CREATE TABLE IF NOT EXISTS %1").arg(T::schemaString());
 	QSqlQuery query(queryStr);
 	if (!query.exec()) {
-		qDebug("Cannot create %s table: %s", T::TABLE_NAME, qPrintable(query.lastError().text()));
+		qCritical("Cannot create %s table: %s", T::TABLE_NAME, qPrintable(query.lastError().text()));
 		return false;
 	} else {
 		return true;
@@ -410,18 +410,35 @@ bool DatabaseEngine::dropTable()
 	auto queryStr = QString("DROP TABLE IF EXISTS %1").arg(T::TABLE_NAME);
 	QSqlQuery query(queryStr);
 	if (!query.exec()) {
-		qDebug("Cannot drop %s table: %s", T::TABLE_NAME, qPrintable(query.lastError().text()));
+		qCritical("Cannot drop %s table: %s", T::TABLE_NAME, qPrintable(query.lastError().text()));
 		return false;
 	} else {
 		return true;
 	}
 }
 
+template <class T>
+bool DatabaseEngine::remove(int id)
+{
+	QString queryStr = QString("DELETE FROM %1 WHERE id=?").arg(T::TABLE_NAME);
+	QSqlQuery query;
+	query.prepare(queryStr);
+	query.addBindValue(id);
+	
+	if (query.exec()) {
+		qDebug("Deleted record with id=%d from table %s", id,
+			   T::TABLE_NAME);
+		auto rec = record<T>(id);
+		rec->stored_ = false;
 
-//namespace db {
-////// --- GET GLOBAL INSTANCE (SINGLETON) ---
-//DatabaseEngine* global_engine();
-//}
+		this->map<T>().remove(id);
 
+		return true;
+	} else {
+		qCritical("Deleting record with id=%d from table %s failed: %s", id,
+			   T::TABLE_NAME, qPrintable(query.lastError().text()));
+		return false;
+	}
+}
 
 #endif // DATABASEENGINE_HPP

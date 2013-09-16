@@ -53,6 +53,7 @@ public:
 	inline int id() const { return id_; }
 
 	QSharedPointer<T> save();
+	bool remove();
 	inline bool isStored() const { return stored_; }
 	inline bool isDirty() const { return dirty_; }
 
@@ -62,6 +63,8 @@ public:
 	virtual const QStringList& columnsList() const = 0;
 
 	inline DatabaseEngine* getEngine() const { return DatabaseEngine::getInstance(); }
+
+	void revert();
 
 protected:
 	bool dirty_ = false;
@@ -110,6 +113,17 @@ QSharedPointer<T> BaseRecord<T>::save()
 }
 
 template <class T>
+bool BaseRecord<T>::remove()
+{
+	if (id() >= 0) {
+		return getEngine()->template remove<T>(id());
+	} else {
+		qCritical("Tried to remove non-stored record object from database.");
+		return false;
+	}
+}
+
+template <class T>
 QSharedPointer<T> BaseRecord<T>::insert()
 {
 	QSharedPointer<T> db_record = getEngine()->template insert<T>(columnsList(), valuesList());
@@ -126,5 +140,17 @@ QSharedPointer<T> BaseRecord<T>::update()
 	return getEngine()->template update<T>(id(), columnsList(), valuesList());
 }
 
+template <class T>
+void BaseRecord<T>::revert()
+{
+	if (isStored()) {
+		if (isDirty()) {
+			getEngine()->template fetchById<T>(id());
+		}
+		// else: don't need any action
+	} else {
+		// throw some error...
+	}
+}
 
 #endif // ABSTRACTRECORD_HPP

@@ -5,6 +5,7 @@
 #include "db_engine/podcast.hpp"
 #include "db_engine/directory.hpp"
 #include "db_engine/episode.hpp"
+#include "db_engine/tag.hpp"
 
 const QString dbPath = "test_db.sqlite3";
 
@@ -19,6 +20,7 @@ private Q_SLOTS:
 	void testEngineOpen();
 	void testInsertSingle();
 	void testInsertMultipleEpisodes();
+	void testInsertRemove();
 
 private:
 	DatabaseEngine* db = DatabaseEngine::getInstance();
@@ -64,6 +66,21 @@ void TestsTest::testInsertMultipleEpisodes()
 	QCOMPARE(db->insertMultiple<Episode>(episodes).size(), count);
 
 	QCOMPARE(db->list<Episode>().size(), preInsertCount + count);
+}
+
+void TestsTest::testInsertRemove()
+{
+	Tag::ptr tag = Tag("other").save();
+	QVERIFY(tag);
+	const int tid = tag->id();
+
+	QVERIFY(db->fetchById<Tag>(tid));
+
+	const int countOne = db->list<Tag>().size();
+	QVERIFY(tag->remove());
+
+	QCOMPARE(countOne - 1, db->list<Tag>().size()); // not present in cache
+	QVERIFY(!db->fetchById<Tag>(tid)); // not present in database
 }
 
 QTEST_APPLESS_MAIN(TestsTest)
